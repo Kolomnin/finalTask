@@ -5,8 +5,8 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.provisioning.UserDetailsManager;
 import org.springframework.stereotype.Service;
-import com.example.finaltask.dto.RegisterReq;
-import com.example.finaltask.dto.Role;
+import com.example.finaltask.model.dto.RegisterReq;
+import com.example.finaltask.model.dto.Role;
 import com.example.finaltask.service.AuthService;
 
 @Service

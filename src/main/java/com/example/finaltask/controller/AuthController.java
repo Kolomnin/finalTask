@@ -8,12 +8,12 @@ import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
-import com.example.finaltask.dto.LoginReq;
-import com.example.finaltask.dto.RegisterReq;
-import com.example.finaltask.dto.Role;
+import com.example.finaltask.model.dto.LoginReq;
+import com.example.finaltask.model.dto.RegisterReq;
+import com.example.finaltask.model.dto.Role;
 import com.example.finaltask.service.AuthService;
 
-import static com.example.finaltask.dto.Role.USER;
+import static com.example.finaltask.model.dto.Role.USER;
 
 @Slf4j
 @CrossOrigin(value = "http://localhost:3000")
