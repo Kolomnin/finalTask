@@ -1,4 +1,4 @@
-package com.example.finaltask.dto;
+package com.example.finaltask.model.dto;
 
 import lombok.Data;
 

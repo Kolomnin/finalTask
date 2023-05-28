@@ -1,10 +1,10 @@
-package com.example.finaltask.dto;
+package com.example.finaltask.model.dto;
 
 import lombok.Data;
 
 @Data
-public class User {
-    private int id;
+public class UserDTO {
+    private Integer id;
     private String email;
     private String firstName;
     private String lastName;
