@@ -21,7 +21,7 @@ public class Image {
     private String mediaType;
     @Lob
     private byte[] preview;
-    @OneToOne
+    @ManyToOne
     @JoinColumn(name = "ads_id", referencedColumnName = "id")
     private Ads ads;
 

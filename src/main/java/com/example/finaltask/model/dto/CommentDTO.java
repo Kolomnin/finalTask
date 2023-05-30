@@ -9,7 +9,7 @@ public class CommentDTO {
     private Integer author;
     private String authorImage;
     private String authorFirstName;
-    private Long createdAt;
+    private LocalDateTime createdAt;
     private Integer pk;
     private String text;
 }
