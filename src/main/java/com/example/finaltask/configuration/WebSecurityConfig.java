@@ -48,7 +48,7 @@ public class WebSecurityConfig {
                     /**
                      Эта строка отвечает за то, какие запросы будут под авторизацией(нужно закомментировать).
                      */
-//                    .mvcMatchers("/ads/**", "/users/**").authenticated()
+                    .mvcMatchers("/ads/**", "/users/**").authenticated()
             )
             .cors()
             .and()
