@@ -16,6 +16,8 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 @Slf4j
 @CrossOrigin(value = "http://localhost:3000")
@@ -24,6 +26,7 @@ import org.springframework.web.multipart.MultipartFile;
 @RequestMapping("/users")
 
 public class UserController {
+    private static final Logger logger = LoggerFactory.getLogger(UserController.class);
     private UserService userService;
 
     /**
@@ -113,6 +116,7 @@ public class UserController {
      */
     @PatchMapping("/me")
     public ResponseEntity<UserDTO> updateUser(@RequestBody UserDTO user, Authentication authentication) {
+        logger.info("Updating user: {}", user.getFirstName());
         return new ResponseEntity<>(HttpStatus.OK);
     }
 

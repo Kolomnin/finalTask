@@ -3,7 +3,7 @@ package com.example.finaltask.model.entity;
 
 import lombok.*;
 import org.hibernate.Hibernate;
-import com.example.finaltask.model.dto.Role;
+import com.example.finaltask.configuration.Role;
 
 import javax.persistence.*;
 import java.util.Objects;

@@ -60,12 +60,12 @@ public class AdsController {
 
     /**
      * Добавить объявление
-     * @RequestParam MultipartFile image - аннотация @RequestParam указывает, что метод ожидает получить
-     * параметр image из запроса. MultipartFile - это тип данных, представляющий загруженный файл.
-     * В данном случае, параметр image будет содержать загруженное изображение для объявления.
+     * Метод addADS принимает два параметра: adsDTO, который содержит данные объявления
+     * и image, который содержит файл изображения, связанный с объявлением. Оба параметра
+     * помечены аннотацией @RequestParam, что означает, что они должны быть извлечены из параметров запроса.
      */
     @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public ResponseEntity<AdsDTO> addADS(@RequestBody AdsDTO adsDTO, @RequestParam MultipartFile image) {
+    public ResponseEntity<AdsDTO> addADS(@RequestParam AdsDTO adsDTO, @RequestParam MultipartFile image) {
         return new ResponseEntity<>(HttpStatus.CREATED);
     }
 
@@ -171,7 +171,7 @@ public class AdsController {
      * Получить объявления авторизованного пользователя
      * Обрабатывает GET-запрос на пути "/ads/me" и возвращает информацию об объявлении пользователя.
      */
-    @GetMapping("/ads/me")
+    @GetMapping("/me")
     public ResponseEntity<AdsDTO> getADSMe() {
         return new ResponseEntity<>(HttpStatus.OK);
     }

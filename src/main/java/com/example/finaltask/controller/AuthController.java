@@ -10,10 +10,10 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 import com.example.finaltask.model.dto.LoginReq;
 import com.example.finaltask.model.dto.RegisterReq;
-import com.example.finaltask.model.dto.Role;
+import com.example.finaltask.configuration.Role;
 import com.example.finaltask.service.AuthService;
 
-import static com.example.finaltask.model.dto.Role.USER;
+import static com.example.finaltask.configuration.Role.USER;
 
 @Slf4j
 @CrossOrigin(value = "http://localhost:3000")

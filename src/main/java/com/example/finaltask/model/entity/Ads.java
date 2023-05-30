@@ -1,6 +1,9 @@
 package com.example.finaltask.model.entity;
 
-import lombok.*;
+import lombok.Getter;
+import lombok.RequiredArgsConstructor;
+import lombok.Setter;
+import lombok.ToString;
 import org.hibernate.Hibernate;
 
 import javax.persistence.*;
@@ -13,6 +16,11 @@ import java.util.Objects;
 @ToString
 @RequiredArgsConstructor
 @Table(name = "ads")
+
+/**
+ * При добавлении анотации @EqualsAndHashCode преобразуется код методов equals и hashCode
+ */
+
 public class Ads {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
