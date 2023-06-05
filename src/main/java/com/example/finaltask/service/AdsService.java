@@ -16,7 +16,7 @@ public interface AdsService {
 
     boolean removeAd(Integer id);
 
-    AdsDTO updateADS(AdsDTO adsDto, Integer id);
+    AdsDTO updateADS(AdsDTO adsDTO, Integer id);
 
     AdsDTO getMe();
 
