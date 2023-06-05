@@ -65,7 +65,7 @@ public class AdsController {
      * помечены аннотацией @RequestParam, что означает, что они должны быть извлечены из параметров запроса.
      */
     @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public ResponseEntity<AdsDTO> addADS(@RequestParam AdsDTO adsDTO, @RequestParam MultipartFile image) {
+    public ResponseEntity<AdsDTO> addADS(@RequestPart AdsDTO properties, @RequestPart MultipartFile image) {
         return new ResponseEntity<>(HttpStatus.CREATED);
     }
 
