@@ -1,5 +1,6 @@
 package com.example.finaltask.controller;
 
+import com.example.finaltask.mapping.UserMapping;
 import com.example.finaltask.model.dto.NewPasswordDTO;
 import com.example.finaltask.model.dto.UserDTO;
 import com.example.finaltask.service.UserService;
@@ -28,6 +29,8 @@ import org.slf4j.LoggerFactory;
 public class UserController {
     private static final Logger logger = LoggerFactory.getLogger(UserController.class);
     private UserService userService;
+
+    private UserMapping userMapping;
 
     /**
      * PasswordEncoder предназначен для хеширования паролей. Он используется для шифрования паролей пользователей,
@@ -97,7 +100,11 @@ public class UserController {
      */
     @GetMapping("/me")
     public ResponseEntity<UserDTO> getUser(Authentication authentication) {
-        return new ResponseEntity<>(HttpStatus.OK);
+        /*if (id != null) {        return ResponseEntity.ok(usersService.findUsersById(id));
+    }*/
+        UserDTO findUser = userMapping.mapToUserDto(userService.getUser());
+        return ResponseEntity.ok(getUser());
+//        return new ResponseEntity<>(HttpStatus.OK);
     }
 
     @Operation(
