@@ -1,17 +1,19 @@
 package com.example.finaltask.service;
 
+import com.example.finaltask.model.dto.CommentDTO;
 import org.springframework.stereotype.Service;
-import com.example.finaltask.repository.CommentRepository;
+
+import java.util.List;
 
 @Service
-public class CommentService {
-    private final CommentRepository commentRepository;
+public interface CommentService {
 
-    public CommentService(CommentRepository commentRepository) {
-        this.commentRepository = commentRepository;
-    }
+    List<CommentDTO> getComments();
 
+    CommentDTO postComment();
 
+    void deleteComment();
 
+    CommentDTO patchComment();
 
 }

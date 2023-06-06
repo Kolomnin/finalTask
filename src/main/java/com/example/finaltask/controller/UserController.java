@@ -35,6 +35,10 @@ public class UserController {
      */
     private PasswordEncoder passwordEncoder;
 
+    public UserController(UserService userService) {
+        this.userService = userService;
+    }
+
 
     /**
      * Этот код служит для документирования API, чтобы разработчики и потребители могли лучше понять,

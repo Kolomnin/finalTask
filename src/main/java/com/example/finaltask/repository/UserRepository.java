@@ -5,4 +5,6 @@ import com.example.finaltask.model.entity.User;
 
 public interface UserRepository extends JpaRepository<User,Integer> {
     User findByEmail(String email);
+
+    User findById(Long id);
 }
