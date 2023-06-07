@@ -2,7 +2,7 @@ package com.example.finaltask.controller;
 
 import com.example.finaltask.model.dto.NewPasswordDTO;
 import com.example.finaltask.model.dto.UserDTO;
-import com.example.finaltask.service.UserService;
+import com.example.finaltask.service.UserDTOInterface;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -27,7 +27,7 @@ import org.slf4j.LoggerFactory;
 
 public class UserController {
     private static final Logger logger = LoggerFactory.getLogger(UserController.class);
-    private UserService userService;
+    private UserDTOInterface userDTOInterface;
 
 //    private UserMapping userMapping;
 
@@ -37,8 +37,8 @@ public class UserController {
      */
     private PasswordEncoder passwordEncoder;
 
-    public UserController(UserService userService) {
-        this.userService = userService;
+    public UserController(UserDTOInterface userDTOInterface) {
+        this.userDTOInterface = userDTOInterface;
     }
 
 

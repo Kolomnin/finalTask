@@ -8,7 +8,7 @@ import java.io.IOException;
 import java.util.Optional;
 
 @Service
-public interface UserService {
+public interface UserDTOInterface {
 
     UserDTO update(UserDTO user, String email);
 
