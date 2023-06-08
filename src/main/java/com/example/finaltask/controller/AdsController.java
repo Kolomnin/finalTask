@@ -1,12 +1,14 @@
 package com.example.finaltask.controller;
 
+import com.example.finaltask.mapping.AdsMapper;
 import com.example.finaltask.model.dto.AdsDTO;
+import com.example.finaltask.model.entity.Ads;
+import com.example.finaltask.service.AdsDTOService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -19,10 +21,19 @@ import java.util.List;
 @Slf4j
 @CrossOrigin(value = "http://localhost:3000")
 @RestController
-@RequiredArgsConstructor
+
 @RequestMapping("/ads")
 
 public class AdsController {
+
+    private final AdsDTOService adsDTOService;
+    private final AdsMapper adsMapper;
+
+    public AdsController(AdsDTOService adsDTOService, AdsMapper adsMapper) {
+        this.adsDTOService = adsDTOService;
+        this.adsMapper = adsMapper;
+    }
+
     @Operation(
             operationId = "getAllADS",
             summary = "Получить все объявления",
@@ -66,6 +77,9 @@ public class AdsController {
      */
     @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<AdsDTO> addADS(@RequestPart AdsDTO properties, @RequestPart MultipartFile image) {
+        Ads ads = adsMapper.toEntity(properties);
+        AdsDTO adsDTO = adsMapper.toDto(ads);
+        adsDTOService.addAds(ads);
         return new ResponseEntity<>(HttpStatus.CREATED);
     }
 
