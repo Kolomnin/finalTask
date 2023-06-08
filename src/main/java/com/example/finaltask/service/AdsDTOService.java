@@ -18,19 +18,6 @@ public class AdsDTOService {
         this.userRepository = userRepository;
     }
 
-    public Ads addAds(AdsDTO adsDTO) {
-        Ads ads = new Ads();
-        ads.setPrice(adsDTO.getPrice());
-        ads.setTitle(adsDTO.getTitle());
-        ads.setAuthorId(userRepository.findById(1L));
-
-
-
-
-//        user.setId(userdto.ge());
-//        user.setEmail(userdto.getEmail());
-        return adsRepository.save(ads);
-    }
     public Ads addAds(Ads ads) {
 
         ads.setAuthorId(userRepository.findById(1L));

@@ -42,5 +42,8 @@ public class UserDTOService  {
 //        user.setEmail(userdto.getEmail());
         return userRepository.save(user);
     }
+    public User addUser2(User user) {
+        return userRepository.save(user);
+    }
 
 }

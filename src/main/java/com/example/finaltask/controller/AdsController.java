@@ -1,7 +1,9 @@
 package com.example.finaltask.controller;
 
+import com.example.finaltask.mapping.AdsDtoMapper;
 import com.example.finaltask.mapping.AdsMapper;
 import com.example.finaltask.model.dto.AdsDTO;
+import com.example.finaltask.model.dto.CreateAdsDTO;
 import com.example.finaltask.model.entity.Ads;
 import com.example.finaltask.service.AdsDTOService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -29,9 +31,12 @@ public class AdsController {
     private final AdsDTOService adsDTOService;
     private final AdsMapper adsMapper;
 
+
+
     public AdsController(AdsDTOService adsDTOService, AdsMapper adsMapper) {
         this.adsDTOService = adsDTOService;
         this.adsMapper = adsMapper;
+
     }
 
     @Operation(
@@ -80,6 +85,7 @@ public class AdsController {
         Ads ads = adsMapper.toEntity(properties);
         AdsDTO adsDTO = adsMapper.toDto(ads);
         adsDTOService.addAds(ads);
+
         return new ResponseEntity<>(HttpStatus.CREATED);
     }
 
