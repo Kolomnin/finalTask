@@ -1,7 +1,8 @@
 package com.example.finaltask.controller;
 
+import com.example.finaltask.mapping.UserMapper;
+import com.example.finaltask.model.entity.User;
 import com.example.finaltask.service.UserDTOService;
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -20,14 +21,18 @@ import static com.example.finaltask.configuration.Role.USER;
 @CrossOrigin(value = "http://localhost:3000")
 @RestController
 public class AuthController {
-    public AuthController(AuthService authService, UserDTOService userDTOService) {
-        this.authService = authService;
-        this.userDTOService = userDTOService;
-    }
-
     private final AuthService authService;
 
     private UserDTOService userDTOService;
+
+    private final UserMapper userMapper;
+    public AuthController(AuthService authService, UserDTOService userDTOService, UserMapper userMapper) {
+        this.authService = authService;
+        this.userDTOService = userDTOService;
+        this.userMapper = userMapper;
+    }
+
+
 
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody LoginReq req) {
@@ -42,7 +47,10 @@ public class AuthController {
     public ResponseEntity<?> register(@RequestBody RegisterReq req) {
         Role role = req.getRole() == null ? USER : req.getRole();
         if (authService.register(req, role)) {
-            userDTOService.addUser1(req);
+//            userDTOService.addUser1(req,role);
+            User user = userMapper.toEntity(req);
+            user.setRole(role);
+            userDTOService.addUser2(user);
             return ResponseEntity.ok().build();
         } else {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
