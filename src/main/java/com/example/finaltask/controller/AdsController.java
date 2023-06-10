@@ -1,11 +1,8 @@
 package com.example.finaltask.controller;
 
-import com.example.finaltask.mapping.AdsDtoMapper;
-import com.example.finaltask.mapping.AdsMapper;
 import com.example.finaltask.model.dto.AdsDTO;
-import com.example.finaltask.model.dto.CreateAdsDTO;
-import com.example.finaltask.model.entity.Ads;
 import com.example.finaltask.service.AdsDTOService;
+import com.example.finaltask.service.ImageService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -18,6 +15,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.util.List;
 
 @Slf4j
@@ -29,14 +27,14 @@ import java.util.List;
 public class AdsController {
 
     private final AdsDTOService adsDTOService;
-    private final AdsMapper adsMapper;
+
+    private final ImageService imageService;
 
 
 
-    public AdsController(AdsDTOService adsDTOService, AdsMapper adsMapper) {
+    public AdsController(AdsDTOService adsDTOService, ImageService imageService) {
         this.adsDTOService = adsDTOService;
-        this.adsMapper = adsMapper;
-
+        this.imageService = imageService;
     }
 
     @Operation(
@@ -81,11 +79,9 @@ public class AdsController {
      * помечены аннотацией @RequestParam, что означает, что они должны быть извлечены из параметров запроса.
      */
     @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public ResponseEntity<AdsDTO> addADS(@RequestPart AdsDTO properties, @RequestPart MultipartFile image) {
-        Ads ads = adsMapper.toEntity(properties);
-        AdsDTO adsDTO = adsMapper.toDto(ads);
-        adsDTOService.addAds(ads);
-
+    public ResponseEntity<AdsDTO> addADS(@RequestPart AdsDTO properties, @RequestPart MultipartFile image) throws IOException {
+        adsDTOService.addAds1(properties);
+        imageService.saveImage(1L,image);
         return new ResponseEntity<>(HttpStatus.CREATED);
     }
 

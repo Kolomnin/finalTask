@@ -1,5 +1,7 @@
 package com.example.finaltask.service;
 
+import com.example.finaltask.mapping.AdsMapper;
+import com.example.finaltask.model.dto.AdsDTO;
 import com.example.finaltask.model.entity.Ads;
 import com.example.finaltask.repository.AdsRepository;
 import com.example.finaltask.repository.UserRepository;
@@ -13,17 +15,23 @@ public class AdsDTOService {
 
     private final UserDetailsManager manager;
 
-    public AdsDTOService(AdsRepository adsRepository, UserRepository userRepository, UserDetailsManager manager) {
+
+    private final AdsMapper adsMapper;
+
+
+    public AdsDTOService(AdsRepository adsRepository, UserRepository userRepository, UserDetailsManager manager, AdsMapper adsMapper) {
         this.adsRepository = adsRepository;
         this.userRepository = userRepository;
         this.manager = manager;
+        this.adsMapper = adsMapper;
     }
 
-    public Ads addAds(Ads ads) {
-
-//        manager.userExists()
-//        userRepository.findByLogin();
-        ads.setAuthorId(userRepository.findById(1L));
-        return adsRepository.save(ads);
+    public AdsDTO addAds1(AdsDTO properties) {
+        Ads ads = adsMapper.toEntity(properties);
+        AdsDTO adsDTO = adsMapper.toDto(ads);
+        ads.setAuthorId(userRepository.findById(1L));//В след уроках покажут как получить
+                                                        // пользователя который авторизован,пока юзер установлен
+        adsRepository.save(ads);
+        return adsDTO;
     }
 }

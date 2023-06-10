@@ -107,8 +107,6 @@
                         <path>
                             <groupId>org.projectlombok</groupId>
                             <artifactId>lombok</artifactId>
-
-                            Мария Маякина, [07.06.2023 12:38]
                             <version>${lombok.version}</version>
                         </path>
                         <path>
