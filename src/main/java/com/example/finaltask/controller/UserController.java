@@ -107,10 +107,10 @@ public class UserController {
 //        userDTOInterface.getUser();
 //        return new ResponseEntity<>(HttpStatus.OK);
 //    }
-    @GetMapping("/me")
-    public ResponseEntity<UserDTO> getUser(@PathVariable Long id) {
-        userDTOService.getUserById(id);
-        return new ResponseEntity<>(HttpStatus.OK);
+    @GetMapping("{id}")
+    public ResponseEntity<User> getUser(@PathVariable Long id) {
+
+        return ResponseEntity.ok(userDTOService.getUserById(id));
     }
     @DeleteMapping("{id}")
     public void deleteUser(@PathVariable () Integer id){
