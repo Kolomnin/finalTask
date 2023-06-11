@@ -4,6 +4,7 @@ import com.example.finaltask.mapping.CommentMapper;
 import com.example.finaltask.model.dto.CommentDTO;
 import com.example.finaltask.model.dto.CreateCommentDTO;
 import com.example.finaltask.model.entity.Comment;
+import com.example.finaltask.model.entity.User;
 import com.example.finaltask.repository.CommentRepository;
 import org.springframework.stereotype.Service;
 
@@ -27,5 +28,22 @@ public class CommentDTOService {
         commentRepository.save(comment);
         return commentDTO;
     }
+
+    public Comment getCommentById(Long id) {
+        return commentRepository.findById(id);
+    }
+
+    public void deleteCommentById(Integer id) {
+        commentRepository.deleteById(id);
+    }
+    public Comment editComment(Comment comment) {
+        return commentRepository.save(comment);
+    }
+
+    public Comment editCommentDto(CommentDTO commentDto) {
+       Comment comment = commentMapper.toEntity(commentDto);
+        return commentRepository.save(comment);
+    }
+
 
 }

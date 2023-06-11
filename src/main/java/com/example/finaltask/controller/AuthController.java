@@ -24,12 +24,10 @@ public class AuthController {
 
     private UserDTOService userDTOService;
 
-    private final UserMapper userMapper;
 
-    public AuthController(AuthService authService, UserDTOService userDTOService, UserMapper userMapper) {
+    public AuthController(AuthService authService, UserDTOService userDTOService) {
         this.authService = authService;
         this.userDTOService = userDTOService;
-        this.userMapper = userMapper;
     }
 
 

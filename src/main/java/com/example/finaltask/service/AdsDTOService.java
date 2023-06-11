@@ -3,6 +3,7 @@ package com.example.finaltask.service;
 import com.example.finaltask.mapping.AdsMapper;
 import com.example.finaltask.model.dto.AdsDTO;
 import com.example.finaltask.model.entity.Ads;
+import com.example.finaltask.model.entity.User;
 import com.example.finaltask.repository.AdsRepository;
 import com.example.finaltask.repository.UserRepository;
 import org.springframework.security.provisioning.UserDetailsManager;
@@ -34,4 +35,16 @@ public class AdsDTOService {
         adsRepository.save(ads);
         return adsDTO;
     }
+
+    public Ads getAdsById(Long id) {
+        return adsRepository.findById(id);
+    }
+
+    public void deleteAdsById(Integer id) {
+        adsRepository.deleteById(id);
+    }
+    public Ads editAds(Ads ads ) {
+        return adsRepository.save(ads);
+    }
+
 }

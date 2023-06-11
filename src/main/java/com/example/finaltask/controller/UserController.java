@@ -2,13 +2,16 @@ package com.example.finaltask.controller;
 
 import com.example.finaltask.model.dto.NewPasswordDTO;
 import com.example.finaltask.model.dto.UserDTO;
+import com.example.finaltask.model.entity.User;
 import com.example.finaltask.service.UserDTOInterface;
+import com.example.finaltask.service.UserDTOService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.repository.query.Param;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -28,6 +31,8 @@ import org.slf4j.LoggerFactory;
 public class UserController {
     private static final Logger logger = LoggerFactory.getLogger(UserController.class);
     private UserDTOInterface userDTOInterface;
+
+    private UserDTOService userDTOService;
 
 //    private UserMapping userMapping;
 
@@ -97,11 +102,33 @@ public class UserController {
     /**
      * Метод должен обрабатывать HTTP GET-запросы на указанном пути ("/me")
      */
+//    @GetMapping("/me")
+//    public ResponseEntity<UserDTO> getUser(Authentication authentication) {
+//        userDTOInterface.getUser();
+//        return new ResponseEntity<>(HttpStatus.OK);
+//    }
     @GetMapping("/me")
-    public ResponseEntity<UserDTO> getUser(Authentication authentication) {
-
+    public ResponseEntity<UserDTO> getUser(@PathVariable Long id) {
+        userDTOService.getUserById(id);
         return new ResponseEntity<>(HttpStatus.OK);
     }
+    @DeleteMapping("{id}")
+    public void deleteUser(@PathVariable () Integer id){
+         userDTOService.deleteUserById(id);
+    }
+    @Operation(summary = "Изменение параметров владельца",
+            requestBody = @io.swagger.v3.oas.annotations.parameters.RequestBody(description = "Новый владелец",
+                    content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE)
+            ))
+    @PutMapping
+    public ResponseEntity<User> editUser(@RequestBody User user) {
+        User foundUser = userDTOService.editUser(user);
+        if (foundUser == null) {
+            return ResponseEntity.notFound().build();
+        }
+        return ResponseEntity.ok(foundUser);
+    }
+
 
     @Operation(
             operationId = "updateUser",
@@ -124,6 +151,7 @@ public class UserController {
     @PatchMapping("/me")
     public ResponseEntity<UserDTO> updateUser(@RequestBody UserDTO user, Authentication authentication) {
         logger.info("Updating user: {}", user.getFirstName());
+
         return new ResponseEntity<>(HttpStatus.OK);
     }
 

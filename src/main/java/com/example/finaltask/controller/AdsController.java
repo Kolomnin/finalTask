@@ -1,6 +1,9 @@
 package com.example.finaltask.controller;
 
 import com.example.finaltask.model.dto.AdsDTO;
+import com.example.finaltask.model.dto.UserDTO;
+import com.example.finaltask.model.entity.Ads;
+import com.example.finaltask.model.entity.User;
 import com.example.finaltask.service.AdsDTOService;
 import com.example.finaltask.service.ImageService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -111,7 +114,8 @@ public class AdsController {
      * идентификатора объявления
      */
     @GetMapping("/{id}")
-    public ResponseEntity<AdsDTO> getADS(@Parameter(description = "Id объявления") @PathVariable Integer id) {
+    public ResponseEntity<AdsDTO> getADS(@Parameter(description = "Id объявления") @PathVariable Long id) {
+        adsDTOService.getAdsById(id);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
@@ -135,8 +139,21 @@ public class AdsController {
      */
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> removeADS(@Parameter(description = "Id объявления") @PathVariable Integer id) {
+        adsDTOService.deleteAdsById(id);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
+
+    @PutMapping("/edit")
+    public ResponseEntity<Ads> editUser(@RequestBody Ads ads ) {
+//        Ads foundUser = adsDTOService.editAds(ads);
+        adsDTOService.editAds(ads);
+//        if (foundUser == null) {
+//            return ResponseEntity.notFound().build();
+//        }
+        return ResponseEntity.ok(ads);
+    }
+
+
 
     @Operation(
             operationId = "updateADS",

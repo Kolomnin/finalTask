@@ -28,4 +28,15 @@ public class UserDTOService {
         return userRepository.save(user);
     }
 
+    public User getUserById(Long id) {
+    return userRepository.findById(id);
+    }
+
+    public void deleteUserById(Integer id) {
+         userRepository.deleteById(id);
+    }
+    public User editUser(User user) {
+        return userRepository.save(user);
+    }
+
 }
