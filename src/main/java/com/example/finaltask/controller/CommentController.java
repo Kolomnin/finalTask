@@ -1,6 +1,10 @@
 package com.example.finaltask.controller;
 
 import com.example.finaltask.model.dto.CommentDTO;
+import com.example.finaltask.model.dto.CreateCommentDTO;
+import com.example.finaltask.model.entity.Comment;
+import com.example.finaltask.model.entity.User;
+import com.example.finaltask.service.CommentDTOService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -21,6 +25,9 @@ import java.util.List;
 @RequestMapping("ads")
 
 public class CommentController {
+
+    private final CommentDTOService commentDTOService;
+
     @Operation(
             operationId = "getComments",
             summary = "Получить комментарии объявления",
@@ -45,7 +52,8 @@ public class CommentController {
      * заголовки и тело ответа. List<CommentDTO> - это тип данных, представляющий список комментариев.
      */
     @GetMapping("{id}/comments")
-    public ResponseEntity<List<CommentDTO>> getComments(@PathVariable Integer id) {
+    public ResponseEntity<List<CommentDTO>> getComments(@PathVariable Long id) {
+        commentDTOService.getCommentById(id);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
@@ -81,8 +89,8 @@ public class CommentController {
      */
     @PostMapping("{id}/comments")
     public ResponseEntity<CommentDTO> createComment(@PathVariable Integer id, @Parameter(description = "Необходимо корректно" +
-            " заполнить комментарий", example = "Тест"
-    ) @RequestBody CommentDTO commentDTO) {
+            " заполнить комментарий", example = "Тест") @RequestBody CreateCommentDTO createCommentDTO) {
+        commentDTOService.addComment(createCommentDTO);
         return new ResponseEntity<>(HttpStatus.CREATED);
     }
 
@@ -128,8 +136,17 @@ public class CommentController {
      * комментария. В данном случае, возвращается пустое тело (new ResponseEntity<>(HttpStatus.NO_CONTENT)).
      */
     @DeleteMapping("{adId}/comments/{commentId}")
-    public ResponseEntity<Void> deleteComment(@PathVariable Integer adId, @PathVariable Integer commentId) {
+    public ResponseEntity<Void> deleteComment(@PathVariable Integer adId, @PathVariable Long commentId) {
+        commentDTOService.getCommentById(commentId);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+    }
+    @PutMapping
+    public ResponseEntity<Comment> editComment(@RequestBody Comment comment) {
+        Comment comment1 = commentDTOService.editComment(comment);
+        if (comment1 == null) {
+            return ResponseEntity.notFound().build();
+        }
+        return ResponseEntity.ok(comment1);
     }
 
     @Operation(
@@ -173,8 +190,9 @@ public class CommentController {
      */
     @PatchMapping("{adId}/comments/{commentId}")
     public ResponseEntity<CommentDTO> updateComment(@RequestBody CommentDTO commentDTO,
-                                                   @PathVariable Integer adId,
-                                                   @PathVariable Integer commentId) {
+                                                    @PathVariable Integer adId,
+                                                    @PathVariable Integer commentId) {
+        commentDTOService.editCommentDto(commentDTO);
         return ResponseEntity.ok().build();
     }
 }

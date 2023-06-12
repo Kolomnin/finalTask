@@ -23,7 +23,9 @@ public class AuthServiceImpl implements AuthService {
 
   @Override
   public boolean login(String userName, String password) {
+    System.out.println(userName);
     if (!manager.userExists(userName)) {
+
       return false;
     }
     UserDetails userDetails = manager.loadUserByUsername(userName);

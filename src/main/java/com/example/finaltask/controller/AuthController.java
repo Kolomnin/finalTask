@@ -1,6 +1,7 @@
 package com.example.finaltask.controller;
 
-import lombok.RequiredArgsConstructor;
+import com.example.finaltask.mapping.UserMapper;
+import com.example.finaltask.service.UserDTOService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -18,10 +19,17 @@ import static com.example.finaltask.configuration.Role.USER;
 @Slf4j
 @CrossOrigin(value = "http://localhost:3000")
 @RestController
-@RequiredArgsConstructor
 public class AuthController {
-
     private final AuthService authService;
+
+    private UserDTOService userDTOService;
+
+
+    public AuthController(AuthService authService, UserDTOService userDTOService) {
+        this.authService = authService;
+        this.userDTOService = userDTOService;
+    }
+
 
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody LoginReq req) {
@@ -36,6 +44,7 @@ public class AuthController {
     public ResponseEntity<?> register(@RequestBody RegisterReq req) {
         Role role = req.getRole() == null ? USER : req.getRole();
         if (authService.register(req, role)) {
+            userDTOService.addUser(req, role);
             return ResponseEntity.ok().build();
         } else {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();

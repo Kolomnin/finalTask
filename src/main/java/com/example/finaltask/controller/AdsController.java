@@ -1,12 +1,16 @@
 package com.example.finaltask.controller;
 
 import com.example.finaltask.model.dto.AdsDTO;
+import com.example.finaltask.model.dto.UserDTO;
+import com.example.finaltask.model.entity.Ads;
+import com.example.finaltask.model.entity.User;
+import com.example.finaltask.service.AdsDTOService;
+import com.example.finaltask.service.ImageService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -14,15 +18,28 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.util.List;
 
 @Slf4j
 @CrossOrigin(value = "http://localhost:3000")
 @RestController
-@RequiredArgsConstructor
+
 @RequestMapping("/ads")
 
 public class AdsController {
+
+    private final AdsDTOService adsDTOService;
+
+    private final ImageService imageService;
+
+
+
+    public AdsController(AdsDTOService adsDTOService, ImageService imageService) {
+        this.adsDTOService = adsDTOService;
+        this.imageService = imageService;
+    }
+
     @Operation(
             operationId = "getAllADS",
             summary = "Получить все объявления",
@@ -65,7 +82,9 @@ public class AdsController {
      * помечены аннотацией @RequestParam, что означает, что они должны быть извлечены из параметров запроса.
      */
     @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public ResponseEntity<AdsDTO> addADS(@RequestPart AdsDTO properties, @RequestPart MultipartFile image) {
+    public ResponseEntity<AdsDTO> addADS(@RequestPart AdsDTO properties, @RequestPart MultipartFile image) throws IOException {
+        adsDTOService.addAds1(properties);
+        imageService.saveImage(1L,image);
         return new ResponseEntity<>(HttpStatus.CREATED);
     }
 
@@ -95,7 +114,8 @@ public class AdsController {
      * идентификатора объявления
      */
     @GetMapping("/{id}")
-    public ResponseEntity<AdsDTO> getADS(@Parameter(description = "Id объявления") @PathVariable Integer id) {
+    public ResponseEntity<AdsDTO> getADS(@Parameter(description = "Id объявления") @PathVariable Long id) {
+        adsDTOService.getAdsById(id);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
@@ -119,8 +139,21 @@ public class AdsController {
      */
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> removeADS(@Parameter(description = "Id объявления") @PathVariable Integer id) {
+        adsDTOService.deleteAdsById(id);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
+
+    @PutMapping("/edit")
+    public ResponseEntity<Ads> editUser(@RequestBody Ads ads ) {
+//        Ads foundUser = adsDTOService.editAds(ads);
+        adsDTOService.editAds(ads);
+//        if (foundUser == null) {
+//            return ResponseEntity.notFound().build();
+//        }
+        return ResponseEntity.ok(ads);
+    }
+
+
 
     @Operation(
             operationId = "updateADS",

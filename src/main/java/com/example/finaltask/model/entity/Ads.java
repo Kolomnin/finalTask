@@ -24,8 +24,8 @@ import java.util.Objects;
 public class Ads {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer id;
-    private BigDecimal price;
+    private Long id;
+    private Integer price;
     private String title;
 
     @ManyToOne(fetch = FetchType.LAZY)

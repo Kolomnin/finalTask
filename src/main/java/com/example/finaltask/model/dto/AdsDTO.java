@@ -6,7 +6,7 @@ import lombok.Data;
 public class AdsDTO {
     private Integer author;
     private String image;
-    private Integer pk;
+    private Long id;
     private Integer price;
     private String title;
 }
