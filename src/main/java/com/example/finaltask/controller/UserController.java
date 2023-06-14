@@ -2,16 +2,16 @@ package com.example.finaltask.controller;
 
 import com.example.finaltask.model.dto.NewPasswordDTO;
 import com.example.finaltask.model.dto.UserDTO;
-import com.example.finaltask.model.entity.User;
-import com.example.finaltask.service.UserDTOInterface;
-import com.example.finaltask.service.UserDTOService;
+import com.example.finaltask.service.AuthService;
+import com.example.finaltask.service.UserService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.data.repository.query.Param;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -19,8 +19,8 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+
+import java.util.Optional;
 
 @Slf4j
 @CrossOrigin(value = "http://localhost:3000")
@@ -30,9 +30,9 @@ import org.slf4j.LoggerFactory;
 
 public class UserController {
     private static final Logger logger = LoggerFactory.getLogger(UserController.class);
-    private UserDTOInterface userDTOInterface;
 
-    private UserDTOService userDTOService;
+    private AuthService authService;
+    private UserService userService;
 
 //    private UserMapping userMapping;
 
@@ -41,10 +41,6 @@ public class UserController {
      * чтобы сохранить их в безопасной форме в базе данных или другом хранилище.
      */
     private PasswordEncoder passwordEncoder;
-
-    public UserController(UserDTOInterface userDTOInterface) {
-        this.userDTOInterface = userDTOInterface;
-    }
 
 
     /**
@@ -80,10 +76,20 @@ public class UserController {
      * Метод возвращает ResponseEntity с кодом состояния HTTP HttpStatus.OK, что означает успешное выполнение операции.
      * В данном случае, возвращается пустое тело ответа (new ResponseEntity<>(HttpStatus.OK)),
      * но можно также вернуть любой другой объект или модель данных, который будет сериализован и отправлен в теле ответа.
-    */
+     */
     @PostMapping("/set_password")
-    public ResponseEntity<?> updatePassword(@RequestBody NewPasswordDTO newPassword, Authentication authentication) {
-        return new ResponseEntity<>(HttpStatus.OK);
+    public ResponseEntity<NewPasswordDTO> updatePassword(@RequestBody NewPasswordDTO newPassword, Authentication authentication) {
+        Optional<UserDTO> user = userService.getUser(authentication.getName());
+        if (!authentication.isAuthenticated()) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+        }
+        if (!user.isPresent()) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+        }
+        if (authService.changePassword(newPassword, authentication.getName())) {
+            return ResponseEntity.ok(new NewPasswordDTO());
+        }
+        return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
     }
 
     @Operation(
@@ -102,33 +108,11 @@ public class UserController {
     /**
      * Метод должен обрабатывать HTTP GET-запросы на указанном пути ("/me")
      */
-//    @GetMapping("/me")
-//    public ResponseEntity<UserDTO> getUser(Authentication authentication) {
-//        userDTOInterface.getUser();
-//        return new ResponseEntity<>(HttpStatus.OK);
-//    }
-    @GetMapping("{id}")
-    public ResponseEntity<User> getUser(@PathVariable Long id) {
 
-        return ResponseEntity.ok(userDTOService.getUserById(id));
+    @GetMapping("/me")
+    public ResponseEntity<Optional<UserDTO>> getUser(Authentication authentication) {
+        return ResponseEntity.ok(userService.getUser(authentication.getName()));
     }
-    @DeleteMapping("{id}")
-    public void deleteUser(@PathVariable () Integer id){
-         userDTOService.deleteUserById(id);
-    }
-    @Operation(summary = "Изменение параметров владельца",
-            requestBody = @io.swagger.v3.oas.annotations.parameters.RequestBody(description = "Новый владелец",
-                    content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE)
-            ))
-    @PutMapping
-    public ResponseEntity<User> editUser(@RequestBody User user) {
-        User foundUser = userDTOService.editUser(user);
-        if (foundUser == null) {
-            return ResponseEntity.notFound().build();
-        }
-        return ResponseEntity.ok(foundUser);
-    }
-
 
     @Operation(
             operationId = "updateUser",
@@ -150,9 +134,7 @@ public class UserController {
      */
     @PatchMapping("/me")
     public ResponseEntity<UserDTO> updateUser(@RequestBody UserDTO user, Authentication authentication) {
-        logger.info("Updating user: {}", user.getFirstName());
-
-        return new ResponseEntity<>(HttpStatus.OK);
+        return ResponseEntity.ok(userService.update(user, authentication.getName()));
     }
 
     @Operation(

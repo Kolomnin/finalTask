@@ -2,11 +2,14 @@ package com.example.finaltask.repository;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import com.example.finaltask.model.entity.User;
-import org.springframework.stereotype.Repository;
 
-@Repository
-public interface UserRepository extends JpaRepository<User,Integer> {
+import java.util.Optional;
 
-//    User findByLogin();
-    User findById(Long id);
+public interface UserRepository extends JpaRepository<User, Long> {
+
+    Optional<User> findById(Integer id);
+
+    Optional<User> findUserByEmail(String email);
+
+    Optional<User> findByEmail(String email);
 }

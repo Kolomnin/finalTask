@@ -4,22 +4,23 @@ import com.example.finaltask.model.dto.AdsDTO;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.util.Collection;
 import java.util.Optional;
 
 public interface AdsService {
 
-    Iterable<AdsDTO> getAllADS();
+    public Iterable<AdsDTO> getAllADS();
 
-    AdsDTO addAd(AdsDTO adsDTO, MultipartFile image) throws IOException;
+    public AdsDTO addAd(AdsDTO adsDto, MultipartFile image) throws IOException;
 
-    Optional<AdsDTO> getADS(Integer id);
+    public Optional<AdsDTO> getAds(Long id);
 
-    boolean removeAd(Integer id);
+    public boolean removeAd(Long id);
 
-    AdsDTO updateADS(AdsDTO adsDTO, Integer id);
+    public AdsDTO updateAds(AdsDTO adsDto, Long id);
 
-    AdsDTO getMe();
+    public Collection<AdsDTO> getMe(String email);
 
-    byte[] updateImage(Integer id, MultipartFile image) throws IOException;
+    public byte[] updateImage(Long id, MultipartFile image) throws IOException;
 
 }

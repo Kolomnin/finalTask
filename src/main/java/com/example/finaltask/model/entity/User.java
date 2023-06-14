@@ -24,6 +24,7 @@ public class User {
     private String phone;
     @Enumerated(EnumType.STRING)
     private Role role;
+    private String avatar;
 
     @Override
     public boolean equals(Object o) {
@@ -36,5 +37,15 @@ public class User {
     @Override
     public int hashCode() {
         return getClass().hashCode();
+    }
+
+
+    public String getAvatar() {
+        String avatar = null;
+        return avatar;
+    }
+
+    public void setAvatar(String avatar) {
+        this.avatar = avatar;
     }
 }
