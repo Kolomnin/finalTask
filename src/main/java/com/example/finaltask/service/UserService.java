@@ -8,14 +8,14 @@ import com.example.finaltask.repository.UserRepository;
 import org.springframework.stereotype.Service;
 
 @Service
-public class UserDTOService {
+public class UserService {
 
 
     private final UserMapper userMapper;
     private final UserRepository userRepository;
 
 
-    public UserDTOService(UserMapper userMapper, UserRepository userRepository) {
+    public UserService(UserMapper userMapper, UserRepository userRepository) {
         this.userMapper = userMapper;
         this.userRepository = userRepository;
     }
@@ -36,6 +36,7 @@ public class UserDTOService {
          userRepository.deleteById(id);
     }
     public User editUser(User user) {
+
         return userRepository.save(user);
     }
 

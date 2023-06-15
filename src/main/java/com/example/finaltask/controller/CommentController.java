@@ -3,8 +3,7 @@ package com.example.finaltask.controller;
 import com.example.finaltask.model.dto.CommentDTO;
 import com.example.finaltask.model.dto.CreateCommentDTO;
 import com.example.finaltask.model.entity.Comment;
-import com.example.finaltask.model.entity.User;
-import com.example.finaltask.service.CommentDTOService;
+import com.example.finaltask.service.CommentService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -26,7 +25,7 @@ import java.util.List;
 
 public class CommentController {
 
-    private final CommentDTOService commentDTOService;
+    private final CommentService commentService;
 
     @Operation(
             operationId = "getComments",
@@ -53,7 +52,7 @@ public class CommentController {
      */
     @GetMapping("{id}/comments")
     public ResponseEntity<List<CommentDTO>> getComments(@PathVariable Long id) {
-        commentDTOService.getCommentById(id);
+        commentService.getCommentById(id);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
@@ -90,7 +89,7 @@ public class CommentController {
     @PostMapping("{id}/comments")
     public ResponseEntity<CommentDTO> createComment(@PathVariable Integer id, @Parameter(description = "Необходимо корректно" +
             " заполнить комментарий", example = "Тест") @RequestBody CreateCommentDTO createCommentDTO) {
-        commentDTOService.addComment(createCommentDTO);
+        commentService.addComment(createCommentDTO);
         return new ResponseEntity<>(HttpStatus.CREATED);
     }
 
@@ -137,12 +136,12 @@ public class CommentController {
      */
     @DeleteMapping("{adId}/comments/{commentId}")
     public ResponseEntity<Void> deleteComment(@PathVariable Integer adId, @PathVariable Long commentId) {
-        commentDTOService.getCommentById(commentId);
+        commentService.getCommentById(commentId);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
     @PutMapping
     public ResponseEntity<Comment> editComment(@RequestBody Comment comment) {
-        Comment comment1 = commentDTOService.editComment(comment);
+        Comment comment1 = commentService.editComment(comment);
         if (comment1 == null) {
             return ResponseEntity.notFound().build();
         }
@@ -192,7 +191,7 @@ public class CommentController {
     public ResponseEntity<CommentDTO> updateComment(@RequestBody CommentDTO commentDTO,
                                                     @PathVariable Integer adId,
                                                     @PathVariable Integer commentId) {
-        commentDTOService.editCommentDto(commentDTO);
+        commentService.editCommentDto(commentDTO);
         return ResponseEntity.ok().build();
     }
 }

@@ -1,19 +1,48 @@
 package com.example.finaltask.service;
 
+import com.example.finaltask.mapping.CommentMapper;
 import com.example.finaltask.model.dto.CommentDTO;
+import com.example.finaltask.model.dto.CreateCommentDTO;
+import com.example.finaltask.model.entity.Comment;
+import com.example.finaltask.repository.CommentRepository;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
-
 @Service
-public interface CommentService {
+public class CommentService {
 
-    List<CommentDTO> getComments();
+    private final CommentRepository commentRepository;
 
-    CommentDTO postComment();
+    private final CommentMapper commentMapper;
 
-    void deleteComment();
+    public CommentService(CommentRepository commentRepository, CommentMapper commentMapper) {
+        this.commentRepository = commentRepository;
+        this.commentMapper = commentMapper;
+    }
+    //Пока много лищнего, так как до комментов еще не дошли,только маппер и сохранение в бд
+    public CommentDTO addComment (CreateCommentDTO createCommentDTO){
+        Comment comment = commentMapper.toEntity(createCommentDTO);
+        CreateCommentDTO createCommentDTO1 = commentMapper.toDto1(comment);
+        CommentDTO commentDTO = commentMapper.toDto(comment);
+        Comment comment1 = commentMapper.toEntity(commentDTO);
+        commentRepository.save(comment);
+        return commentDTO;
+    }
 
-    CommentDTO patchComment();
+    public Comment getCommentById(Long id) {
+        return commentRepository.findById(id);
+    }
+
+    public void deleteCommentById(Integer id) {
+        commentRepository.deleteById(id);
+    }
+    public Comment editComment(Comment comment) {
+        return commentRepository.save(comment);
+    }
+
+    public Comment editCommentDto(CommentDTO commentDto) {
+       Comment comment = commentMapper.toEntity(commentDto);
+        return commentRepository.save(comment);
+    }
+
 
 }

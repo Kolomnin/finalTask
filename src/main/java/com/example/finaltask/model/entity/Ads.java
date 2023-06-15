@@ -28,6 +28,8 @@ public class Ads {
     private Integer price;
     private String title;
 
+    private String description;
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", nullable = false)
     @ToString.Exclude
@@ -36,13 +38,13 @@ public class Ads {
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (o == null || Hibernate.getClass(this) != Hibernate.getClass(o)) return false;
+        if (o == null || getClass() != o.getClass()) return false;
         Ads ads = (Ads) o;
-        return getId() != null && Objects.equals(getId(), ads.getId());
+        return Objects.equals(id, ads.id) && Objects.equals(price, ads.price) && Objects.equals(title, ads.title) && Objects.equals(description, ads.description) && Objects.equals(authorId, ads.authorId);
     }
 
     @Override
     public int hashCode() {
-        return getClass().hashCode();
+        return Objects.hash(id, price, title, description, authorId);
     }
 }

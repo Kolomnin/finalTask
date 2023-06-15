@@ -1,4 +1,4 @@
 package com.example.finaltask.service;
 
-public class ImageDTOService {
+public class ImageAdsService {
 }
