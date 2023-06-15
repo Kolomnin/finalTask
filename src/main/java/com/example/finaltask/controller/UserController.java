@@ -2,6 +2,7 @@ package com.example.finaltask.controller;
 
 import com.example.finaltask.mapping.ImageMapper;
 import com.example.finaltask.model.dto.AvatarDTO;
+import com.example.finaltask.model.dto.ChangeUserChar;
 import com.example.finaltask.model.dto.NewPasswordDTO;
 import com.example.finaltask.model.dto.UserDTO;
 import com.example.finaltask.model.entity.Image;
@@ -130,13 +131,22 @@ public class UserController {
                     content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE)
             ))
     @PutMapping
-    public ResponseEntity<User> editUser(@RequestBody User user) {
-        User foundUser = userService.editUser(user);
+    public ResponseEntity<User> editUser(@RequestBody ChangeUserChar user,Authentication authentication) {
+        User foundUser = userService.editUser(user,authentication);
+        System.out.println("запрос на смену имени, фамилии");
         if (foundUser == null) {
             return ResponseEntity.notFound().build();
         }
         return ResponseEntity.ok(foundUser);
     }
+//    @PutMapping
+//    public ResponseEntity<User> editUser(@RequestBody ChangeUserChar user) {
+//        User foundUser = userService.editUser(user);
+//        if (foundUser == null) {
+//            return ResponseEntity.notFound().build();
+//        }
+//        return ResponseEntity.ok(foundUser);
+//    }
 
 
     @Operation(
@@ -196,9 +206,10 @@ public class UserController {
     @PatchMapping(value = "/me/image", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<AvatarDTO> updateUserImage(@RequestParam("image") MultipartFile file, Authentication authentication) throws IOException {
         System.out.println("запрос на смену аватарки пользователя вызван");
-        imageAdsService.saveImage(file);
-        AvatarDTO avatar = imageMapper.toDTO( imageAdsService.saveImage(file));
-        return new ResponseEntity<>(avatar,HttpStatus.CREATED);
+        System.out.println(authentication.getName());
+        imageAdsService.saveImage(file,authentication);
+        AvatarDTO avatar = imageMapper.toDTO( imageAdsService.saveImage(file,authentication));
+        return new ResponseEntity<>(HttpStatus.CREATED);
     }
 }
 
