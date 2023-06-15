@@ -113,7 +113,7 @@ public class UserController {
         return ResponseEntity.ok(userDTOService.getUserById(id));
     }
     @DeleteMapping("{id}")
-    public void deleteUser(@PathVariable () Integer id){
+    public void deleteUser(@PathVariable () Long id){
          userDTOService.deleteUserById(id);
     }
     @Operation(summary = "Изменение параметров владельца",

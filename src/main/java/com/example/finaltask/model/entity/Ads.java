@@ -33,6 +33,10 @@ public class Ads {
     @ToString.Exclude
     private User authorId;
 
+    private String description;
+
+//    private String description;
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;

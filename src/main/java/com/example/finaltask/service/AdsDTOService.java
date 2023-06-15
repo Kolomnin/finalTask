@@ -1,59 +1,81 @@
 package com.example.finaltask.service;
 
-import com.example.finaltask.mapping.AdsDtoMapper;
 import com.example.finaltask.mapping.AdsMapper;
+import com.example.finaltask.mapping.ImageMapper;
 import com.example.finaltask.model.dto.AdsDTO;
 import com.example.finaltask.model.dto.CreateAdsDTO;
 import com.example.finaltask.model.entity.Ads;
+import com.example.finaltask.model.entity.ImageAds;
 import com.example.finaltask.repository.AdsRepository;
 import com.example.finaltask.repository.UserRepository;
-import org.springframework.security.provisioning.UserDetailsManager;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.io.IOException;
+import java.util.Optional;
 
 @Service
 public class AdsDTOService {
     private final AdsRepository adsRepository;
     private final UserRepository userRepository;
 
-    private final UserDetailsManager manager;
+//    private final UserDetailsManager manager;
+
+    private final ImageMapper imageMapper;
+
+    private final ImageDTOService imageDTOService;
 
 
     private final AdsMapper adsMapper;
 
-    private final AdsDtoMapper adsDtoMapper;
 
 
-    public AdsDTOService(AdsRepository adsRepository, UserRepository userRepository, UserDetailsManager manager, AdsMapper adsMapper, AdsDtoMapper adsDtoMapper) {
+
+    public AdsDTOService(AdsRepository adsRepository, UserRepository userRepository,
+                         ImageMapper imageMapper, ImageDTOService imageDTOService, AdsMapper adsMapper) {
         this.adsRepository = adsRepository;
         this.userRepository = userRepository;
-        this.manager = manager;
+        this.imageMapper = imageMapper;
+        this.imageDTOService = imageDTOService;
+
         this.adsMapper = adsMapper;
-        this.adsDtoMapper = adsDtoMapper;
+
     }
 
     public AdsDTO addAds1(AdsDTO properties) {
-        Ads ads = adsMapper.toEntity(properties);
-        AdsDTO adsDTO = adsMapper.toDto(ads);
-        ads.setAuthorId(userRepository.findById(1L));//В след уроках покажут как получить
+        Ads ads = adsMapper.toEntity1(properties);
+        AdsDTO adsDTO = adsMapper.toDto1(ads);
+        ads.setAuthorId(userRepository.findById(1L).orElseThrow(null));//В след уроках покажут как получить
                                                         // пользователя который авторизован,пока юзер установлен
         adsRepository.save(ads);
         return adsDTO;
     }
-    public AdsDTO addAds2(CreateAdsDTO properties) {
-        Ads ads = adsDtoMapper.toEntity(properties);
-        AdsDTO adsDTO = adsMapper.toDto(ads);
-        CreateAdsDTO adsDTO1 = adsDtoMapper.toDto(ads);
-        ads.setAuthorId(userRepository.findById(1L));//В след уроках покажут как получить
+    public Ads addAds2(CreateAdsDTO properties, MultipartFile file) throws IOException {
+        AdsDTO adsDTO = adsMapper.toDTO(properties);
+        System.out.println(adsDTO);
+
+        Ads ads = adsMapper.toEntity1(adsDTO);
+        ads.setAuthorId(userRepository.findById(1L).orElseThrow(null));
+
+
+        ImageAds imageAds = imageMapper.toEntity(file);
+        imageAds = imageDTOService.saveImageAds(imageAds);
+
+//        CreateAdsDTO adsDTO1 = adsDtoMapper.toDto(ads);
+
+
+        //В след уроках покажут как получить
         // пользователя который авторизован,пока юзер установлен
-        adsRepository.save(ads);
-        return adsDTO;
+
+
+        return adsRepository.save(ads);
     }
 
-    public Ads getAdsById(Long id) {
+    public Optional<Ads> getAdsById(Long id) {
         return adsRepository.findById(id);
     }
 
-    public void deleteAdsById(Integer id) {
+    public void deleteAdsById(Long id) {
         adsRepository.deleteById(id);
     }
     public Ads editAds(Ads ads ) {

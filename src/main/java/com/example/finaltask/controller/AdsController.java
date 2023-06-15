@@ -80,11 +80,11 @@ public class AdsController {
      * и file, который содержит файл изображения, связанный с объявлением. Оба параметра
      * помечены аннотацией @RequestParam, что означает, что они должны быть извлечены из параметров запроса.
      */
-    @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public ResponseEntity<AdsDTO> addADS(@RequestPart AdsDTO properties, @RequestPart MultipartFile file) throws IOException {
+    @PostMapping
+    public ResponseEntity<?> addADS(@RequestPart CreateAdsDTO properties, @RequestPart MultipartFile file) throws IOException {
+        System.out.println("hello");
+        adsDTOService.addAds2(properties,file);
 
-        adsDTOService.addAds1(properties);
-//        imageService.saveImage(1L, file);
         return new ResponseEntity<>(HttpStatus.CREATED);
     }
 
@@ -138,7 +138,7 @@ public class AdsController {
      * что означает успешное выполнение операции удаления без возвращаемого тела ответа.
      */
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> removeADS(@Parameter(description = "Id объявления") @PathVariable Integer id) {
+    public ResponseEntity<Void> removeADS(@Parameter(description = "Id объявления") @PathVariable Long id) {
         adsDTOService.deleteAdsById(id);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
