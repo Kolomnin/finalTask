@@ -1,7 +1,6 @@
 package com.example.finaltask.controller;
 
-import com.example.finaltask.mapping.UserMapper;
-import com.example.finaltask.service.UserDTOService;
+import com.example.finaltask.service.UserService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -22,12 +21,12 @@ import static com.example.finaltask.configuration.Role.USER;
 public class AuthController {
     private final AuthService authService;
 
-    private UserDTOService userDTOService;
+    private UserService userService;
 
 
-    public AuthController(AuthService authService, UserDTOService userDTOService) {
+    public AuthController(AuthService authService, UserService userService) {
         this.authService = authService;
-        this.userDTOService = userDTOService;
+        this.userService = userService;
     }
 
 
@@ -44,7 +43,7 @@ public class AuthController {
     public ResponseEntity<?> register(@RequestBody RegisterReq req) {
         Role role = req.getRole() == null ? USER : req.getRole();
         if (authService.register(req, role)) {
-            userDTOService.addUser(req, role);
+            userService.addUser(req, role);
             return ResponseEntity.ok().build();
         } else {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();

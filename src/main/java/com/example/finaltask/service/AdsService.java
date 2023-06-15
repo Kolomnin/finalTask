@@ -1,25 +1,63 @@
 package com.example.finaltask.service;
 
+import com.example.finaltask.mapping.AdsDtoMapper;
+import com.example.finaltask.mapping.AdsMapper;
 import com.example.finaltask.model.dto.AdsDTO;
-import org.springframework.web.multipart.MultipartFile;
+import com.example.finaltask.model.dto.CreateAdsDTO;
+import com.example.finaltask.model.entity.Ads;
+import com.example.finaltask.repository.AdsRepository;
+import com.example.finaltask.repository.UserRepository;
+import org.springframework.security.provisioning.UserDetailsManager;
+import org.springframework.stereotype.Service;
 
-import java.io.IOException;
-import java.util.Optional;
+@Service
+public class AdsService {
+    private final AdsRepository adsRepository;
+    private final UserRepository userRepository;
 
-public interface AdsService {
+    private final UserDetailsManager manager;
 
-    Iterable<AdsDTO> getAllADS();
 
-    AdsDTO addAd(AdsDTO adsDTO, MultipartFile image) throws IOException;
+    private final AdsMapper adsMapper;
+    private final AdsDtoMapper adsDtoMapper;
 
-    Optional<AdsDTO> getADS(Integer id);
 
-    boolean removeAd(Integer id);
+    public AdsService(AdsRepository adsRepository, UserRepository userRepository, UserDetailsManager manager, AdsMapper adsMapper, AdsDtoMapper adsDtoMapper) {
+        this.adsRepository = adsRepository;
+        this.userRepository = userRepository;
+        this.manager = manager;
+        this.adsMapper = adsMapper;
+        this.adsDtoMapper = adsDtoMapper;
+    }
 
-    AdsDTO updateADS(AdsDTO adsDTO, Integer id);
+    public AdsDTO addAds1(AdsDTO properties) {
+        Ads ads = adsMapper.toEntity(properties);
+        AdsDTO adsDTO = adsMapper.toDto(ads);
+        ads.setAuthorId(userRepository.findById(1L));//В след уроках покажут как получить
+                                                        // пользователя который авторизован,пока юзер установлен
+        adsRepository.save(ads);
+        return adsDTO;
+    }
+    public AdsDTO addAds2(CreateAdsDTO properties) {
+        Ads ads = adsDtoMapper.toEntity(properties);
+        System.out.println("Объявление создано");
+        System.out.println(properties.getDescription());
+        AdsDTO adsDTO = adsMapper.toDto(ads);
+        ads.setAuthorId(userRepository.findById(1L));//В след уроках покажут как получить
+        // пользователя который авторизован,пока юзер установлен
+        adsRepository.save(ads);
+        return adsDTO;
+    }
 
-    AdsDTO getMe();
+    public Ads getAdsById(Long id) {
+        return adsRepository.findById(id);
+    }
 
-    byte[] updateImage(Integer id, MultipartFile image) throws IOException;
+    public void deleteAdsById(Integer id) {
+        adsRepository.deleteById(id);
+    }
+    public Ads editAds(Ads ads ) {
+        return adsRepository.save(ads);
+    }
 
 }

@@ -1,10 +1,9 @@
 package com.example.finaltask.controller;
 
 import com.example.finaltask.model.dto.AdsDTO;
-import com.example.finaltask.model.dto.UserDTO;
+import com.example.finaltask.model.dto.CreateAdsDTO;
 import com.example.finaltask.model.entity.Ads;
-import com.example.finaltask.model.entity.User;
-import com.example.finaltask.service.AdsDTOService;
+import com.example.finaltask.service.AdsService;
 import com.example.finaltask.service.ImageService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -29,14 +28,14 @@ import java.util.List;
 
 public class AdsController {
 
-    private final AdsDTOService adsDTOService;
+    private final AdsService adsService;
 
     private final ImageService imageService;
 
 
 
-    public AdsController(AdsDTOService adsDTOService, ImageService imageService) {
-        this.adsDTOService = adsDTOService;
+    public AdsController(AdsService adsService, ImageService imageService) {
+        this.adsService = adsService;
         this.imageService = imageService;
     }
 
@@ -82,8 +81,8 @@ public class AdsController {
      * помечены аннотацией @RequestParam, что означает, что они должны быть извлечены из параметров запроса.
      */
     @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public ResponseEntity<AdsDTO> addADS(@RequestPart AdsDTO properties, @RequestPart MultipartFile image) throws IOException {
-        adsDTOService.addAds1(properties);
+    public ResponseEntity<AdsDTO> addADS(@RequestPart CreateAdsDTO properties, @RequestPart MultipartFile image) throws IOException {
+        adsService.addAds2(properties);
         imageService.saveImage(1L,image);
         return new ResponseEntity<>(HttpStatus.CREATED);
     }
@@ -115,7 +114,7 @@ public class AdsController {
      */
     @GetMapping("/{id}")
     public ResponseEntity<AdsDTO> getADS(@Parameter(description = "Id объявления") @PathVariable Long id) {
-        adsDTOService.getAdsById(id);
+        adsService.getAdsById(id);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
@@ -139,14 +138,14 @@ public class AdsController {
      */
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> removeADS(@Parameter(description = "Id объявления") @PathVariable Integer id) {
-        adsDTOService.deleteAdsById(id);
+        adsService.deleteAdsById(id);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
     @PutMapping("/edit")
     public ResponseEntity<Ads> editUser(@RequestBody Ads ads ) {
 //        Ads foundUser = adsDTOService.editAds(ads);
-        adsDTOService.editAds(ads);
+        adsService.editAds(ads);
 //        if (foundUser == null) {
 //            return ResponseEntity.notFound().build();
 //        }

@@ -1,17 +1,19 @@
 package com.example.finaltask.controller;
 
+import com.example.finaltask.mapping.ImageMapper;
+import com.example.finaltask.model.dto.AvatarDTO;
+import com.example.finaltask.model.dto.ChangeUserChar;
 import com.example.finaltask.model.dto.NewPasswordDTO;
 import com.example.finaltask.model.dto.UserDTO;
+import com.example.finaltask.model.entity.Image;
 import com.example.finaltask.model.entity.User;
-import com.example.finaltask.service.UserDTOInterface;
-import com.example.finaltask.service.UserDTOService;
+import com.example.finaltask.service.ImageAdsService;
+import com.example.finaltask.service.UserService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.data.repository.query.Param;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -22,17 +24,22 @@ import org.springframework.web.multipart.MultipartFile;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.io.IOException;
+
 @Slf4j
 @CrossOrigin(value = "http://localhost:3000")
 @RestController
-@RequiredArgsConstructor
+
 @RequestMapping("/users")
 
 public class UserController {
     private static final Logger logger = LoggerFactory.getLogger(UserController.class);
-    private UserDTOInterface userDTOInterface;
 
-    private UserDTOService userDTOService;
+    private final ImageMapper imageMapper;
+    private UserService userService;
+
+    private final ImageAdsService imageAdsService;
+
 
 //    private UserMapping userMapping;
 
@@ -42,8 +49,11 @@ public class UserController {
      */
     private PasswordEncoder passwordEncoder;
 
-    public UserController(UserDTOInterface userDTOInterface) {
-        this.userDTOInterface = userDTOInterface;
+    public UserController(ImageMapper imageMapper, UserService userService, ImageAdsService imageAdsService, PasswordEncoder passwordEncoder) {
+        this.imageMapper = imageMapper;
+        this.userService = userService;
+        this.imageAdsService = imageAdsService;
+        this.passwordEncoder = passwordEncoder;
     }
 
 
@@ -110,24 +120,33 @@ public class UserController {
     @GetMapping("{id}")
     public ResponseEntity<User> getUser(@PathVariable Long id) {
 
-        return ResponseEntity.ok(userDTOService.getUserById(id));
+        return ResponseEntity.ok(userService.getUserById(id));
     }
     @DeleteMapping("{id}")
     public void deleteUser(@PathVariable () Integer id){
-         userDTOService.deleteUserById(id);
+         userService.deleteUserById(id);
     }
     @Operation(summary = "Изменение параметров владельца",
             requestBody = @io.swagger.v3.oas.annotations.parameters.RequestBody(description = "Новый владелец",
                     content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE)
             ))
     @PutMapping
-    public ResponseEntity<User> editUser(@RequestBody User user) {
-        User foundUser = userDTOService.editUser(user);
+    public ResponseEntity<User> editUser(@RequestBody ChangeUserChar user,Authentication authentication) {
+        User foundUser = userService.editUser(user,authentication);
+        System.out.println("запрос на смену имени, фамилии");
         if (foundUser == null) {
             return ResponseEntity.notFound().build();
         }
         return ResponseEntity.ok(foundUser);
     }
+//    @PutMapping
+//    public ResponseEntity<User> editUser(@RequestBody ChangeUserChar user) {
+//        User foundUser = userService.editUser(user);
+//        if (foundUser == null) {
+//            return ResponseEntity.notFound().build();
+//        }
+//        return ResponseEntity.ok(foundUser);
+//    }
 
 
     @Operation(
@@ -185,8 +204,12 @@ public class UserController {
      * ответа (ResponseEntity.status(200).build()).
      */
     @PatchMapping(value = "/me/image", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public ResponseEntity<Void> updateUserImage(@RequestParam("image") MultipartFile image, Authentication authentication) {
-        return ResponseEntity.status(200).build();
+    public ResponseEntity<AvatarDTO> updateUserImage(@RequestParam("image") MultipartFile file, Authentication authentication) throws IOException {
+        System.out.println("запрос на смену аватарки пользователя вызван");
+        System.out.println(authentication.getName());
+        imageAdsService.saveImage(file,authentication);
+        AvatarDTO avatar = imageMapper.toDTO( imageAdsService.saveImage(file,authentication));
+        return new ResponseEntity<>(HttpStatus.CREATED);
     }
 }
 

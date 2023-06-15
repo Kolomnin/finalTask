@@ -2,20 +2,22 @@ package com.example.finaltask.service;
 
 import com.example.finaltask.configuration.Role;
 import com.example.finaltask.mapping.UserMapper;
+import com.example.finaltask.model.dto.ChangeUserChar;
 import com.example.finaltask.model.dto.RegisterReq;
 import com.example.finaltask.model.entity.User;
 import com.example.finaltask.repository.UserRepository;
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 
 @Service
-public class UserDTOService {
+public class UserService {
 
 
     private final UserMapper userMapper;
     private final UserRepository userRepository;
 
 
-    public UserDTOService(UserMapper userMapper, UserRepository userRepository) {
+    public UserService(UserMapper userMapper, UserRepository userRepository) {
         this.userMapper = userMapper;
         this.userRepository = userRepository;
     }
@@ -35,7 +37,14 @@ public class UserDTOService {
     public void deleteUserById(Integer id) {
          userRepository.deleteById(id);
     }
-    public User editUser(User user) {
+    public User editUser(ChangeUserChar character, Authentication authentication) {
+        User user = userRepository.findByLogin(authentication.getName());
+
+        user.setFirstName(character.getFirstName());
+        user.setPhone(character.getPhone());
+        user.setLastName(character.getLastName());
+
+
         return userRepository.save(user);
     }
 
