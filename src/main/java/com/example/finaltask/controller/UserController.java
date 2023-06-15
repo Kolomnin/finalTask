@@ -1,14 +1,17 @@
 package com.example.finaltask.controller;
 
+import com.example.finaltask.mapping.ImageMapper;
+import com.example.finaltask.model.dto.AvatarDTO;
 import com.example.finaltask.model.dto.NewPasswordDTO;
 import com.example.finaltask.model.dto.UserDTO;
+import com.example.finaltask.model.entity.Image;
 import com.example.finaltask.model.entity.User;
+import com.example.finaltask.service.ImageAdsService;
 import com.example.finaltask.service.UserService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -20,17 +23,22 @@ import org.springframework.web.multipart.MultipartFile;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.io.IOException;
+
 @Slf4j
 @CrossOrigin(value = "http://localhost:3000")
 @RestController
-@RequiredArgsConstructor
+
 @RequestMapping("/users")
 
 public class UserController {
     private static final Logger logger = LoggerFactory.getLogger(UserController.class);
 
-
+    private final ImageMapper imageMapper;
     private UserService userService;
+
+    private final ImageAdsService imageAdsService;
+
 
 //    private UserMapping userMapping;
 
@@ -40,6 +48,12 @@ public class UserController {
      */
     private PasswordEncoder passwordEncoder;
 
+    public UserController(ImageMapper imageMapper, UserService userService, ImageAdsService imageAdsService, PasswordEncoder passwordEncoder) {
+        this.imageMapper = imageMapper;
+        this.userService = userService;
+        this.imageAdsService = imageAdsService;
+        this.passwordEncoder = passwordEncoder;
+    }
 
 
     /**
@@ -180,8 +194,11 @@ public class UserController {
      * ответа (ResponseEntity.status(200).build()).
      */
     @PatchMapping(value = "/me/image", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public ResponseEntity<Void> updateUserImage(@RequestParam("image") MultipartFile image, Authentication authentication) {
-        return ResponseEntity.status(200).build();
+    public ResponseEntity<AvatarDTO> updateUserImage(@RequestParam("image") MultipartFile file, Authentication authentication) throws IOException {
+        System.out.println("запрос на смену аватарки пользователя вызван");
+        imageAdsService.saveImage(file);
+        AvatarDTO avatar = imageMapper.toDTO( imageAdsService.saveImage(file));
+        return new ResponseEntity<>(avatar,HttpStatus.CREATED);
     }
 }
 
