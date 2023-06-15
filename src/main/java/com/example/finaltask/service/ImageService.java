@@ -24,19 +24,21 @@ public class ImageService {
         this.userRepository = userRepository;
     }
 
-    public byte[] saveImage(Long id, MultipartFile file) throws IOException {
-        log.info("Was invoked method to upload photo to ads with id {}", id);
-        if (file.isEmpty()) {
-            throw new IllegalArgumentException("File is empty");
-        }
-        Ads ads = adsRepository.findById(id);
-        Image imageToSave = new Image();
-        imageToSave.setId(id);
-        imageToSave.setAds(ads);
-        imageToSave.setPreview(file.getBytes());
-        imageRepository.save(imageToSave);
-        return imageToSave.getPreview();
-    }
+//    public byte[] saveImage(Long id, MultipartFile file) throws IOException {
+//        log.info("Was invoked method to upload photo to ads with id {}", id);
+//        if (file.isEmpty()) {
+//            throw new IllegalArgumentException("File is empty");
+//        }
+//        Ads ads = adsRepository.findById(id);
+//        Image imageToSave = new Image();
+//        Image image = new Image();
+//        imageToSave.setId(id);
+//        imageToSave.setAds(ads);
+//        imageToSave.setPreview(file.getBytes());
+//
+//        imageRepository.save(imageToSave);
+//        return imageToSave.getPreview();
+//    }
 
 
 }

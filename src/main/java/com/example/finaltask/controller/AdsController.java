@@ -1,9 +1,8 @@
 package com.example.finaltask.controller;
 
 import com.example.finaltask.model.dto.AdsDTO;
-import com.example.finaltask.model.dto.UserDTO;
+import com.example.finaltask.model.dto.CreateAdsDTO;
 import com.example.finaltask.model.entity.Ads;
-import com.example.finaltask.model.entity.User;
 import com.example.finaltask.service.AdsDTOService;
 import com.example.finaltask.service.ImageService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -78,13 +77,14 @@ public class AdsController {
     /**
      * Добавить объявление
      * Метод addADS принимает два параметра: adsDTO, который содержит данные объявления
-     * и image, который содержит файл изображения, связанный с объявлением. Оба параметра
+     * и file, который содержит файл изображения, связанный с объявлением. Оба параметра
      * помечены аннотацией @RequestParam, что означает, что они должны быть извлечены из параметров запроса.
      */
     @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public ResponseEntity<AdsDTO> addADS(@RequestPart AdsDTO properties, @RequestPart MultipartFile image) throws IOException {
+    public ResponseEntity<AdsDTO> addADS(@RequestPart AdsDTO properties, @RequestPart MultipartFile file) throws IOException {
+
         adsDTOService.addAds1(properties);
-        imageService.saveImage(1L,image);
+//        imageService.saveImage(1L, file);
         return new ResponseEntity<>(HttpStatus.CREATED);
     }
 
