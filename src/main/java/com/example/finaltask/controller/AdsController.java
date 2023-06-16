@@ -40,7 +40,7 @@ public class AdsController {
     }
 
     @Operation(
-            operationId = "getAllADS",
+            operationId = "getAllAds",
             summary = "Получить все объявления",
             tags = {"Объявления"},
             responses = {

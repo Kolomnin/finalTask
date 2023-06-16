@@ -117,7 +117,7 @@ public class UserController {
 //        userDTOInterface.getUser();
 //        return new ResponseEntity<>(HttpStatus.OK);
 //    }
-    @GetMapping("{id}")
+    @GetMapping("/me{id}")
     public ResponseEntity<User> getUser(@PathVariable Long id) {
 
         return ResponseEntity.ok(userService.getUserById(id));
