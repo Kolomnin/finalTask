@@ -2,7 +2,6 @@ package com.example.finaltask.service;
 
 import com.example.finaltask.configuration.Role;
 import com.example.finaltask.mapping.UserMapper;
-import com.example.finaltask.model.dto.ChangeUserChar;
 import com.example.finaltask.model.dto.RegisterReq;
 import com.example.finaltask.model.entity.User;
 import com.example.finaltask.repository.UserRepository;
@@ -37,12 +36,12 @@ public class UserService {
     public void deleteUserById(Integer id) {
          userRepository.deleteById(id);
     }
-    public User editUser(ChangeUserChar character, Authentication authentication) {
+    public User editUser(RegisterReq registerReq, Authentication authentication) {
         User user = userRepository.findByLogin(authentication.getName());
 
-        user.setFirstName(character.getFirstName());
-        user.setPhone(character.getPhone());
-        user.setLastName(character.getLastName());
+        user.setFirstName(registerReq.getFirstName());
+        user.setPhone(registerReq.getPhone());
+        user.setLastName(registerReq.getLastName());
 
 
         return userRepository.save(user);

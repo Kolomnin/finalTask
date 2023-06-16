@@ -59,7 +59,8 @@ public class AdsController {
      */
     @GetMapping
     public ResponseEntity<List<AdsDTO>> getAllADS() {
-        return new ResponseEntity<>(HttpStatus.OK);
+        List list = adsService.getAllAds();
+        return new ResponseEntity<List<AdsDTO>>(list,HttpStatus.OK);
     }
 
     @Operation(
