@@ -1,10 +1,7 @@
 package com.example.finaltask.controller;
 
 import com.example.finaltask.mapping.ImageMapper;
-import com.example.finaltask.model.dto.AvatarDTO;
-import com.example.finaltask.model.dto.ChangeUserChar;
-import com.example.finaltask.model.dto.NewPasswordDTO;
-import com.example.finaltask.model.dto.UserDTO;
+import com.example.finaltask.model.dto.*;
 import com.example.finaltask.model.entity.Image;
 import com.example.finaltask.model.entity.User;
 import com.example.finaltask.service.ImageAdsService;
@@ -126,19 +123,19 @@ public class UserController {
     public void deleteUser(@PathVariable () Integer id){
          userService.deleteUserById(id);
     }
-    @Operation(summary = "Изменение параметров владельца",
-            requestBody = @io.swagger.v3.oas.annotations.parameters.RequestBody(description = "Новый владелец",
-                    content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE)
-            ))
-    @PutMapping
-    public ResponseEntity<User> editUser(@RequestBody ChangeUserChar user,Authentication authentication) {
-        User foundUser = userService.editUser(user,authentication);
-        System.out.println("запрос на смену имени, фамилии");
-        if (foundUser == null) {
-            return ResponseEntity.notFound().build();
-        }
-        return ResponseEntity.ok(foundUser);
-    }
+//    @Operation(summary = "Изменение параметров владельца",
+//            requestBody = @io.swagger.v3.oas.annotations.parameters.RequestBody(description = "Новый владелец",
+//                    content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE)
+//            ))
+//    @PutMapping
+//    public ResponseEntity<User> editUser(@RequestBody UserDTO user,Authentication authentication) {
+//        User foundUser = userService.editUser(user,authentication);
+//        System.out.println("запрос на смену имени, фамилии");
+//        if (foundUser == null) {
+//            return ResponseEntity.notFound().build();
+//        }
+//        return ResponseEntity.ok(foundUser);
+//    }
 //    @PutMapping
 //    public ResponseEntity<User> editUser(@RequestBody ChangeUserChar user) {
 //        User foundUser = userService.editUser(user);
@@ -168,10 +165,13 @@ public class UserController {
      * для обновления информации о текущем пользователе.
      */
     @PatchMapping("/me")
-    public ResponseEntity<UserDTO> updateUser(@RequestBody UserDTO user, Authentication authentication) {
+    public ResponseEntity<User> updateUser(@RequestBody RegisterReq user, Authentication authentication) {
+        System.out.println("запрос на смену имени, фамилии");
+        User foundUser = userService.editUser(user,authentication);
+
         logger.info("Updating user: {}", user.getFirstName());
 
-        return new ResponseEntity<>(HttpStatus.OK);
+        return new ResponseEntity<>(foundUser,HttpStatus.OK);
     }
 
     @Operation(

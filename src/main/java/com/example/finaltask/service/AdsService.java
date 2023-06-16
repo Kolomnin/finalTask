@@ -10,6 +10,8 @@ import com.example.finaltask.repository.UserRepository;
 import org.springframework.security.provisioning.UserDetailsManager;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 public class AdsService {
     private final AdsRepository adsRepository;
@@ -51,6 +53,10 @@ public class AdsService {
 
     public Ads getAdsById(Long id) {
         return adsRepository.findById(id);
+    }
+
+    public List<Ads> getAllAds (){
+        return adsRepository.findAll();
     }
 
     public void deleteAdsById(Integer id) {
