@@ -1,6 +1,7 @@
 package com.example.finaltask.model.entity;
 
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.*;
 import org.hibernate.Hibernate;
 import com.example.finaltask.configuration.Role;
@@ -14,6 +15,7 @@ import java.util.Objects;
 @ToString
 @RequiredArgsConstructor
 @Table(name = "users")
+@JsonIgnoreProperties
 public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

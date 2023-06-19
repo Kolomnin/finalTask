@@ -4,7 +4,7 @@ import com.example.finaltask.model.dto.AdsDTO;
 import com.example.finaltask.model.dto.CreateAdsDTO;
 import com.example.finaltask.model.entity.Ads;
 import com.example.finaltask.service.AdsService;
-import com.example.finaltask.service.ImageService;
+import com.example.finaltask.service.AdsImageService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -14,6 +14,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -30,13 +31,10 @@ public class AdsController {
 
     private final AdsService adsService;
 
-    private final ImageService imageService;
-
-
-
-    public AdsController(AdsService adsService, ImageService imageService) {
+    private final AdsImageService adsImageService;
+    public AdsController(AdsService adsService, AdsImageService adsImageService) {
         this.adsService = adsService;
-        this.imageService = imageService;
+        this.adsImageService = adsImageService;
     }
 
     @Operation(
@@ -82,9 +80,9 @@ public class AdsController {
      * помечены аннотацией @RequestParam, что означает, что они должны быть извлечены из параметров запроса.
      */
     @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public ResponseEntity<AdsDTO> addADS(@RequestPart CreateAdsDTO properties, @RequestPart MultipartFile image) throws IOException {
-        adsService.addAds2(properties);
-        imageService.saveImage(1L,image);
+    public ResponseEntity<AdsDTO> addADS(@RequestPart CreateAdsDTO properties, @RequestPart MultipartFile image, Authentication authentication) throws IOException {
+
+        adsImageService.saveImage(adsService.addAds2(properties,authentication),image,authentication);
         return new ResponseEntity<>(HttpStatus.CREATED);
     }
 
@@ -205,9 +203,11 @@ public class AdsController {
      * Обрабатывает GET-запрос на пути "/ads/me" и возвращает информацию об объявлении пользователя.
      */
     @GetMapping("/me")
-    public ResponseEntity<AdsDTO> getADSMe() {
-        return new ResponseEntity<>(HttpStatus.OK);
+    public ResponseEntity<List<AdsDTO>> getADSMe() {
+        List list = adsService.getAllAds();
+        return new ResponseEntity<List<AdsDTO>>(list,HttpStatus.OK);
     }
+
 
     @Operation(
             operationId = "updateImage",

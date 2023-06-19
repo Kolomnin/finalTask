@@ -7,6 +7,7 @@ import com.example.finaltask.model.dto.CreateAdsDTO;
 import com.example.finaltask.model.entity.Ads;
 import com.example.finaltask.repository.AdsRepository;
 import com.example.finaltask.repository.UserRepository;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.provisioning.UserDetailsManager;
 import org.springframework.stereotype.Service;
 
@@ -40,15 +41,15 @@ public class AdsService {
         adsRepository.save(ads);
         return adsDTO;
     }
-    public AdsDTO addAds2(CreateAdsDTO properties) {
+    public Ads addAds2(CreateAdsDTO properties, Authentication authentication) {
         Ads ads = adsDtoMapper.toEntity(properties);
         System.out.println("Объявление создано");
         System.out.println(properties.getDescription());
         AdsDTO adsDTO = adsMapper.toDto(ads);
-        ads.setAuthorId(userRepository.findById(1L));//В след уроках покажут как получить
+        ads.setAuthorId(userRepository.findByLogin(authentication.getName()));//В след уроках покажут как получить
         // пользователя который авторизован,пока юзер установлен
         adsRepository.save(ads);
-        return adsDTO;
+        return ads;
     }
 
     public Ads getAdsById(Long id) {

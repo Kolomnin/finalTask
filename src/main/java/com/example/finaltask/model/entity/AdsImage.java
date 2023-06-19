@@ -14,8 +14,8 @@ import java.util.Objects;
 @ToString
 @RequiredArgsConstructor
 @Entity
-@Table(name = "images")
-public class Image {
+@Table(name = "AdsImage")
+public class AdsImage {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -25,7 +25,7 @@ public class Image {
     @Lob
     private byte[] preview;
     @OneToOne(optional = true)
-    @JoinColumn(name = "ads_id", referencedColumnName = "id")
+    @JoinColumn(name = "ads_id")
     private Ads ads;
 
     @OneToOne(optional = true)
@@ -37,8 +37,8 @@ public class Image {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || Hibernate.getClass(this) != Hibernate.getClass(o)) return false;
-        Image image = (Image) o;
-        return getId() != null && Objects.equals(getId(), image.getId());
+        AdsImage adsImage = (AdsImage) o;
+        return getId() != null && Objects.equals(getId(), adsImage.getId());
     }
 
     @Override

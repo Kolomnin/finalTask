@@ -11,7 +11,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.IOException;
 
 @Service
-public class ImageAdsService {
+public class AvatarService {
 
     private final AvatarRepository avatarRepository;
 
@@ -19,7 +19,7 @@ public class ImageAdsService {
 
     private final UserRepository userRepository;
 
-    public ImageAdsService(AvatarRepository avatarRepository, ImageMapper imageMapper, UserRepository userRepository) {
+    public AvatarService(AvatarRepository avatarRepository, ImageMapper imageMapper, UserRepository userRepository) {
         this.avatarRepository = avatarRepository;
         this.imageMapper = imageMapper;
         this.userRepository = userRepository;

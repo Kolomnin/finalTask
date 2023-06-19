@@ -1,10 +1,10 @@
 package com.example.finaltask.controller;
 
 import com.example.finaltask.mapping.ImageMapper;
+import com.example.finaltask.mapping.UserMapper;
 import com.example.finaltask.model.dto.*;
-import com.example.finaltask.model.entity.Image;
 import com.example.finaltask.model.entity.User;
-import com.example.finaltask.service.ImageAdsService;
+import com.example.finaltask.service.AvatarService;
 import com.example.finaltask.service.UserService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -35,10 +35,11 @@ public class UserController {
     private final ImageMapper imageMapper;
     private UserService userService;
 
-    private final ImageAdsService imageAdsService;
+    private final AvatarService avatarService;
 
 
-//    private UserMapping userMapping;
+
+    private UserMapper userMapping;
 
     /**
      * PasswordEncoder предназначен для хеширования паролей. Он используется для шифрования паролей пользователей,
@@ -46,10 +47,11 @@ public class UserController {
      */
     private PasswordEncoder passwordEncoder;
 
-    public UserController(ImageMapper imageMapper, UserService userService, ImageAdsService imageAdsService, PasswordEncoder passwordEncoder) {
+    public UserController(ImageMapper imageMapper, UserService userService, AvatarService avatarService, UserMapper userMapping, PasswordEncoder passwordEncoder) {
         this.imageMapper = imageMapper;
         this.userService = userService;
-        this.imageAdsService = imageAdsService;
+        this.avatarService = avatarService;
+        this.userMapping = userMapping;
         this.passwordEncoder = passwordEncoder;
     }
 
@@ -165,13 +167,13 @@ public class UserController {
      * для обновления информации о текущем пользователе.
      */
     @PatchMapping("/me")
-    public ResponseEntity<User> updateUser(@RequestBody RegisterReq user, Authentication authentication) {
+    public ResponseEntity<RegisterReq> updateUser(@RequestBody RegisterReq user, Authentication authentication) {
         System.out.println("запрос на смену имени, фамилии");
         User foundUser = userService.editUser(user,authentication);
-
+        RegisterReq req = userMapping.toDto2(foundUser);
         logger.info("Updating user: {}", user.getFirstName());
 
-        return new ResponseEntity<>(foundUser,HttpStatus.OK);
+        return new ResponseEntity<>(req,HttpStatus.OK);
     }
 
     @Operation(
@@ -207,8 +209,8 @@ public class UserController {
     public ResponseEntity<AvatarDTO> updateUserImage(@RequestParam("image") MultipartFile file, Authentication authentication) throws IOException {
         System.out.println("запрос на смену аватарки пользователя вызван");
         System.out.println(authentication.getName());
-        imageAdsService.saveImage(file,authentication);
-        AvatarDTO avatar = imageMapper.toDTO( imageAdsService.saveImage(file,authentication));
+        avatarService.saveImage(file,authentication);
+        AvatarDTO avatar = imageMapper.toDTO( avatarService.saveImage(file,authentication));
         return new ResponseEntity<>(HttpStatus.CREATED);
     }
 }
