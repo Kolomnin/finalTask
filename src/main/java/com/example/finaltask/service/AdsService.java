@@ -10,6 +10,7 @@ import com.example.finaltask.repository.UserRepository;
 import org.springframework.security.provisioning.UserDetailsManager;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -55,8 +56,13 @@ public class AdsService {
         return adsRepository.findById(id);
     }
 
-    public List<Ads> getAllAds (){
-        return adsRepository.findAll();
+    public List<AdsDTO> getAllAds (){
+        List<Ads> adsList = adsRepository.findAll();
+        List<AdsDTO> adsDTOS = new ArrayList<>();
+        for (Ads ads : adsList) {
+            adsDTOS.add(adsMapper.toDto(ads));
+        }
+        return adsDTOS;
     }
 
     public void deleteAdsById(Integer id) {
