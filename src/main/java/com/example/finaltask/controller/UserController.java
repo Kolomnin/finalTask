@@ -2,7 +2,6 @@ package com.example.finaltask.controller;
 
 import com.example.finaltask.mapping.ImageMapper;
 import com.example.finaltask.model.dto.*;
-import com.example.finaltask.model.entity.Image;
 import com.example.finaltask.model.entity.User;
 import com.example.finaltask.service.ImageAdsService;
 import com.example.finaltask.service.UserService;
@@ -144,6 +143,10 @@ public class UserController {
 //        }
 //        return ResponseEntity.ok(foundUser);
 //    }
+@GetMapping("/me")
+public ResponseEntity<User> getUser(Authentication authentication) {
+    return ResponseEntity.ok(userService.getUserByLogin(authentication.getName()));
+}
 
 
     @Operation(

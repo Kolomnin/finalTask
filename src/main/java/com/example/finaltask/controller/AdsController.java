@@ -64,7 +64,7 @@ public class AdsController {
     }
 
     @Operation(
-            operationId = "addADS",
+            operationId = "addAds",
             summary = "Добавить объявление",
             tags = {"Объявления"},
             responses = {
@@ -142,14 +142,12 @@ public class AdsController {
         adsService.deleteAdsById(id);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
-
+    /**
+     * Изменение параметров пользователя
+     */
     @PutMapping("/edit")
     public ResponseEntity<Ads> editUser(@RequestBody Ads ads ) {
-//        Ads foundUser = adsDTOService.editAds(ads);
         adsService.editAds(ads);
-//        if (foundUser == null) {
-//            return ResponseEntity.notFound().build();
-//        }
         return ResponseEntity.ok(ads);
     }
 
@@ -205,8 +203,9 @@ public class AdsController {
      * Обрабатывает GET-запрос на пути "/ads/me" и возвращает информацию об объявлении пользователя.
      */
     @GetMapping("/me")
-    public ResponseEntity<AdsDTO> getADSMe() {
-        return new ResponseEntity<>(HttpStatus.OK);
+    public ResponseEntity<List<AdsDTO>> getADSMe() {
+        List<AdsDTO> list = adsService.getAllAds();
+        return new ResponseEntity<>(list,HttpStatus.OK);
     }
 
     @Operation(
