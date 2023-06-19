@@ -40,7 +40,7 @@ public class AdsController {
     }
 
     @Operation(
-            operationId = "getAllADS",
+            operationId = "getAllAds",
             summary = "Получить все объявления",
             tags = {"Объявления"},
             responses = {
@@ -58,9 +58,9 @@ public class AdsController {
      * заголовки и тело ответа. List<AdsDTO> - это тип данных, представляющий список объявлений.
      */
     @GetMapping
-    public ResponseEntity<List<AdsDTO>> getAllADS() {
-        List list = adsService.getAllAds();
-        return new ResponseEntity<List<AdsDTO>>(list,HttpStatus.OK);
+    public ResponseEntity<List<AdsDTO>> getAllAds() {
+        List<AdsDTO> list = adsService.getAllAds();
+        return new ResponseEntity<>(list,HttpStatus.OK);
     }
 
     @Operation(
