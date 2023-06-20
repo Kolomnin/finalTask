@@ -3,11 +3,17 @@ package com.example.finaltask.service;
 import com.example.finaltask.configuration.Role;
 import com.example.finaltask.mapping.UserMapper;
 import com.example.finaltask.model.dto.RegisterReq;
+import com.example.finaltask.model.dto.UserDTO;
 import com.example.finaltask.model.entity.User;
 import com.example.finaltask.repository.UserRepository;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Optional;
+@Slf4j
+@Transactional
 @Service
 public class UserService {
 
@@ -32,7 +38,14 @@ public class UserService {
     public User getUserById(Long id) {
     return userRepository.findById(id);
     }
+    public User getUserByLogin(String login) {
+        return userRepository.findByLogin(login);
+    }
 
+//    public Optional<UserDTO> getUser(String name) {
+//        log.info("Get user: " + name);
+//        return userRepository.findByLogin(name);
+//    }
     public void deleteUserById(Integer id) {
          userRepository.deleteById(id);
     }

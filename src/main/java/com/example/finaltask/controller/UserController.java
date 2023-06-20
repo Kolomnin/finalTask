@@ -155,6 +155,10 @@ public class UserController {
 //        }
 //        return ResponseEntity.ok(foundUser);
 //    }
+@GetMapping("/me")
+public ResponseEntity<User> getUser(Authentication authentication) {
+    return ResponseEntity.ok(userService.getUserByLogin(authentication.getName()));
+}
 
 
     @Operation(

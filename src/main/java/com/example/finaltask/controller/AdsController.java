@@ -38,7 +38,7 @@ public class AdsController {
     }
 
     @Operation(
-            operationId = "getAllADS",
+            operationId = "getAllAds",
             summary = "Получить все объявления",
             tags = {"Объявления"},
             responses = {
@@ -56,13 +56,13 @@ public class AdsController {
      * заголовки и тело ответа. List<AdsDTO> - это тип данных, представляющий список объявлений.
      */
     @GetMapping
-    public ResponseEntity<List<AdsDTO>> getAllADS() {
-        List list = adsService.getAllAds();
-        return new ResponseEntity<List<AdsDTO>>(list,HttpStatus.OK);
+    public ResponseEntity<List<AdsDTO>> getAllAds() {
+        List<AdsDTO> list = adsService.getAllAds();
+        return new ResponseEntity<>(list,HttpStatus.OK);
     }
 
     @Operation(
-            operationId = "addADS",
+            operationId = "addAds",
             summary = "Добавить объявление",
             tags = {"Объявления"},
             responses = {
@@ -140,14 +140,12 @@ public class AdsController {
         adsService.deleteAdsById(id);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
-
+    /**
+     * Изменение параметров пользователя
+     */
     @PutMapping("/edit")
     public ResponseEntity<Ads> editUser(@RequestBody Ads ads ) {
-//        Ads foundUser = adsDTOService.editAds(ads);
         adsService.editAds(ads);
-//        if (foundUser == null) {
-//            return ResponseEntity.notFound().build();
-//        }
         return ResponseEntity.ok(ads);
     }
 
@@ -204,8 +202,11 @@ public class AdsController {
      */
     @GetMapping("/me")
     public ResponseEntity<List<AdsDTO>> getADSMe() {
+
         List list = adsService.getAllAds();
         return new ResponseEntity<List<AdsDTO>>(list,HttpStatus.OK);
+
+
     }
 
 
