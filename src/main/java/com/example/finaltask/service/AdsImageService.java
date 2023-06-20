@@ -34,10 +34,10 @@ public class AdsImageService {
         AdsImage adsImageToSave = new AdsImage();
         adsImageToSave.setUser(userRepository.findByLogin(authentication.getName()));
         adsImageToSave.setAds(ads);
-        adsImageToSave.setPreview(file.getBytes());
+        adsImageToSave.setImage(file.getBytes());
 
         adsImageRepository.save(adsImageToSave);
-        return adsImageToSave.getPreview();
+        return adsImageToSave.getImage();
     }
 
 

@@ -1,9 +1,6 @@
 package com.example.finaltask.model.entity;
 
-import lombok.Getter;
-import lombok.RequiredArgsConstructor;
-import lombok.Setter;
-import lombok.ToString;
+import lombok.*;
 import org.hibernate.Hibernate;
 
 import javax.persistence.*;
@@ -19,11 +16,11 @@ public class AdsImage {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private String filePath;
-    private long fileSize;
-    private String mediaType;
+//    private String filePath;
+//    private long fileSize;
+//    private String mediaType;
     @Lob
-    private byte[] preview;
+    private byte[] image;
     @OneToOne(optional = true)
     @JoinColumn(name = "ads_id")
     private Ads ads;
