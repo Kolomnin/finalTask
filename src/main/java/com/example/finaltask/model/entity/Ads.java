@@ -34,6 +34,9 @@ public class Ads {
     @JoinColumn(name = "user_id", nullable = false)
     @ToString.Exclude
     private User authorId;
+    @OneToOne(optional = true)
+    @JoinColumn(name = "adsImage_id",referencedColumnName = "id")
+    private AdsImage adsImage;
 
     @Override
     public boolean equals(Object o) {

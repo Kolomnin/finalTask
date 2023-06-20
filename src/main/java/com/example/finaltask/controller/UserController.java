@@ -1,9 +1,12 @@
 package com.example.finaltask.controller;
 
 import com.example.finaltask.mapping.ImageMapper;
+import com.example.finaltask.mapping.UserMapper;
 import com.example.finaltask.model.dto.*;
 import com.example.finaltask.model.entity.User;
-import com.example.finaltask.service.ImageAdsService;
+import com.example.finaltask.model.entity.UserAvatar;
+import com.example.finaltask.repository.AvatarRepository;
+import com.example.finaltask.service.AvatarService;
 import com.example.finaltask.service.UserService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -21,6 +24,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
+import java.util.UUID;
 
 @Slf4j
 @CrossOrigin(value = "http://localhost:3000")
@@ -31,13 +35,15 @@ import java.io.IOException;
 public class UserController {
     private static final Logger logger = LoggerFactory.getLogger(UserController.class);
 
-    private final ImageMapper imageMapper;
+
     private UserService userService;
 
-    private final ImageAdsService imageAdsService;
+    private final AvatarService avatarService;
+    private final AvatarRepository avatarRepository;
 
 
-//    private UserMapping userMapping;
+
+    private UserMapper userMapping;
 
     /**
      * PasswordEncoder предназначен для хеширования паролей. Он используется для шифрования паролей пользователей,
@@ -45,10 +51,10 @@ public class UserController {
      */
     private PasswordEncoder passwordEncoder;
 
-    public UserController(ImageMapper imageMapper, UserService userService, ImageAdsService imageAdsService, PasswordEncoder passwordEncoder) {
-        this.imageMapper = imageMapper;
+    public UserController( UserService userService, AvatarService avatarService, AvatarRepository avatarRepository, PasswordEncoder passwordEncoder) {
         this.userService = userService;
-        this.imageAdsService = imageAdsService;
+        this.avatarService = avatarService;
+        this.avatarRepository = avatarRepository;
         this.passwordEncoder = passwordEncoder;
     }
 
@@ -113,10 +119,16 @@ public class UserController {
 //        userDTOInterface.getUser();
 //        return new ResponseEntity<>(HttpStatus.OK);
 //    }
-    @GetMapping("{id}")
-    public ResponseEntity<User> getUser(@PathVariable Long id) {
-
-        return ResponseEntity.ok(userService.getUserById(id));
+//    @GetMapping("{id}")
+//    public ResponseEntity<User> getUser(@PathVariable Long id) {
+//
+//        return ResponseEntity.ok(userService.getUserById(id));
+//    }
+    // produces в аннотации GetMapping нужно указать для того, чтобы браузер понимал, что передается картинка
+    @GetMapping(value = "/images/{id}/", produces = {MediaType.IMAGE_PNG_VALUE})
+    public byte[] getImage() {
+        UserAvatar enityt= avatarRepository.findById(1L).orElseThrow(null);
+         return enityt.getBytes();
     }
     @DeleteMapping("{id}")
     public void deleteUser(@PathVariable () Integer id){
@@ -168,13 +180,13 @@ public ResponseEntity<User> getUser(Authentication authentication) {
      * для обновления информации о текущем пользователе.
      */
     @PatchMapping("/me")
-    public ResponseEntity<User> updateUser(@RequestBody RegisterReq user, Authentication authentication) {
+    public ResponseEntity<RegisterReq> updateUser(@RequestBody RegisterReq user, Authentication authentication) {
         System.out.println("запрос на смену имени, фамилии");
         User foundUser = userService.editUser(user,authentication);
-
+        RegisterReq req = userMapping.toDto2(foundUser);
         logger.info("Updating user: {}", user.getFirstName());
 
-        return new ResponseEntity<>(foundUser,HttpStatus.OK);
+        return new ResponseEntity<>(req,HttpStatus.OK);
     }
 
     @Operation(
@@ -206,13 +218,43 @@ public ResponseEntity<User> getUser(Authentication authentication) {
      * операции обновления изображения пользователя. В данном случае, возвращается пустое тело
      * ответа (ResponseEntity.status(200).build()).
      */
-    @PatchMapping(value = "/me/image", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public ResponseEntity<AvatarDTO> updateUserImage(@RequestParam("image") MultipartFile file, Authentication authentication) throws IOException {
-        System.out.println("запрос на смену аватарки пользователя вызван");
-        System.out.println(authentication.getName());
-        imageAdsService.saveImage(file,authentication);
-        AvatarDTO avatar = imageMapper.toDTO( imageAdsService.saveImage(file,authentication));
-        return new ResponseEntity<>(HttpStatus.CREATED);
+//    @PatchMapping(value = "/me/image", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+//    public ResponseEntity<AvatarDTO> updateUserImage(@RequestParam("image") MultipartFile file, Authentication authentication) throws IOException {
+//
+//        UserAvatar entity = new UserAvatar();
+//        try {
+//            // код, который кладет картинку в entity
+//            byte[] bytes = file.getBytes();
+//            entity.setBytes(bytes);
+//        } catch (IOException e) {
+//            throw new RuntimeException(e);
+//        }
+//        entity.setId(Long.valueOf(UUID.randomUUID().toString()));
+//        // код сохранения картинки в БД
+//         UserAvatar savedEntity = avatarRepository.saveAndFlush(entity);
+//        return savedEntity.getId();
+
+        @PatchMapping(value = "/me/image", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+        public Long updateUserImage(@RequestParam("image") MultipartFile file, Authentication authentication) throws IOException {
+
+            UserAvatar entity = new UserAvatar();
+            try {
+                // код, который кладет картинку в entity
+                byte[] bytes = file.getBytes();
+                entity.setBytes(bytes);
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+
+            // код сохранения картинки в БД
+            UserAvatar savedEntity = avatarRepository.save(entity);
+            return savedEntity.getId();
+//        System.out.println("запрос на смену аватарки пользователя вызван");
+//        System.out.println(authentication.getName());
+//        avatarService.saveImage(file,authentication);
+//        AvatarDTO avatar = imageMapper.toDTO( avatarService.saveImage(file,authentication));
+//        return new ResponseEntity<>(HttpStatus.CREATED);
     }
+
 }
 
