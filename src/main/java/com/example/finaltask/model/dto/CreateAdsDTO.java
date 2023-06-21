@@ -8,5 +8,5 @@ public class CreateAdsDTO {
     private Integer price;
     private String title;
 
-    private String image;
+//    private String image;
 }

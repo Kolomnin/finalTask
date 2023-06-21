@@ -47,6 +47,7 @@ public class AdsService {
         System.out.println("Объявление создано");
         System.out.println(properties.getDescription());
         AdsDTO adsDTO = adsMapper.toDto(ads);
+        System.out.println(adsDTO);
         ads.setAuthorId(userRepository.findByLogin(authentication.getName()));//В след уроках покажут как получить
         // пользователя который авторизован,пока юзер установлен
         adsRepository.save(ads);
