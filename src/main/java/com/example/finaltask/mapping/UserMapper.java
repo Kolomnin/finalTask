@@ -12,6 +12,7 @@ public interface UserMapper {
 
     User toEntity(UserDTO dto);
     UserMapper INSTANCE = Mappers.getMapper(UserMapper.class);
+    @Mapping(source = "login",target = "email")
     UserDTO toDto(User entity);
 
     @Mapping(source = "username",target = "login")

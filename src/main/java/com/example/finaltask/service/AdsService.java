@@ -2,8 +2,12 @@ package com.example.finaltask.service;
 
 import com.example.finaltask.mapping.AdsDtoMapper;
 import com.example.finaltask.mapping.AdsMapper;
+import com.example.finaltask.mapping.FullAdsMapper;
+import com.example.finaltask.mapping.UserMapper;
 import com.example.finaltask.model.dto.AdsDTO;
 import com.example.finaltask.model.dto.CreateAdsDTO;
+import com.example.finaltask.model.dto.FullAdsDTO;
+import com.example.finaltask.model.dto.UserDTO;
 import com.example.finaltask.model.entity.Ads;
 import com.example.finaltask.repository.AdsRepository;
 import com.example.finaltask.repository.UserRepository;
@@ -25,13 +29,19 @@ public class AdsService {
     private final AdsMapper adsMapper;
     private final AdsDtoMapper adsDtoMapper;
 
+    private final FullAdsMapper fullAdsMapper;
 
-    public AdsService(AdsRepository adsRepository, UserRepository userRepository, UserDetailsManager manager, AdsMapper adsMapper, AdsDtoMapper adsDtoMapper) {
+    private final UserMapper userMapper;
+
+
+    public AdsService(AdsRepository adsRepository, UserRepository userRepository, UserDetailsManager manager, AdsMapper adsMapper, AdsDtoMapper adsDtoMapper, FullAdsMapper fullAdsMapper, UserMapper userMapper) {
         this.adsRepository = adsRepository;
         this.userRepository = userRepository;
         this.manager = manager;
         this.adsMapper = adsMapper;
         this.adsDtoMapper = adsDtoMapper;
+        this.fullAdsMapper = fullAdsMapper;
+        this.userMapper = userMapper;
     }
 
     public AdsDTO addAds1(AdsDTO properties) {
@@ -72,6 +82,20 @@ public class AdsService {
     }
     public Ads editAds(Ads ads ) {
         return adsRepository.save(ads);
+    }
+
+    public FullAdsDTO getFullAdsDTO(Authentication authentication) {
+        List<Ads> adsList = adsRepository.findAll();
+        List<AdsDTO> adsDTOS = new ArrayList<>();
+        UserDTO userDTO = userMapper.toDto(userRepository.findByLogin(authentication.getName()));
+//        AdsDTO adsDTO = adsMapper.toDto(adsRepository.findByAuthorId(userRepository.findByLogin(authentication.getName()).getId()));
+        AdsDTO adsDTO = adsMapper.toDto(adsRepository.findByAuthorIdLogin(authentication.getName()));
+        System.out.println(adsDTO);
+        FullAdsDTO fullAdsDTO = fullAdsMapper.mergeAdsAndUserAndAds(userDTO,adsDTO);
+        fullAdsDTO.setDescription(adsRepository.findByAuthorIdLogin(authentication.getName()).getDescription());
+
+
+   return fullAdsDTO;
     }
 
 }

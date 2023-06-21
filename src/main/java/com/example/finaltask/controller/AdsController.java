@@ -2,6 +2,7 @@ package com.example.finaltask.controller;
 
 import com.example.finaltask.model.dto.AdsDTO;
 import com.example.finaltask.model.dto.CreateAdsDTO;
+import com.example.finaltask.model.dto.ResponseWrapperAds;
 import com.example.finaltask.model.entity.Ads;
 import com.example.finaltask.service.AdsService;
 import com.example.finaltask.service.AdsImageService;
@@ -55,11 +56,20 @@ public class AdsController {
      * ResponseEntity, который представляет собой ответ на HTTP-запрос, включающий статус ответа,
      * заголовки и тело ответа. List<AdsDTO> - это тип данных, представляющий список объявлений.
      */
-    @GetMapping
-    public ResponseEntity<List<AdsDTO>> getAllAds() {
-        List<AdsDTO> list = adsService.getAllAds();
-        return new ResponseEntity<>(list,HttpStatus.OK);
+//    @GetMapping
+//    public ResponseEntity<List<AdsDTO>> getAllAds() {
+//        List<AdsDTO> list = adsService.getAllAds();
+//        return new ResponseEntity<>(list,HttpStatus.OK);
+//    }
+    @GetMapping()
+    public ResponseEntity<ResponseWrapperAds<AdsDTO>> getAllAds() {
+
+        ResponseWrapperAds<AdsDTO> ads = new ResponseWrapperAds<>();
+        ads.setCount(adsService.getAllAds().size());
+        ads.setResults(adsService.getAllAds());
+        return ResponseEntity.ok(ads);
     }
+
 
     @Operation(
             operationId = "addAds",
@@ -200,13 +210,25 @@ public class AdsController {
      * Получить объявления авторизованного пользователя
      * Обрабатывает GET-запрос на пути "/ads/me" и возвращает информацию об объявлении пользователя.
      */
+//    @GetMapping("/me")
+//    public ResponseEntity<List<AdsDTO>> getADSMe() {
+//
+//        List list = adsService.getAllAds();
+//        return new ResponseEntity<List<AdsDTO>>(list,HttpStatus.OK);
+//    }
+//    @GetMapping("/me")
+//    public ResponseEntity<FullAdsDTO> getADSMe(Authentication authentication) {
+//        FullAdsDTO fullAdsDTO = adsService.getFullAdsDTO(authentication);
+//
+//        return new ResponseEntity(fullAdsDTO,HttpStatus.OK);
+//    }
     @GetMapping("/me")
-    public ResponseEntity<List<AdsDTO>> getADSMe() {
+    public ResponseEntity<ResponseWrapperAds<AdsDTO>> getAllAds2() {
 
-        List list = adsService.getAllAds();
-        return new ResponseEntity<List<AdsDTO>>(list,HttpStatus.OK);
-
-
+        ResponseWrapperAds<AdsDTO> ads = new ResponseWrapperAds<>();
+        ads.setCount(adsService.getAllAds().size());
+        ads.setResults(adsService.getAllAds());
+        return ResponseEntity.ok(ads);
     }
 
 
