@@ -57,11 +57,7 @@ public class AdsController {
      * ResponseEntity, который представляет собой ответ на HTTP-запрос, включающий статус ответа,
      * заголовки и тело ответа. List<AdsDTO> - это тип данных, представляющий список объявлений.
      */
-//    @GetMapping
-//    public ResponseEntity<List<AdsDTO>> getAllAds() {
-//        List<AdsDTO> list = adsService.getAllAds();
-//        return new ResponseEntity<>(list,HttpStatus.OK);
-//    }
+//
     @GetMapping()
     public ResponseEntity<ResponseWrapperAds<AdsDTO>> getAllAds() {
 
@@ -128,9 +124,9 @@ public class AdsController {
 //        return ResponseEntity.ok(fullAdsDTO);
 //    }
     @GetMapping("/{id}")
-    public ResponseEntity<FullAdsDTO> getADS(@Parameter(description = "Id объявления") @PathVariable("id") Long id, Authentication authentication) {
-        FullAdsDTO fullAdsDTO =adsService.getFullAdsDTO(id,authentication);
-        return ResponseEntity.ok(fullAdsDTO);
+    public ResponseEntity<FullAdsDTO> getADS(@Parameter(description = "Id объявления") @PathVariable("id") Integer id, Authentication authentication) {
+
+        return ResponseEntity.ok( adsService.getFullAdsDTO(id,authentication));
     }
 
     @Operation(
@@ -152,20 +148,10 @@ public class AdsController {
      * что означает успешное выполнение операции удаления без возвращаемого тела ответа.
      */
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> removeADS(@Parameter(description = "Id объявления") @PathVariable Integer id) {
+    public ResponseEntity<?> removeADS(@Parameter(description = "Id объявления") @PathVariable Integer id) {
         adsService.deleteAdsById(id);
-        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
-    /**
-     * Изменение параметров объявления
-     */
-    @PutMapping("/edit")
-    public ResponseEntity<Ads> editUser(@RequestBody Ads ads ) {
-        adsService.editAds(ads);
-        return ResponseEntity.ok(ads);
-    }
-
-
 
     @Operation(
             operationId = "updateADS",

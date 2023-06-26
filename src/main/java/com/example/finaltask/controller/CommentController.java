@@ -139,14 +139,6 @@ public class CommentController {
         commentService.getCommentById(commentId);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
-    @PutMapping
-    public ResponseEntity<Comment> editComment(@RequestBody Comment comment) {
-        Comment comment1 = commentService.editComment(comment);
-        if (comment1 == null) {
-            return ResponseEntity.notFound().build();
-        }
-        return ResponseEntity.ok(comment1);
-    }
 
     @Operation(
             operationId = "patchComment",

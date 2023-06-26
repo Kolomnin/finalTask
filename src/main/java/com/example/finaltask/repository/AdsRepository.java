@@ -6,15 +6,16 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Optional;
+
 @Repository
 public interface AdsRepository extends JpaRepository<Ads, Integer> {
     @NonNull
     List<Ads> findAll();
-    Ads findById(Long id);
+    Optional<Ads> findById(Integer id);
 
-    Ads findByAuthorId (Long id);
+    Ads findByAuthorId (Integer id);
 
-    Ads findByAuthorIdLoginAndId(String login,Long id);
+    Ads findByAuthorIdLoginAndId(String login,Integer id);
 
-    void deleteById(Long id);
 }

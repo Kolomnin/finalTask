@@ -12,12 +12,17 @@ import com.example.finaltask.model.entity.Ads;
 import com.example.finaltask.repository.AdsRepository;
 import com.example.finaltask.repository.UserRepository;
 import lombok.extern.slf4j.Slf4j;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.provisioning.UserDetailsManager;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
+
 @Slf4j
 @Service
 public class AdsService {
@@ -33,6 +38,8 @@ public class AdsService {
     private final FullAdsMapper fullAdsMapper;
 
     private final UserMapper userMapper;
+    private final Logger logger = LoggerFactory.getLogger(AdsService.class);
+
 
 
     public AdsService(AdsRepository adsRepository, UserRepository userRepository, UserDetailsManager manager, AdsMapper adsMapper, AdsDtoMapper adsDtoMapper, FullAdsMapper fullAdsMapper, UserMapper userMapper) {
@@ -63,7 +70,7 @@ public class AdsService {
         return ads;
     }
 
-    public Ads getAdsById(Long id) {
+    public Optional<Ads> getAdsById(Integer id) {
         return adsRepository.findById(id);
     }
 
@@ -75,28 +82,27 @@ public class AdsService {
         }
         return adsDTOS;
     }
-
+    @Transactional
     public void deleteAdsById(Integer id) {
+//        adsRepository.deleteAdsById(id);
         adsRepository.deleteById(id);
     }
     public Ads editAds(Ads ads ) {
         return adsRepository.save(ads);
     }
 
-    public FullAdsDTO getFullAdsDTO(Long id,Authentication authentication) {
+    public FullAdsDTO getFullAdsDTO(Integer id,Authentication authentication) {
         UserDTO userDTO = userMapper.toDto(userRepository.findByLogin(authentication.getName()));
 //        AdsDTO adsDTO = adsMapper.toDto(adsRepository.findByAuthorId(userRepository.findByLogin(authentication.getName()).getId()));
-        AdsDTO adsDTO = adsMapper.toDto(adsRepository.findById(id));
+        AdsDTO adsDTO = adsMapper.toDto(adsRepository.findById(id).get());
         System.out.println(adsDTO);
+        logger.info(adsDTO.toString());
         FullAdsDTO fullAdsDTO = fullAdsMapper.mergeAdsAndUserAndAds(userDTO,adsDTO);
-        System.out.println(fullAdsDTO);
+        logger.info(fullAdsDTO.toString());
         fullAdsDTO.setDescription(adsRepository.findByAuthorIdLoginAndId(authentication.getName(),id).getDescription());
-        System.out.println(fullAdsDTO);
+        logger.info(fullAdsDTO.toString());
 
-
-
-
-   return fullAdsDTO;
+        return fullAdsDTO;
     }
 
 }
