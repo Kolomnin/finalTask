@@ -3,9 +3,17 @@ package com.example.finaltask.service;
 import com.example.finaltask.mapping.CommentMapper;
 import com.example.finaltask.model.dto.CommentDTO;
 import com.example.finaltask.model.dto.CreateCommentDTO;
+import com.example.finaltask.model.dto.ResponseWrapperComment;
+import com.example.finaltask.model.entity.Ads;
 import com.example.finaltask.model.entity.Comment;
 import com.example.finaltask.repository.CommentRepository;
+import com.example.finaltask.repository.UserRepository;
+import lombok.NonNull;
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Service
 public class CommentService {
@@ -14,34 +22,53 @@ public class CommentService {
 
     private final CommentMapper commentMapper;
 
-    public CommentService(CommentRepository commentRepository, CommentMapper commentMapper) {
+    private final AdsService adsService;
+
+    private final UserRepository userRepository;
+
+    public CommentService(CommentRepository commentRepository, CommentMapper commentMapper,
+                          AdsService adsService, UserRepository userRepository) {
         this.commentRepository = commentRepository;
         this.commentMapper = commentMapper;
+        this.adsService = adsService;
+        this.userRepository = userRepository;
     }
-    //Пока много лищнего, так как до комментов еще не дошли,только маппер и сохранение в бд
-    public CommentDTO addComment (CreateCommentDTO createCommentDTO){
+
+    public CommentDTO addComment(CreateCommentDTO createCommentDTO, Integer id, @NonNull Authentication authentication) {
+        Long userId = userRepository.findByLogin(authentication.getName()).getId();
         Comment comment = commentMapper.toEntity(createCommentDTO);
-        CreateCommentDTO createCommentDTO1 = commentMapper.toDto1(comment);
-        CommentDTO commentDTO = commentMapper.toDto(comment);
-        Comment comment1 = commentMapper.toEntity(commentDTO);
+        Ads ads = adsService.getAdsById((long)id);
+        comment.setAds(ads);
+        comment.setCreatedAt(11111111l);
+        comment.setAuthorId(userRepository.findByLogin(authentication.getName()));
         commentRepository.save(comment);
-        return commentDTO;
+        return commentMapper.toDto(comment);
     }
 
-    public Comment getCommentById(Long id) {
-        return commentRepository.findById(id);
+    public ResponseWrapperComment getAllCommentsByAdsId(Long id) {
+        List<Comment> comments = commentRepository.findAllByAds_Id(id);
+        ResponseWrapperComment responseWrapperComment = new ResponseWrapperComment();
+        responseWrapperComment.setCount(comments.size());
+        List<CommentDTO> commentDTOS = new ArrayList<>();
+        for (Comment comment : comments) {
+            commentDTOS.add(commentMapper.toDto(comment));
+        }
+        responseWrapperComment.setResults(commentDTOS);
+        return responseWrapperComment;
     }
 
+    public void getCommentById(Long id){
+
+    }
     public void deleteCommentById(Integer id) {
         commentRepository.deleteById(id);
     }
-    public Comment editComment(Comment comment) {
-        return commentRepository.save(comment);
-    }
 
-    public Comment editCommentDto(CommentDTO commentDto) {
-       Comment comment = commentMapper.toEntity(commentDto);
-        return commentRepository.save(comment);
+    public CommentDTO editComment(CommentDTO commentDTO) {
+        Comment comment = commentMapper.toEntity(commentDTO);
+        commentRepository.save(comment);
+        CommentDTO commentDTO1 = commentMapper.toDto(commentRepository.findById(comment.getId()));
+        return commentDTO1;
     }
 
 
