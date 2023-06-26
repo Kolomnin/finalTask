@@ -10,11 +10,9 @@ import org.mapstruct.factory.Mappers;
 
 @Mapper(componentModel = "spring")
 public interface FullAdsMapper {
-    FullAdsMapper INSTANCE = Mappers.getMapper(FullAdsMapper.class);
-
     @Mapping(source = "userDTO.firstName", target = "authorFirstName")
     @Mapping(source = "userDTO.lastName", target = "authorLastName")
-//    @Mapping(source = "createAdsDTO.description", target = "description")
+//    @Mapping(source = "adsDTO.description", target = "description")
     @Mapping(source = "userDTO.email", target = "email")
     @Mapping(source = "adsDTO.image", target = "image")
     @Mapping(source = "userDTO.phone", target = "phone")

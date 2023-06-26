@@ -135,6 +135,7 @@ public class CommentController {
     @DeleteMapping("{adId}/comments/{commentId}")
     public ResponseEntity<Void> deleteComment(@PathVariable Integer adId, @PathVariable Long commentId) {
         commentService.getCommentById(commentId);
+
         return new ResponseEntity<>(HttpStatus.OK);
     }
 //    @PutMapping
@@ -145,6 +146,7 @@ public class CommentController {
 //        }
 //        return ResponseEntity.ok(comment1);
 //    }
+
 
     @Operation(
             operationId = "patchComment",
