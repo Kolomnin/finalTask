@@ -37,7 +37,7 @@ public class CommentService {
     public CommentDTO addComment(CreateCommentDTO createCommentDTO, Integer id, @NonNull Authentication authentication) {
         Long userId = userRepository.findByLogin(authentication.getName()).getId();
         Comment comment = commentMapper.toEntity(createCommentDTO);
-        Ads ads = adsService.getAdsById((long)id);
+        Ads ads = adsService.getAdsById(id).orElseThrow();
         comment.setAds(ads);
         comment.setCreatedAt(11111111l);
         comment.setAuthorId(userRepository.findByLogin(authentication.getName()));
