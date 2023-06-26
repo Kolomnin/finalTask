@@ -2,6 +2,7 @@ package com.example.finaltask.controller;
 
 import com.example.finaltask.model.dto.AdsDTO;
 import com.example.finaltask.model.dto.CreateAdsDTO;
+import com.example.finaltask.model.dto.FullAdsDTO;
 import com.example.finaltask.model.dto.ResponseWrapperAds;
 import com.example.finaltask.model.entity.Ads;
 import com.example.finaltask.service.AdsService;
@@ -121,10 +122,15 @@ public class AdsController {
      * окументации API. Integer id - это тип данных переменной id, которая будет содержать значение
      * идентификатора объявления
      */
+//    @GetMapping("/{id}")
+//    public ResponseEntity<FullAdsDTO> getADS(@Parameter(description = "Id объявления") @PathVariable Long id, Authentication authentication) {
+//        FullAdsDTO fullAdsDTO =adsService.getFullAdsDTO(id,authentication);
+//        return ResponseEntity.ok(fullAdsDTO);
+//    }
     @GetMapping("/{id}")
-    public ResponseEntity<AdsDTO> getADS(@Parameter(description = "Id объявления") @PathVariable Long id) {
-        adsService.getAdsById(id);
-        return new ResponseEntity<>(HttpStatus.OK);
+    public ResponseEntity<FullAdsDTO> getADS(@Parameter(description = "Id объявления") @PathVariable("id") Long id, Authentication authentication) {
+        FullAdsDTO fullAdsDTO =adsService.getFullAdsDTO(id,authentication);
+        return ResponseEntity.ok(fullAdsDTO);
     }
 
     @Operation(
@@ -151,7 +157,7 @@ public class AdsController {
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
     /**
-     * Изменение параметров пользователя
+     * Изменение параметров объявления
      */
     @PutMapping("/edit")
     public ResponseEntity<Ads> editUser(@RequestBody Ads ads ) {

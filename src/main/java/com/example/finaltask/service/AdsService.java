@@ -11,13 +11,14 @@ import com.example.finaltask.model.dto.UserDTO;
 import com.example.finaltask.model.entity.Ads;
 import com.example.finaltask.repository.AdsRepository;
 import com.example.finaltask.repository.UserRepository;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.provisioning.UserDetailsManager;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
-
+@Slf4j
 @Service
 public class AdsService {
     private final AdsRepository adsRepository;
@@ -44,22 +45,20 @@ public class AdsService {
         this.userMapper = userMapper;
     }
 
-    public AdsDTO addAds1(AdsDTO properties) {
-        Ads ads = adsMapper.toEntity(properties);
-        AdsDTO adsDTO = adsMapper.toDto(ads);
-        ads.setAuthorId(userRepository.findById(1L));//В след уроках покажут как получить
-                                                        // пользователя который авторизован,пока юзер установлен
-        adsRepository.save(ads);
-        return adsDTO;
-    }
+//    public AdsDTO addAds1(AdsDTO properties) {
+//        Ads ads = adsMapper.toEntity(properties);
+//        AdsDTO adsDTO = adsMapper.toDto(ads);
+//        ads.setAuthorId(userRepository.findById(1L));
+//        adsRepository.save(ads);
+//        return adsDTO;
+//    }
     public Ads addAds2(CreateAdsDTO properties, Authentication authentication) {
         Ads ads = adsDtoMapper.toEntity(properties);
         System.out.println("Объявление создано");
         System.out.println(properties.getDescription());
         AdsDTO adsDTO = adsMapper.toDto(ads);
         System.out.println(adsDTO);
-        ads.setAuthorId(userRepository.findByLogin(authentication.getName()));//В след уроках покажут как получить
-        // пользователя который авторизован,пока юзер установлен
+        ads.setAuthorId(userRepository.findByLogin(authentication.getName()));
         adsRepository.save(ads);
         return ads;
     }
@@ -84,15 +83,17 @@ public class AdsService {
         return adsRepository.save(ads);
     }
 
-    public FullAdsDTO getFullAdsDTO(Authentication authentication) {
-        List<Ads> adsList = adsRepository.findAll();
-        List<AdsDTO> adsDTOS = new ArrayList<>();
+    public FullAdsDTO getFullAdsDTO(Long id,Authentication authentication) {
         UserDTO userDTO = userMapper.toDto(userRepository.findByLogin(authentication.getName()));
 //        AdsDTO adsDTO = adsMapper.toDto(adsRepository.findByAuthorId(userRepository.findByLogin(authentication.getName()).getId()));
-        AdsDTO adsDTO = adsMapper.toDto(adsRepository.findByAuthorIdLogin(authentication.getName()));
+        AdsDTO adsDTO = adsMapper.toDto(adsRepository.findById(id));
         System.out.println(adsDTO);
         FullAdsDTO fullAdsDTO = fullAdsMapper.mergeAdsAndUserAndAds(userDTO,adsDTO);
-        fullAdsDTO.setDescription(adsRepository.findByAuthorIdLogin(authentication.getName()).getDescription());
+        System.out.println(fullAdsDTO);
+        fullAdsDTO.setDescription(adsRepository.findByAuthorIdLoginAndId(authentication.getName(),id).getDescription());
+        System.out.println(fullAdsDTO);
+
+
 
 
    return fullAdsDTO;

@@ -14,7 +14,7 @@ public interface AdsRepository extends JpaRepository<Ads, Integer> {
 
     Ads findByAuthorId (Long id);
 
-    Ads findByAuthorIdLogin(String login);
+    Ads findByAuthorIdLoginAndId(String login,Long id);
 
     void deleteById(Long id);
 }

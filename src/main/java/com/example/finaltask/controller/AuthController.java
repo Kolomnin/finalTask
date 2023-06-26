@@ -21,7 +21,7 @@ import static com.example.finaltask.configuration.Role.USER;
 public class AuthController {
     private final AuthService authService;
 
-    private UserService userService;
+    private final UserService userService;
 
 
     public AuthController(AuthService authService, UserService userService) {

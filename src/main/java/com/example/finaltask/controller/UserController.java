@@ -36,7 +36,7 @@ public class UserController {
     private static final Logger logger = LoggerFactory.getLogger(UserController.class);
 
 
-    private UserService userService;
+    private final UserService userService;
 
     private final AvatarService avatarService;
     private final AvatarRepository avatarRepository;
@@ -147,14 +147,7 @@ public class UserController {
 //        }
 //        return ResponseEntity.ok(foundUser);
 //    }
-//    @PutMapping
-//    public ResponseEntity<User> editUser(@RequestBody ChangeUserChar user) {
-//        User foundUser = userService.editUser(user);
-//        if (foundUser == null) {
-//            return ResponseEntity.notFound().build();
-//        }
-//        return ResponseEntity.ok(foundUser);
-//    }
+
 @GetMapping("/me")
 public ResponseEntity<User> getUser(Authentication authentication) {
     return ResponseEntity.ok(userService.getUserByLogin(authentication.getName()));
