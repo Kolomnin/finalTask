@@ -4,14 +4,14 @@ import com.example.finaltask.model.dto.AdsDTO;
 import com.example.finaltask.model.dto.CreateAdsDTO;
 import com.example.finaltask.model.dto.FullAdsDTO;
 import com.example.finaltask.model.dto.ResponseWrapperAds;
-import com.example.finaltask.model.entity.Ads;
-import com.example.finaltask.service.AdsService;
 import com.example.finaltask.service.AdsImageService;
+import com.example.finaltask.service.AdsService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -21,12 +21,11 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
-import java.util.List;
 
 @Slf4j
 @CrossOrigin(value = "http://localhost:3000")
 @RestController
-
+@RequiredArgsConstructor
 @RequestMapping("/ads")
 
 public class AdsController {
@@ -34,10 +33,7 @@ public class AdsController {
     private final AdsService adsService;
 
     private final AdsImageService adsImageService;
-    public AdsController(AdsService adsService, AdsImageService adsImageService) {
-        this.adsService = adsService;
-        this.adsImageService = adsImageService;
-    }
+
 
     @Operation(
             operationId = "getAllAds",
@@ -51,13 +47,7 @@ public class AdsController {
             }
     )
 
-    /**
-     * Получить все объявления
-     * public ResponseEntity<List<AdsDTO>> - это тип возвращаемого значения метода. В данном случае используется
-     * ResponseEntity, который представляет собой ответ на HTTP-запрос, включающий статус ответа,
-     * заголовки и тело ответа. List<AdsDTO> - это тип данных, представляющий список объявлений.
-     */
-//
+
     @GetMapping()
     public ResponseEntity<ResponseWrapperAds<AdsDTO>> getAllAds() {
 
@@ -87,7 +77,8 @@ public class AdsController {
      * помечены аннотацией @RequestParam, что означает, что они должны быть извлечены из параметров запроса.
      */
     @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public ResponseEntity<AdsDTO> addADS(@RequestPart CreateAdsDTO properties, @RequestPart MultipartFile image, Authentication authentication) throws IOException {
+    public ResponseEntity<AdsDTO> addADS(@RequestPart ("properties") CreateAdsDTO properties,
+                                         @RequestPart ("image") MultipartFile image, Authentication authentication) throws IOException {
 
         adsImageService.saveImage(adsService.addAds2(properties,authentication),image,authentication);
         return new ResponseEntity<>(HttpStatus.CREATED);
