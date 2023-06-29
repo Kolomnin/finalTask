@@ -18,6 +18,8 @@ public interface UserMapper {
     User toEntity(RegisterReq registerReq);
 
 
+
     RegisterReq toDto2 (User user);
+
 
 }
