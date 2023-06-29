@@ -26,6 +26,7 @@ public class User {
     private String phone;
     @Enumerated(EnumType.STRING)
     private Role role;
+    private String password;
 
     @Override
     public boolean equals(Object o) {

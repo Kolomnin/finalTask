@@ -15,6 +15,7 @@ public interface UserMapper {
     UserDTO toDto(User entity);
 
     @Mapping(source = "username",target = "login")
+    @Mapping(source = "password",target = "password")
     User toEntity(RegisterReq registerReq);
 
 
