@@ -1,7 +1,6 @@
 package com.example.finaltask.controller;
 
 import com.example.finaltask.model.dto.*;
-import com.example.finaltask.model.entity.Comment;
 import com.example.finaltask.service.CommentService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -14,8 +13,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 @Slf4j
 @CrossOrigin(value = "http://localhost:3000")
@@ -51,7 +48,7 @@ public class CommentController {
      * заголовки и тело ответа. ResponseWrapperComment<CommentDTO> - это класс, представляющий счетчик и список комментариев.
      */
     @GetMapping("{id}/comments")
-    public ResponseEntity<ResponseWrapperComment> getComments(@PathVariable Long id) {
+    public ResponseEntity<ResponseWrapperComment> getComments(@PathVariable Integer id) {
         return ResponseEntity.ok(commentService.getAllCommentsByAdsId(id));
     }
 

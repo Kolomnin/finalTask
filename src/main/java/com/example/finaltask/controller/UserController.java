@@ -3,9 +3,9 @@ package com.example.finaltask.controller;
 import com.example.finaltask.mapping.UserMapper;
 import com.example.finaltask.model.dto.*;
 import com.example.finaltask.model.entity.User;
-import com.example.finaltask.model.entity.UserAvatar;
 import com.example.finaltask.repository.AvatarRepository;
 import com.example.finaltask.repository.UserRepository;
+import com.example.finaltask.service.AdsImageService;
 import com.example.finaltask.service.AvatarService;
 import com.example.finaltask.service.UserService;
 import com.example.finaltask.service.impl.AuthServiceImpl;
@@ -13,11 +13,13 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -30,7 +32,7 @@ import java.util.Optional;
 @Slf4j
 @CrossOrigin(value = "http://localhost:3000")
 @RestController
-
+@RequiredArgsConstructor
 @RequestMapping("/users")
 
 public class UserController {
@@ -45,6 +47,8 @@ public class UserController {
     private final AuthServiceImpl authService;
 
     private final UserRepository userRepository;
+    private final AdsImageService adsImageService;
+
 
 
 
@@ -56,15 +60,7 @@ public class UserController {
      */
     private PasswordEncoder passwordEncoder;
 
-    public UserController(UserService userService, AvatarService avatarService, AvatarRepository avatarRepository, AuthServiceImpl authService, UserRepository userRepository, UserMapper userMapping, PasswordEncoder passwordEncoder) {
-        this.userService = userService;
-        this.avatarService = avatarService;
-        this.avatarRepository = avatarRepository;
-        this.authService = authService;
-        this.userRepository = userRepository;
-        this.userMapping = userMapping;
-        this.passwordEncoder = passwordEncoder;
-    }
+
 
 
     /**
@@ -261,21 +257,23 @@ public ResponseEntity<Optional<User>> getUser(Authentication authentication) {
 //         UserAvatar savedEntity = avatarRepository.saveAndFlush(entity);
 //        return savedEntity.getId();
 
-        @PatchMapping(value = "/me/image", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-        public Long updateUserImage(@RequestParam("image") MultipartFile file, Authentication authentication) throws IOException {
+    @PatchMapping(value = "/me/image", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ResponseEntity<Void> updateUserImage(@RequestParam("image") MultipartFile image) throws IOException {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        log.info("User {} update avatar", authentication.getName());
+        adsImageService.saveAvatar(authentication.getName(), image);
+        return ResponseEntity.status(200).build();
+    }
 
-            UserAvatar entity = new UserAvatar();
-            try {
-                // код, который кладет картинку в entity
-                byte[] bytes = file.getBytes();
-                entity.setBytes(bytes);
-            } catch (IOException e) {
-                throw new RuntimeException(e);
-            }
+    @GetMapping(value = "/{id}/getImage")
+    public ResponseEntity<byte[]> getImage(@PathVariable("id") int id) {
+        log.info("Get avatar from user with id " + id);
+        return ResponseEntity.ok(adsImageService.getAvatar(id));
+    }
 
             // код сохранения картинки в БД
-            UserAvatar savedEntity = avatarRepository.save(entity);
-            return savedEntity.getId();
+//            UserAvatar savedEntity = avatarRepository.save(entity);
+//            return savedEntity.getId();
 //        System.out.println("запрос на смену аватарки пользователя вызван");
 //        System.out.println(authentication.getName());
 //        avatarService.saveImage(file,authentication);
@@ -283,5 +281,5 @@ public ResponseEntity<Optional<User>> getUser(Authentication authentication) {
 //        return new ResponseEntity<>(HttpStatus.CREATED);
     }
 
-}
+
 

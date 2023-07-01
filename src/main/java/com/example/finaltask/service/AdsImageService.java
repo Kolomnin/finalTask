@@ -2,31 +2,28 @@ package com.example.finaltask.service;
 
 import com.example.finaltask.model.entity.Ads;
 import com.example.finaltask.model.entity.AdsImage;
-import com.example.finaltask.repository.AdsRepository;
+import com.example.finaltask.model.entity.User;
 import com.example.finaltask.repository.AdsImageRepository;
+import com.example.finaltask.repository.AdsRepository;
 import com.example.finaltask.repository.UserRepository;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.awt.*;
 import java.io.IOException;
 
 import static org.springframework.util.ObjectUtils.isEmpty;
 
 @Service
 @Slf4j
+@RequiredArgsConstructor
 public class AdsImageService {
     private final AdsImageRepository adsImageRepository;
     private final AdsRepository adsRepository;
     private final UserRepository userRepository;
 
-    public AdsImageService(AdsImageRepository adsImageRepository, AdsRepository adsRepository, UserRepository userRepository) {
-        this.adsImageRepository = adsImageRepository;
-        this.adsRepository = adsRepository;
-        this.userRepository = userRepository;
-    }
+
 
 //    public byte[] saveImage(Ads ads, MultipartFile file, Authentication authentication) throws IOException {
 //        log.info("Was invoked method to upload photo to ads with id {}");
@@ -52,7 +49,9 @@ public byte[] saveImage(Integer id, MultipartFile file) throws IOException {
     imageToSave.setId(id);
     imageToSave.setAds(ads);
     imageToSave.setPreview(file.getBytes());
-
+    imageToSave.setMediaType(file.getContentType());
+    imageToSave.setFileSize(file.getSize());
+    imageToSave.setFilePath(file.getOriginalFilename());
 //        imageToSave.setUser(userRepository.findById(ads.getAuthorId().getId()).get());
     System.out.println(ads);
     adsImageRepository.save(imageToSave);
@@ -64,6 +63,36 @@ public byte[] saveImage(Integer id, MultipartFile file) throws IOException {
         System.out.println(image);
         if (isEmpty(image)) {
             throw new IllegalArgumentException("Image not found");
+        }
+        return adsImageRepository.findById(id).get().getPreview();
+    }
+
+    public byte[] saveAvatar(String name, MultipartFile file) throws IOException {
+        Integer id = userRepository.findByLogin(name).get().getId();
+        log.info("Was invoked method to upload photo to user with id {}", id);
+        if (file.isEmpty()) {
+            throw new IllegalArgumentException("File is empty");
+        }
+        if (!userRepository.existsById(id)) {
+            throw new IllegalArgumentException("User not found");
+        }
+        User user = userRepository.findById(id).get();
+        AdsImage imageToSave = new AdsImage();
+        imageToSave.setId(id);
+        imageToSave.setUser(user);
+        imageToSave.setPreview(file.getBytes());
+        imageToSave.setMediaType(file.getContentType());
+        imageToSave.setFileSize(file.getSize());
+        imageToSave.setFilePath(file.getOriginalFilename());
+        adsImageRepository.save(imageToSave);
+        return imageToSave.getPreview();
+    }
+
+    public byte[] getAvatar(int id) {
+        log.info("Was invoked method to get avatar from user with id {}", id);
+        AdsImage image = adsImageRepository.findById(id).get();
+        if (isEmpty(image)) {
+            throw new IllegalArgumentException("Avatar not found");
         }
         return adsImageRepository.findById(id).get().getPreview();
     }

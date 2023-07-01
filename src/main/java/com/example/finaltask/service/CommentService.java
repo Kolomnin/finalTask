@@ -46,8 +46,8 @@ public class CommentService {
         return commentMapper.toDto(comment);
     }
 
-    public ResponseWrapperComment getAllCommentsByAdsId(Long id) {
-        List<Comment> comments = commentRepository.findAllByAds_Id(id);
+    public ResponseWrapperComment getAllCommentsByAdsId(Integer id) {
+        List<Comment> comments = commentRepository.findAllByAds_Id((id));
         ResponseWrapperComment responseWrapperComment = new ResponseWrapperComment();
         responseWrapperComment.setCount(comments.size());
         List<CommentDTO> commentDTOS = new ArrayList<>();

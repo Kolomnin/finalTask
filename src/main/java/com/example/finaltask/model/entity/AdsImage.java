@@ -16,13 +16,13 @@ public class AdsImage {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
-//    private String filePath;
-//    private long fileSize;
-//    private String mediaType;
+    private String filePath;
+    private long fileSize;
+    private String mediaType;
     @Lob
     private byte[] preview;
     @OneToOne(optional = true)
-    @JoinColumn(name = "ads_id")
+    @JoinColumn(name = "ads_id", referencedColumnName = "id")
     @ToString.Exclude
     private Ads ads;
 
