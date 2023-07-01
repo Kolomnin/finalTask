@@ -7,9 +7,9 @@ import org.mapstruct.Mapping;
 
 @Mapper(componentModel = "spring")
 public interface AdsDtoMapper {
-    @Mapping(target = "description", source = "description")
-    Ads toEntity(CreateAdsDTO createAdsDTO);
+//    @Mapping(target = "description", source = "description")
+//    Ads toEntity(CreateAdsDTO createAdsDTO);
 
-    @Mapping(target = "pk",source = "id")
-    CreateAdsDTO toDto(Ads ads);
+//    @Mapping(target = "pk",source = "id")
+//    CreateAdsDTO toDto(Ads ads);
 }

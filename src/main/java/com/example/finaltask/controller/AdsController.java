@@ -271,7 +271,8 @@ public class AdsController {
                                               @RequestParam("image") MultipartFile image) throws IOException {
         return ResponseEntity.status(HttpStatus.OK).body(adsService.updateImage(id, image));
     }
-    @GetMapping(value = "/{id}/getImage")
+
+    @GetMapping(value = "/{id}/getImage" )
     public ResponseEntity<byte[]> getImage(@PathVariable("id") int id) {
         log.info("Get image from ads with id " + id);
         return ResponseEntity.ok(adsImageService.getImage(id));

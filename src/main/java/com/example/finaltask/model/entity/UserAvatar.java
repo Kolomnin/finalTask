@@ -13,12 +13,12 @@ import javax.persistence.*;
 public class UserAvatar {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private Integer id;
     private String contentType;
     @Lob
     private byte [] bytes;
     @OneToOne(optional = true)
-    @JoinColumn(referencedColumnName = "id")
+//    @JoinColumn(referencedColumnName = "user_id")
     private User user;
 
 

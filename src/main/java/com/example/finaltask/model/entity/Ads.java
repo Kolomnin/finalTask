@@ -31,9 +31,10 @@ public class Ads {
     @JoinColumn(name = "user_id", nullable = false)
     @ToString.Exclude
     private User authorId;
+    @ToString.Exclude
     @OneToOne(mappedBy = "ads", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
 //    @JoinColumn(name = "adsImage_id",referencedColumnName = "id")
-    private AdsImage adsImage;
+    private AdsImage image;
 
     @Override
     public boolean equals(Object o) {

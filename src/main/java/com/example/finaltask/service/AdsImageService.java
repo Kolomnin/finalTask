@@ -3,8 +3,10 @@ package com.example.finaltask.service;
 import com.example.finaltask.model.entity.Ads;
 import com.example.finaltask.model.entity.AdsImage;
 import com.example.finaltask.model.entity.User;
+import com.example.finaltask.model.entity.UserAvatar;
 import com.example.finaltask.repository.AdsImageRepository;
 import com.example.finaltask.repository.AdsRepository;
+import com.example.finaltask.repository.AvatarRepository;
 import com.example.finaltask.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -22,6 +24,8 @@ public class AdsImageService {
     private final AdsImageRepository adsImageRepository;
     private final AdsRepository adsRepository;
     private final UserRepository userRepository;
+
+    private final AvatarRepository avatarRepository;
 
 
 
@@ -52,7 +56,7 @@ public byte[] saveImage(Integer id, MultipartFile file) throws IOException {
     imageToSave.setMediaType(file.getContentType());
     imageToSave.setFileSize(file.getSize());
     imageToSave.setFilePath(file.getOriginalFilename());
-//        imageToSave.setUser(userRepository.findById(ads.getAuthorId().getId()).get());
+    imageToSave.setUser(userRepository.findById(ads.getAuthorId().getId()).get());
     System.out.println(ads);
     adsImageRepository.save(imageToSave);
     return imageToSave.getPreview();
@@ -60,11 +64,11 @@ public byte[] saveImage(Integer id, MultipartFile file) throws IOException {
     public byte[] getImage(int id) { //for AdsMapper
         log.info("Was invoked method to get image from ads with id {}", id);
         AdsImage image = adsImageRepository.findImageByAds_Id(id);
-        System.out.println(image);
+        System.out.println(image+"картинка");
         if (isEmpty(image)) {
             throw new IllegalArgumentException("Image not found");
         }
-        return adsImageRepository.findById(id).get().getPreview();
+        return image.getPreview();
     }
 
     public byte[] saveAvatar(String name, MultipartFile file) throws IOException {
@@ -77,24 +81,21 @@ public byte[] saveImage(Integer id, MultipartFile file) throws IOException {
             throw new IllegalArgumentException("User not found");
         }
         User user = userRepository.findById(id).get();
-        AdsImage imageToSave = new AdsImage();
-        imageToSave.setId(id);
-        imageToSave.setUser(user);
-        imageToSave.setPreview(file.getBytes());
-        imageToSave.setMediaType(file.getContentType());
-        imageToSave.setFileSize(file.getSize());
-        imageToSave.setFilePath(file.getOriginalFilename());
-        adsImageRepository.save(imageToSave);
-        return imageToSave.getPreview();
+        UserAvatar userAvatar = new UserAvatar();
+        userAvatar.setId(id);
+        userAvatar.setUser(user);
+        userAvatar.setBytes(file.getBytes());
+        avatarRepository.save(userAvatar);
+        return userAvatar.getBytes();
     }
 
     public byte[] getAvatar(int id) {
         log.info("Was invoked method to get avatar from user with id {}", id);
-        AdsImage image = adsImageRepository.findById(id).get();
+        UserAvatar image = avatarRepository.findById(id).get();
         if (isEmpty(image)) {
             throw new IllegalArgumentException("Avatar not found");
         }
-        return adsImageRepository.findById(id).get().getPreview();
+        return image.getBytes();
     }
 
 

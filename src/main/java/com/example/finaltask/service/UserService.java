@@ -38,8 +38,9 @@ public class UserService {
     public User getUserById(Integer id) {
     return userRepository.findById(id).orElseThrow();
     }
-    public Optional<User> getUserByLogin(String login) {
-        return userRepository.findByLogin(login);
+    public Optional<UserDTO> getUserByLogin(String login) {
+        UserDTO userDTO = userMapper.toDto(userRepository.findByLogin(login).orElseThrow());
+        return Optional.ofNullable(userDTO);
     }
 
 //    public Optional<UserDTO> getUser(String name) {

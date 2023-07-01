@@ -27,6 +27,10 @@ public class User {
     @Enumerated(EnumType.STRING)
     private Role role;
     private String password;
+    @OneToOne(mappedBy = "user")
+    @ToString.Exclude
+    private AdsImage avatar;
+
 
     @Override
     public boolean equals(Object o) {

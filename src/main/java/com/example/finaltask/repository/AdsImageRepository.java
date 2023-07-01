@@ -7,4 +7,7 @@ public interface AdsImageRepository extends JpaRepository<AdsImage, Integer> {
 
     AdsImage findImageByAds_Id(Integer id);
 
+
+
+
 }

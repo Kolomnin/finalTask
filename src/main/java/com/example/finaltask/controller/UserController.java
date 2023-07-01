@@ -179,7 +179,7 @@ public class UserController {
 //    }
 
 @GetMapping("/me")
-public ResponseEntity<Optional<User>> getUser(Authentication authentication) {
+public ResponseEntity<Optional<UserDTO>> getUser(Authentication authentication) {
     return ResponseEntity.ok(userService.getUserByLogin(authentication.getName()));
 }
 
