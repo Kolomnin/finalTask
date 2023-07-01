@@ -16,7 +16,7 @@ public interface AdsMapper {
 
 
     @Named("userToLong")
-    static Long userToLong(User user) {
+    static Integer userToLong(User user) {
         return user != null ? user.getId() : null;
     }
 }
