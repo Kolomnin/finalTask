@@ -29,7 +29,7 @@ public class AvatarService {
 
     public UserAvatar saveImage(MultipartFile file,Authentication authentication) throws IOException {
         UserAvatar avatar = imageMapper.toEntity(file);
-        avatar.setUser(userRepository.findByLogin(authentication.getName()));
+        avatar.setUser(userRepository.findByLogin(authentication.getName()).orElseThrow());
 
         return avatarRepository.save(avatar);
     }

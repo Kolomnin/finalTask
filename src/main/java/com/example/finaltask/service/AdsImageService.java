@@ -32,7 +32,7 @@ public class AdsImageService {
         }
 
         AdsImage adsImageToSave = new AdsImage();
-        adsImageToSave.setUser(userRepository.findByLogin(authentication.getName()));
+        adsImageToSave.setUser(userRepository.findByLogin(authentication.getName()).orElseThrow());
         adsImageToSave.setAds(ads);
         adsImageToSave.setImage(file.getBytes());
 

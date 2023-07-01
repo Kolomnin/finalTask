@@ -35,12 +35,13 @@ public class CommentService {
     }
 
     public CommentDTO addComment(CreateCommentDTO createCommentDTO, Integer id, @NonNull Authentication authentication) {
-        Long userId = userRepository.findByLogin(authentication.getName()).getId();
+        Integer userId = userRepository.findByLogin(authentication.getName()).get().getId();
+        System.out.println("id комментарий"+userId);
         Comment comment = commentMapper.toEntity(createCommentDTO);
         Ads ads = adsService.getAdsById(id).orElseThrow();
         comment.setAds(ads);
         comment.setCreatedAt(11111111l);
-        comment.setAuthorId(userRepository.findByLogin(authentication.getName()));
+        comment.setAuthorId(userRepository.findByLogin(authentication.getName()).orElseThrow());
         commentRepository.save(comment);
         return commentMapper.toDto(comment);
     }

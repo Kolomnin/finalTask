@@ -1,13 +1,14 @@
 package com.example.finaltask.controller;
 
-import com.example.finaltask.mapping.ImageMapper;
 import com.example.finaltask.mapping.UserMapper;
 import com.example.finaltask.model.dto.*;
 import com.example.finaltask.model.entity.User;
 import com.example.finaltask.model.entity.UserAvatar;
 import com.example.finaltask.repository.AvatarRepository;
+import com.example.finaltask.repository.UserRepository;
 import com.example.finaltask.service.AvatarService;
 import com.example.finaltask.service.UserService;
+import com.example.finaltask.service.impl.AuthServiceImpl;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -24,7 +25,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
-import java.util.UUID;
+import java.util.Optional;
 
 @Slf4j
 @CrossOrigin(value = "http://localhost:3000")
@@ -41,6 +42,10 @@ public class UserController {
     private final AvatarService avatarService;
     private final AvatarRepository avatarRepository;
 
+    private final AuthServiceImpl authService;
+
+    private final UserRepository userRepository;
+
 
 
     private UserMapper userMapping;
@@ -51,10 +56,13 @@ public class UserController {
      */
     private PasswordEncoder passwordEncoder;
 
-    public UserController( UserService userService, AvatarService avatarService, AvatarRepository avatarRepository, PasswordEncoder passwordEncoder) {
+    public UserController(UserService userService, AvatarService avatarService, AvatarRepository avatarRepository, AuthServiceImpl authService, UserRepository userRepository, UserMapper userMapping, PasswordEncoder passwordEncoder) {
         this.userService = userService;
         this.avatarService = avatarService;
         this.avatarRepository = avatarRepository;
+        this.authService = authService;
+        this.userRepository = userRepository;
+        this.userMapping = userMapping;
         this.passwordEncoder = passwordEncoder;
     }
 
@@ -93,9 +101,35 @@ public class UserController {
      * В данном случае, возвращается пустое тело ответа (new ResponseEntity<>(HttpStatus.OK)),
      * но можно также вернуть любой другой объект или модель данных, который будет сериализован и отправлен в теле ответа.
     */
+//    @PostMapping("/set_password")
+//    public ResponseEntity<?> updatePassword(@RequestBody NewPasswordDTO newPassword, Authentication authentication) {
+//        return new ResponseEntity<>(HttpStatus.OK);
+//    }
     @PostMapping("/set_password")
-    public ResponseEntity<?> updatePassword(@RequestBody NewPasswordDTO newPassword, Authentication authentication) {
-        return new ResponseEntity<>(HttpStatus.OK);
+    public ResponseEntity<NewPasswordDTO> setPassword(@RequestBody NewPasswordDTO newPassword,
+                                                      Authentication authentication) {
+        log.info("Set password: " + newPassword);
+        Optional<User> user = userRepository.findByLogin(authentication.getName());
+//        user.setPassword(newPassword.getNewPassword());
+
+//        authService.changePassword(newPassword, authentication.getName());
+        if (!authentication.isAuthenticated()) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+        }
+        if (user.isEmpty()) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+        }
+        if (authService.changePassword(newPassword, authentication.getName())) {
+            User existingUser = user.get();
+            existingUser.setPassword(newPassword.getNewPassword());
+            userRepository.save(existingUser);
+
+//            authService.changePassword(newPassword, authentication.getName());
+            return ResponseEntity.ok(new NewPasswordDTO());
+        }
+
+
+        return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 
     @Operation(
@@ -149,7 +183,7 @@ public class UserController {
 //    }
 
 @GetMapping("/me")
-public ResponseEntity<User> getUser(Authentication authentication) {
+public ResponseEntity<Optional<User>> getUser(Authentication authentication) {
     return ResponseEntity.ok(userService.getUserByLogin(authentication.getName()));
 }
 
@@ -173,13 +207,13 @@ public ResponseEntity<User> getUser(Authentication authentication) {
      * для обновления информации о текущем пользователе.
      */
     @PatchMapping("/me")
-    public ResponseEntity<RegisterReq> updateUser(@RequestBody RegisterReq user, Authentication authentication) {
+    public ResponseEntity<UserDTO> updateUser(@RequestBody RegisterReq user, Authentication authentication) {
         System.out.println("запрос на смену имени, фамилии");
         User foundUser = userService.editUser(user,authentication);
-        RegisterReq req = userMapping.toDto2(foundUser);
+        UserDTO dto = userMapping.toDto(foundUser);
         logger.info("Updating user: {}", user.getFirstName());
 
-        return new ResponseEntity<>(req,HttpStatus.OK);
+        return new ResponseEntity<>(dto,HttpStatus.OK);
     }
 
     @Operation(

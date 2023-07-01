@@ -35,10 +35,10 @@ public class UserService {
         return userRepository.save(user);
     }
 
-    public User getUserById(Long id) {
-    return userRepository.findById(id);
+    public User getUserById(Integer id) {
+    return userRepository.findById(id).orElseThrow();
     }
-    public User getUserByLogin(String login) {
+    public Optional<User> getUserByLogin(String login) {
         return userRepository.findByLogin(login);
     }
 
@@ -50,7 +50,7 @@ public class UserService {
          userRepository.deleteById(id);
     }
     public User editUser(RegisterReq registerReq, Authentication authentication) {
-        User user = userRepository.findByLogin(authentication.getName());
+        User user = userRepository.findByLogin(authentication.getName()).orElseThrow();
 
         user.setFirstName(registerReq.getFirstName());
         user.setPhone(registerReq.getPhone());

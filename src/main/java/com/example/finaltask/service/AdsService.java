@@ -65,7 +65,7 @@ public class AdsService {
         System.out.println(properties.getDescription());
         AdsDTO adsDTO = adsMapper.toDto(ads);
         System.out.println(adsDTO);
-        ads.setAuthorId(userRepository.findByLogin(authentication.getName()));
+        ads.setAuthorId(userRepository.findByLogin(authentication.getName()).orElseThrow(null));
         adsRepository.save(ads);
         return ads;
     }
@@ -92,7 +92,7 @@ public class AdsService {
     }
 
     public FullAdsDTO getFullAdsDTO(Integer id,Authentication authentication) {
-        UserDTO userDTO = userMapper.toDto(userRepository.findByLogin(authentication.getName()));
+        UserDTO userDTO = userMapper.toDto(userRepository.findByLogin(authentication.getName()).orElseThrow());
 //        AdsDTO adsDTO = adsMapper.toDto(adsRepository.findByAuthorId(userRepository.findByLogin(authentication.getName()).getId()));
         AdsDTO adsDTO = adsMapper.toDto(adsRepository.findById(id).get());
         System.out.println(adsDTO);
