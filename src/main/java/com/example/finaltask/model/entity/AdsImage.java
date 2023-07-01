@@ -15,18 +15,20 @@ import java.util.Objects;
 public class AdsImage {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private Integer id;
 //    private String filePath;
 //    private long fileSize;
 //    private String mediaType;
     @Lob
-    private byte[] image;
+    private byte[] preview;
     @OneToOne(optional = true)
     @JoinColumn(name = "ads_id")
+    @ToString.Exclude
     private Ads ads;
 
     @OneToOne(optional = true)
     @JoinColumn(referencedColumnName = "id")
+    @ToString.Exclude
     private User user;
 
 

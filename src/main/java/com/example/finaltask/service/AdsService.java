@@ -5,7 +5,6 @@ import com.example.finaltask.mapping.AdsMapper;
 import com.example.finaltask.mapping.FullAdsMapper;
 import com.example.finaltask.mapping.UserMapper;
 import com.example.finaltask.model.dto.AdsDTO;
-import com.example.finaltask.model.dto.CreateAdsDTO;
 import com.example.finaltask.model.dto.FullAdsDTO;
 import com.example.finaltask.model.dto.UserDTO;
 import com.example.finaltask.model.entity.Ads;
@@ -18,7 +17,9 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.provisioning.UserDetailsManager;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -31,7 +32,7 @@ public class AdsService {
 
     private final UserDetailsManager manager;
 
-
+    private final AdsImageService adsImageService;
     private final AdsMapper adsMapper;
     private final AdsDtoMapper adsDtoMapper;
 
@@ -42,10 +43,11 @@ public class AdsService {
 
 
 
-    public AdsService(AdsRepository adsRepository, UserRepository userRepository, UserDetailsManager manager, AdsMapper adsMapper, AdsDtoMapper adsDtoMapper, FullAdsMapper fullAdsMapper, UserMapper userMapper) {
+    public AdsService(AdsRepository adsRepository, UserRepository userRepository, UserDetailsManager manager, AdsImageService adsImageService, AdsMapper adsMapper, AdsDtoMapper adsDtoMapper, FullAdsMapper fullAdsMapper, UserMapper userMapper) {
         this.adsRepository = adsRepository;
         this.userRepository = userRepository;
         this.manager = manager;
+        this.adsImageService = adsImageService;
         this.adsMapper = adsMapper;
         this.adsDtoMapper = adsDtoMapper;
         this.fullAdsMapper = fullAdsMapper;
@@ -59,16 +61,29 @@ public class AdsService {
 //        adsRepository.save(ads);
 //        return adsDTO;
 //    }
-    public Ads addAds2(CreateAdsDTO properties, Authentication authentication) {
-        Ads ads = adsDtoMapper.toEntity(properties);
-        System.out.println("Объявление создано");
-        System.out.println(properties.getDescription());
-        AdsDTO adsDTO = adsMapper.toDto(ads);
-        System.out.println(adsDTO);
-        ads.setAuthorId(userRepository.findByLogin(authentication.getName()).orElseThrow(null));
-        adsRepository.save(ads);
-        return ads;
+//    public Ads addAds2(CreateAdsDTO properties, Authentication authentication) {
+//        Ads ads = adsDtoMapper.toEntity(properties);
+//        System.out.println("Объявление создано");
+//        System.out.println(properties.getDescription());
+//        AdsDTO adsDTO = adsMapper.toDto(ads);
+//        System.out.println(adsDTO);
+//        ads.setAuthorId(userRepository.findByLogin(authentication.getName()).orElseThrow(null));
+//        adsRepository.save(ads);
+//        return ads;
+//    }
+public AdsDTO addAd(AdsDTO adsDto, MultipartFile image, Authentication authentication) throws IOException {
+    Ads newAds = adsMapper.toEntity(adsDto);
+    newAds.setAuthorId(userRepository.findByLogin(authentication.getName()).orElseThrow());
+    adsRepository.save(newAds);
+    log.info("Save ads: " + newAds);
+    if (image != null) {
+        adsImageService.saveImage(newAds.getAuthorId().getId(), image);
+        log.info("Photo has been saved");
+    } else {
+        throw new IOException("Photo not found");
     }
+    return adsMapper.toDto(newAds);
+}
 
     public Optional<Ads> getAdsById(Integer id) {
         return adsRepository.findById(id);
@@ -103,6 +118,18 @@ public class AdsService {
         logger.info(fullAdsDTO.toString());
 
         return fullAdsDTO;
+    }
+    public FullAdsDTO getFullAds(Integer id) {
+        Ads ads = adsRepository.findById(id).orElseThrow(
+                () -> new IllegalArgumentException("Ads not found"));
+        log.info("Get ads: " + ads);
+        return adsMapper.adsToAdsDtoFull(ads);
+    }
+    public byte[] updateImage(Integer id, MultipartFile image) throws IOException {
+        log.info("Update image: " + id);
+        adsImageService.saveImage(id, image);
+        log.info("Photo have been saved");
+        return image.getBytes();
     }
 
 }

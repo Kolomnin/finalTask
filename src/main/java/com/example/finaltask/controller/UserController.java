@@ -160,7 +160,7 @@ public class UserController {
 //    }
     // produces в аннотации GetMapping нужно указать для того, чтобы браузер понимал, что передается картинка
 //    @GetMapping(value = "/images/{id}/", produces = {MediaType.IMAGE_PNG_VALUE})
-//    public byte[] getImage() {
+//    public byte[] getAdsImage() {
 //        UserAvatar enityt= avatarRepository.findById(1L).orElseThrow(null);
 //         return enityt.getBytes();
 //    }

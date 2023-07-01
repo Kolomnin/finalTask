@@ -10,6 +10,6 @@ public interface AdsDtoMapper {
     @Mapping(target = "description", source = "description")
     Ads toEntity(CreateAdsDTO createAdsDTO);
 
-//    @Mapping(target = "pk",source = "id")
+    @Mapping(target = "pk",source = "id")
     CreateAdsDTO toDto(Ads ads);
 }

@@ -9,7 +9,7 @@ public class CreateAdsDTO {
     private String title;
     private Integer author;
     private String image;
-    private Long pk;
+    private Integer pk;
 
 //    private String image;
 }

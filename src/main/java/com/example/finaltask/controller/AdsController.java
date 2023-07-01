@@ -76,12 +76,20 @@ public class AdsController {
      * и image, который содержит файл изображения, связанный с объявлением. Оба параметра
      * помечены аннотацией @RequestParam, что означает, что они должны быть извлечены из параметров запроса.
      */
+//    @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+//    public ResponseEntity<AdsDTO> addADS(@RequestPart ("properties") CreateAdsDTO properties,
+//                                         @RequestPart ("image") MultipartFile image, Authentication authentication) throws IOException {
+//        log.info("Создание объявления" + properties);
+//
+//        adsImageService.saveImage(adsService.addAds2(properties,authentication),image,authentication);
+//        return new ResponseEntity<>(HttpStatus.CREATED);
+//    }
     @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public ResponseEntity<AdsDTO> addADS(@RequestPart ("properties") CreateAdsDTO properties,
-                                         @RequestPart ("image") MultipartFile image, Authentication authentication) throws IOException {
-
-        adsImageService.saveImage(adsService.addAds2(properties,authentication),image,authentication);
-        return new ResponseEntity<>(HttpStatus.CREATED);
+    public ResponseEntity<AdsDTO> addAd(Authentication authentication,
+                                        @RequestPart("image") MultipartFile image,
+                                        @RequestPart("properties") AdsDTO properties) throws IOException {
+        log.info("Add ad: " + properties);
+        return ResponseEntity.ok(adsService.addAd(properties, image, authentication));
     }
 
     @Operation(
@@ -116,8 +124,9 @@ public class AdsController {
 //    }
     @GetMapping("/{id}")
     public ResponseEntity<FullAdsDTO> getADS(@Parameter(description = "Id объявления") @PathVariable("id") Integer id, Authentication authentication) {
-
-        return ResponseEntity.ok( adsService.getFullAdsDTO(id,authentication));
+        log.info(" Попытка получить fullAdsDTO: " + id);
+        System.out.println(adsService.getFullAds(id));
+        return ResponseEntity.ok( adsService.getFullAds(id));
     }
 
     @Operation(
@@ -207,7 +216,7 @@ public class AdsController {
 //    }
     @GetMapping("/me")
     public ResponseEntity<ResponseWrapperAds<AdsDTO>> getAllAds2() {
-
+        log.info("получение объявления");
         ResponseWrapperAds<AdsDTO> ads = new ResponseWrapperAds<>();
         ads.setCount(adsService.getAllAds().size());
         ads.setResults(adsService.getAllAds());
@@ -253,8 +262,18 @@ public class AdsController {
      * Метод возвращает ResponseEntity с кодом состояния HTTP 200 (OK), что означает успешное выполнение операции.
      * В данном случае, возвращается пустое тело ответа (ResponseEntity.ok().build())
      */
+//    @PatchMapping(value = "/{id}/image", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+//    public ResponseEntity<byte[]> updateADSImage(@PathVariable Integer id, @RequestParam("image") MultipartFile image) {
+//        return ResponseEntity.ok().build();
+//    }
     @PatchMapping(value = "/{id}/image", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public ResponseEntity<byte[]> updateADSImage(@PathVariable Integer id, @RequestParam("image") MultipartFile image) {
-        return ResponseEntity.ok().build();
+    public ResponseEntity<byte[]> updateImage(@PathVariable Integer id,
+                                              @RequestParam("image") MultipartFile image) throws IOException {
+        return ResponseEntity.status(HttpStatus.OK).body(adsService.updateImage(id, image));
+    }
+    @GetMapping(value = "/{id}/getImage")
+    public ResponseEntity<byte[]> getImage(@PathVariable("id") int id) {
+        log.info("Get image from ads with id " + id);
+        return ResponseEntity.ok(adsImageService.getImage(id));
     }
 }
