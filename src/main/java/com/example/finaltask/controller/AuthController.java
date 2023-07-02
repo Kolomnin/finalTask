@@ -1,9 +1,11 @@
 package com.example.finaltask.controller;
 
+import com.example.finaltask.repository.UserRepository;
 import com.example.finaltask.service.UserService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -23,10 +25,16 @@ public class AuthController {
 
     private final UserService userService;
 
+    private final PasswordEncoder passwordEncoder;
 
-    public AuthController(AuthService authService, UserService userService) {
+    private final UserRepository userRepository;
+
+
+    public AuthController(AuthService authService, UserService userService, PasswordEncoder passwordEncoder, UserRepository userRepository) {
         this.authService = authService;
         this.userService = userService;
+        this.passwordEncoder = passwordEncoder;
+        this.userRepository = userRepository;
     }
 
 

@@ -49,6 +49,10 @@ public class UserController {
     private final UserRepository userRepository;
     private final AdsImageService adsImageService;
 
+    private final PasswordEncoder passwordEncoder;
+
+
+
 
 
 
@@ -58,7 +62,6 @@ public class UserController {
      * PasswordEncoder предназначен для хеширования паролей. Он используется для шифрования паролей пользователей,
      * чтобы сохранить их в безопасной форме в базе данных или другом хранилище.
      */
-    private PasswordEncoder passwordEncoder;
 
 
 
@@ -116,8 +119,8 @@ public class UserController {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
         }
         if (authService.changePassword(newPassword, authentication.getName())) {
-            User existingUser = user.get();
-            existingUser.setPassword(newPassword.getNewPassword());
+            User existingUser = userRepository.findByLogin(authentication.getName()).orElseThrow();
+            existingUser.setPassword(passwordEncoder.encode(newPassword.getNewPassword()));
             userRepository.save(existingUser);
 
 //            authService.changePassword(newPassword, authentication.getName());
