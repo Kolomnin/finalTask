@@ -35,7 +35,7 @@ AdsDTO toDto(Ads ads);
 
     @Mapping(target = "authorFirstName", source = "authorId.firstName")
     @Mapping(target = "authorLastName", source = "authorId.lastName")
-    @Mapping(target = "email", source = "authorId.login")
+    @Mapping(target = "email", source = "authorId.email")
     @Mapping(target = "image", expression="java(getImage(ads))")
     @Mapping(target = "phone", source = "authorId.phone")
     @Mapping(target = "pk", source = "id")

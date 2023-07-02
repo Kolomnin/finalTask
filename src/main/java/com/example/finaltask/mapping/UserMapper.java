@@ -10,11 +10,10 @@ import org.mapstruct.Mapping;
 public interface UserMapper {
 
     User toEntity(UserDTO dto);
-    @Mapping(source = "login",target = "email")
     @Mapping(target = "image", expression = "java(getAvatar(user))")
     UserDTO toDto(User user);
 
-    @Mapping(source = "username",target = "login")
+    @Mapping(source = "username",target = "email")
     @Mapping(source = "password",target = "password")
     User toEntity(RegisterReq registerReq);
 

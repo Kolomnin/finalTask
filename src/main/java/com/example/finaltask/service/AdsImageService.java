@@ -11,6 +11,7 @@ import com.example.finaltask.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
@@ -36,7 +37,7 @@ public class AdsImageService {
 //        }
 //
 //        AdsImage adsImageToSave = new AdsImage();
-//        adsImageToSave.setUser(userRepository.findByLogin(authentication.getName()).orElseThrow());
+//        adsImageToSave.setUser(userRepository.findByEmail(authentication.getName()).orElseThrow());
 //        adsImageToSave.setAds(ads);
 //        adsImageToSave.setImage(file.getBytes());
 //
@@ -61,42 +62,43 @@ public byte[] saveImage(Integer id, MultipartFile file) throws IOException {
     adsImageRepository.save(imageToSave);
     return imageToSave.getPreview();
 }
+@Transactional
     public byte[] getImage(int id) { //for AdsMapper
         log.info("Was invoked method to get image from ads with id {}", id);
-        AdsImage image = adsImageRepository.findImageByAds_Id(id);
-        System.out.println(image+"картинка");
+        AdsImage image = adsImageRepository.findAdsImageById(id);
+        System.out.println("картинка появляется");
         if (isEmpty(image)) {
             throw new IllegalArgumentException("Image not found");
         }
         return image.getPreview();
     }
 
-    public byte[] saveAvatar(String name, MultipartFile file) throws IOException {
-        Integer id = userRepository.findByLogin(name).get().getId();
-        log.info("Was invoked method to upload photo to user with id {}", id);
-        if (file.isEmpty()) {
-            throw new IllegalArgumentException("File is empty");
-        }
-        if (!userRepository.existsById(id)) {
-            throw new IllegalArgumentException("User not found");
-        }
-        User user = userRepository.findById(id).get();
-        UserAvatar userAvatar = new UserAvatar();
-        userAvatar.setId(id);
-        userAvatar.setUser(user);
-        userAvatar.setBytes(file.getBytes());
-        avatarRepository.save(userAvatar);
-        return userAvatar.getBytes();
-    }
-
-    public byte[] getAvatar(int id) {
-        log.info("Was invoked method to get avatar from user with id {}", id);
-        UserAvatar image = avatarRepository.findById(id).get();
-        if (isEmpty(image)) {
-            throw new IllegalArgumentException("Avatar not found");
-        }
-        return image.getBytes();
-    }
+//    public byte[] saveAvatar(String name, MultipartFile file) throws IOException {
+//        Integer id = userRepository.findByEmail(name).get().getId();
+//        log.info("Was invoked method to upload photo to user with id {}", id);
+//        if (file.isEmpty()) {
+//            throw new IllegalArgumentException("File is empty");
+//        }
+//        if (!userRepository.existsById(id)) {
+//            throw new IllegalArgumentException("User not found");
+//        }
+//        User user = userRepository.findById(id).get();
+//        UserAvatar userAvatar = new UserAvatar();
+//        userAvatar.setId(id);
+//        userAvatar.setUser(user);
+//        userAvatar.setBytes(file.getBytes());
+//        avatarRepository.save(userAvatar);
+//        return userAvatar.getBytes();
+//    }
+//
+//    public byte[] getAvatar(int id) {
+//        log.info("Was invoked method to get avatar from user with id {}", id);
+//        UserAvatar image = avatarRepository.findById(id).get();
+//        if (isEmpty(image)) {
+//            throw new IllegalArgumentException("Avatar not found");
+//        }
+//        return image.getBytes();
+//    }
 
 
 

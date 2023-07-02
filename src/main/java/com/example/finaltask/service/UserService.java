@@ -42,19 +42,19 @@ public class UserService {
     return userRepository.findById(id).orElseThrow();
     }
     public Optional<UserDTO> getUserByLogin(String login) {
-        UserDTO userDTO = userMapper.toDto(userRepository.findByLogin(login).orElseThrow());
+        UserDTO userDTO = userMapper.toDto(userRepository.findByEmail(login).orElseThrow());
         return Optional.ofNullable(userDTO);
     }
 
 //    public Optional<UserDTO> getUser(String name) {
 //        log.info("Get user: " + name);
-//        return userRepository.findByLogin(name);
+//        return userRepository.findByEmail(name);
 //    }
     public void deleteUserById(Integer id) {
          userRepository.deleteById(id);
     }
     public User editUser(RegisterReq registerReq, Authentication authentication) {
-        User user = userRepository.findByLogin(authentication.getName()).orElseThrow();
+        User user = userRepository.findByEmail(authentication.getName()).orElseThrow();
 
         user.setFirstName(registerReq.getFirstName());
         user.setPhone(registerReq.getPhone());

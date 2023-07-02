@@ -20,7 +20,7 @@ import java.util.Objects;
 public class Comment {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private Integer id;
     private Long  createdAt;//поправить на localdatetime
     private String text;
 

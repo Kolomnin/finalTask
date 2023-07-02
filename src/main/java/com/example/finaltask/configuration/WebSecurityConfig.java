@@ -1,8 +1,11 @@
 package com.example.finaltask.configuration;
 
 import org.springframework.context.annotation.Bean;
+import org.springframework.http.HttpMethod;
+import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -46,6 +49,7 @@ public class WebSecurityConfig {
                                 authorization
                                         .mvcMatchers(AUTH_WHITELIST)
                                         .permitAll()
+                                        .mvcMatchers(HttpMethod.GET,"/ads","ads/getImage","users/getImage").permitAll()
                                         .mvcMatchers("/ads/**", "/users/**")
                                         .authenticated()
                 )
@@ -54,6 +58,22 @@ public class WebSecurityConfig {
                 .httpBasic(withDefaults());
         return http.build();
     }
+//@Bean
+//public SecurityFilterChain filterChain1(HttpSecurity http) throws Exception {
+//
+//        return  http
+//                .csrf(AbstractHttpConfigurer::disable)
+//                .httpBasic(Customizer.withDefaults())
+//                .authorizeHttpRequests(
+//                        matcherRegistry ->
+//                                matcherRegistry
+//                                        .requestMatchers(HttpMethod.GET,"/ads").permitAll()
+//                                        .requestMatchers("/ads/**","users/**").authenticated()
+//                )
+//                .build();
+//
+//
+//}
 
     @Bean
     public PasswordEncoder passwordEncoder() {

@@ -108,7 +108,7 @@ public class UserController {
     public ResponseEntity<NewPasswordDTO> setPassword(@RequestBody NewPasswordDTO newPassword,
                                                       Authentication authentication) {
         log.info("Set password: " + newPassword);
-        Optional<User> user = userRepository.findByLogin(authentication.getName());
+        Optional<User> user = userRepository.findByEmail(authentication.getName());
 //        user.setPassword(newPassword.getNewPassword());
 
 //        authService.changePassword(newPassword, authentication.getName());
@@ -119,7 +119,7 @@ public class UserController {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
         }
         if (authService.changePassword(newPassword, authentication.getName())) {
-            User existingUser = userRepository.findByLogin(authentication.getName()).orElseThrow();
+            User existingUser = userRepository.findByEmail(authentication.getName()).orElseThrow();
             existingUser.setPassword(passwordEncoder.encode(newPassword.getNewPassword()));
             userRepository.save(existingUser);
 
@@ -260,18 +260,19 @@ public ResponseEntity<Optional<UserDTO>> getUser(Authentication authentication) 
 //         UserAvatar savedEntity = avatarRepository.saveAndFlush(entity);
 //        return savedEntity.getId();
 
-    @PatchMapping(value = "/me/image", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    @PatchMapping(value = "/me/Image", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<Void> updateUserImage(@RequestParam("image") MultipartFile image) throws IOException {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         log.info("User {} update avatar", authentication.getName());
-        adsImageService.saveAvatar(authentication.getName(), image);
+        avatarService.saveAvatar(authentication.getName(), image);
         return ResponseEntity.status(200).build();
     }
 
-    @GetMapping(value = "/{id}/getImage")
+
+    @GetMapping(value = "/{id}/image")
     public ResponseEntity<byte[]> getImage(@PathVariable("id") int id) {
         log.info("Get avatar from user with id " + id);
-        return ResponseEntity.ok(adsImageService.getAvatar(id));
+        return ResponseEntity.ok(avatarService.getAvatar(id));
     }
 
             // код сохранения картинки в БД
