@@ -105,49 +105,49 @@ public class UserController {
 //    public ResponseEntity<?> updatePassword(@RequestBody NewPasswordDTO newPassword, Authentication authentication) {
 //        return new ResponseEntity<>(HttpStatus.OK);
 //    }
-    @PostMapping("/set_password")
-    public ResponseEntity<NewPasswordDTO> setPassword(@RequestBody NewPasswordDTO newPassword,
-                                                      Authentication authentication) {
-        log.info("Set password: " + newPassword);
-        Optional<User> user = userRepository.findByLogin(authentication.getName());
-//        user.setPassword(newPassword.getNewPassword());
+//    @PostMapping("/set_password")
+//    public ResponseEntity<NewPasswordDTO> setPassword(@RequestBody NewPasswordDTO newPassword,
+//                                                      Authentication authentication) {
+//        log.info("Set password: " + newPassword);
+//        Optional<User> user = userRepository.findByLogin(authentication.getName());
+////        user.setPassword(newPassword.getNewPassword());
+//
+////        authService.changePassword(newPassword, authentication.getName());
+//        if (!authentication.isAuthenticated()) {
+//            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+//        }
+//        if (user.isEmpty()) {
+//            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+//        }
+//        if (authService.changePassword(newPassword, authentication.getName())) {
+//            User existingUser = user.get();
+//            existingUser.setPassword(newPassword.getNewPassword());
+//            userRepository.save(existingUser);
+//
+////            authService.changePassword(newPassword, authentication.getName());
+//            return ResponseEntity.ok(new NewPasswordDTO());
+//        }
+//
+//
+//        return ResponseEntity.status(HttpStatus.CREATED).build();
+//    }
 
-//        authService.changePassword(newPassword, authentication.getName());
-        if (!authentication.isAuthenticated()) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
-        }
-        if (user.isEmpty()) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
-        }
-        if (authService.changePassword(newPassword, authentication.getName())) {
-            User existingUser = user.get();
-            existingUser.setPassword(newPassword.getNewPassword());
-            userRepository.save(existingUser);
-
-//            authService.changePassword(newPassword, authentication.getName());
-            return ResponseEntity.ok(new NewPasswordDTO());
-        }
-
-
-        return ResponseEntity.status(HttpStatus.CREATED).build();
-    }
-
-    @Operation(
-            operationId = "getUser",
-            summary = "Получить информацию об авторизованном пользователе",
-            tags = {"Пользователи"},
-            responses = {
-                    @ApiResponse(responseCode = "200", description = "OK", content = {
-                            @Content(mediaType = "*/*", schema = @Schema(implementation = UserDTO.class))
-                    }),
-                    @ApiResponse(responseCode = "401", description = "Unauthorized"),
-                    @ApiResponse(responseCode = "403", description = "Forbidden"),
-                    @ApiResponse(responseCode = "404", description = "Not Found")
-            }
-    )
-    /**
-     * Метод должен обрабатывать HTTP GET-запросы на указанном пути ("/me")
-     */
+//    @Operation(
+//            operationId = "getUser",
+//            summary = "Получить информацию об авторизованном пользователе",
+//            tags = {"Пользователи"},
+//            responses = {
+//                    @ApiResponse(responseCode = "200", description = "OK", content = {
+//                            @Content(mediaType = "*/*", schema = @Schema(implementation = UserDTO.class))
+//                    }),
+//                    @ApiResponse(responseCode = "401", description = "Unauthorized"),
+//                    @ApiResponse(responseCode = "403", description = "Forbidden"),
+//                    @ApiResponse(responseCode = "404", description = "Not Found")
+//            }
+//    )
+//    /**
+//     * Метод должен обрабатывать HTTP GET-запросы на указанном пути ("/me")
+//     */
 //    @GetMapping("/me")
 //    public ResponseEntity<UserDTO> getUser(Authentication authentication) {
 //        userDTOInterface.getUser();
