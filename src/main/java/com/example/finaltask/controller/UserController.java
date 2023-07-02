@@ -260,7 +260,7 @@ public ResponseEntity<Optional<UserDTO>> getUser(Authentication authentication) 
 //         UserAvatar savedEntity = avatarRepository.saveAndFlush(entity);
 //        return savedEntity.getId();
 
-    @PatchMapping(value = "/me/Image", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    @PatchMapping(value = "/me/image", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<Void> updateUserImage(@RequestParam("image") MultipartFile image) throws IOException {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         log.info("User {} update avatar", authentication.getName());
@@ -269,11 +269,21 @@ public ResponseEntity<Optional<UserDTO>> getUser(Authentication authentication) 
     }
 
 
-    @GetMapping(value = "/{id}/image")
+    @GetMapping(value = "/{id}/getImage")
     public ResponseEntity<byte[]> getImage(@PathVariable("id") int id) {
         log.info("Get avatar from user with id " + id);
         return ResponseEntity.ok(avatarService.getAvatar(id));
     }
+//    @CrossOrigin(origins = "http://yourdomain.com")
+//    @GetMapping(value = "/{id}/image")
+//    public ResponseEntity<byte[]> getImage(@PathVariable("id") int id) {
+//        log.info("Get avatar from user with id " + id);
+//        return ResponseEntity.ok()
+//                .header("Access-Control-Allow-Origin", "*")
+//                .header("Access-Control-Allow-Methods", "GET")
+//                .header("Access-Control-Allow-Headers", "Content-Type")
+//                .body(avatarService.getAvatar(id));
+//    }
 
             // код сохранения картинки в БД
 //            UserAvatar savedEntity = avatarRepository.save(entity);
