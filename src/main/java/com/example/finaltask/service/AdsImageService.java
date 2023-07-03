@@ -62,6 +62,25 @@ public byte[] saveImage(Integer id, MultipartFile file) throws IOException {
     adsImageRepository.save(imageToSave);
     return imageToSave.getPreview();
 }
+
+    public byte[] updateImage (Integer id, MultipartFile file) throws IOException {
+        log.info("Was invoked method to upload photo to ads with id {}", id);
+        if (file.isEmpty()) {
+            throw new IllegalArgumentException("File is empty");
+        }
+        Ads ads = adsRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("Ads not found"));
+        AdsImage imageToSave = new AdsImage();
+//    imageToSave.setId(id);
+        imageToSave.setAds(ads);
+        imageToSave.setPreview(file.getBytes());
+        imageToSave.setMediaType(file.getContentType());
+        imageToSave.setFileSize(file.getSize());
+        imageToSave.setFilePath(file.getOriginalFilename());
+        imageToSave.setUser(userRepository.findById(ads.getAuthorId().getId()).get());
+        System.out.println(ads);
+        adsImageRepository.save(imageToSave);
+        return imageToSave.getPreview();
+    }
 @Transactional
     public byte[] getImage(Integer id) { //for AdsMapper
         log.info("Was invoked method to get image from ads with id {}", id);

@@ -266,6 +266,8 @@ public class AdsController {
     @PatchMapping(value = "/{id}/image", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<byte[]> updateImage(@PathVariable Integer id,
                                               @RequestParam("image") MultipartFile image) throws IOException {
+
+        System.out.println("Запрос на смену картинки обьяволения");
         return ResponseEntity.status(HttpStatus.OK).body(adsService.updateImage(id, image));
     }
 
