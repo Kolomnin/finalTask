@@ -52,18 +52,12 @@ public class UserController {
     private final PasswordEncoder passwordEncoder;
 
 
-
-
-
-
     private UserMapper userMapping;
 
     /**
      * PasswordEncoder предназначен для хеширования паролей. Он используется для шифрования паролей пользователей,
      * чтобы сохранить их в безопасной форме в базе данных или другом хранилище.
      */
-
-
 
 
     /**
@@ -99,7 +93,7 @@ public class UserController {
      * Метод возвращает ResponseEntity с кодом состояния HTTP HttpStatus.OK, что означает успешное выполнение операции.
      * В данном случае, возвращается пустое тело ответа (new ResponseEntity<>(HttpStatus.OK)),
      * но можно также вернуть любой другой объект или модель данных, который будет сериализован и отправлен в теле ответа.
-    */
+     */
 //    @PostMapping("/set_password")
 //    public ResponseEntity<?> updatePassword(@RequestBody NewPasswordDTO newPassword, Authentication authentication) {
 //        return new ResponseEntity<>(HttpStatus.OK);
@@ -107,28 +101,9 @@ public class UserController {
     @PostMapping("/set_password")
     public ResponseEntity<NewPasswordDTO> setPassword(@RequestBody NewPasswordDTO newPassword,
                                                       Authentication authentication) {
-//        log.info("Set password: " + newPassword);
-//        Optional<User> user = userRepository.findByEmail(authentication.getName());
-////        user.setPassword(newPassword.getNewPassword());
-//
-////        authService.changePassword(newPassword, authentication.getName());
-//        if (!authentication.isAuthenticated()) {
-//            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
-//        }
-//        if (user.isEmpty()) {
-//            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
-//        }
-//        if (authService.changePassword(newPassword, authentication.getName())) {
-//            User existingUser = userRepository.findByEmail(authentication.getName()).orElseThrow();
-//            existingUser.setPassword(passwordEncoder.encode(newPassword.getNewPassword()));
-//            userRepository.save(existingUser);
-//
-////            authService.changePassword(newPassword, authentication.getName());
-//            return ResponseEntity.ok(new NewPasswordDTO());
-//        }
-//
-//
-       return ResponseEntity.status(HttpStatus.CREATED).build();
+        log.info("Set password: " + newPassword);
+        authService.changePassword(newPassword,authentication.getName());
+        return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 
     @Operation(
@@ -164,8 +139,8 @@ public class UserController {
 //         return enityt.getBytes();
 //    }
     @DeleteMapping("{id}")
-    public void deleteUser(@PathVariable () Integer id){
-         userService.deleteUserById(id);
+    public void deleteUser(@PathVariable() Integer id) {
+        userService.deleteUserById(id);
     }
 //    @Operation(summary = "Изменение параметров владельца",
 //            requestBody = @io.swagger.v3.oas.annotations.parameters.RequestBody(description = "Новый владелец",
@@ -181,10 +156,10 @@ public class UserController {
 //        return ResponseEntity.ok(foundUser);
 //    }
 
-@GetMapping("/me")
-public ResponseEntity<Optional<UserDTO>> getUser(Authentication authentication) {
-    return ResponseEntity.ok(userService.getUserByLogin(authentication.getName()));
-}
+    @GetMapping("/me")
+    public ResponseEntity<Optional<UserDTO>> getUser(Authentication authentication) {
+        return ResponseEntity.ok(userService.getUserByLogin(authentication.getName()));
+    }
 
 
     @Operation(
@@ -208,11 +183,11 @@ public ResponseEntity<Optional<UserDTO>> getUser(Authentication authentication) 
     @PatchMapping("/me")
     public ResponseEntity<UserDTO> updateUser(@RequestBody RegisterReq user, Authentication authentication) {
         System.out.println("запрос на смену имени, фамилии");
-        User foundUser = userService.editUser(user,authentication);
+        User foundUser = userService.editUser(user, authentication);
         UserDTO dto = userMapping.toDto(foundUser);
         logger.info("Updating user: {}", user.getFirstName());
 
-        return new ResponseEntity<>(dto,HttpStatus.OK);
+        return new ResponseEntity<>(dto, HttpStatus.OK);
     }
 
     @Operation(
@@ -285,7 +260,7 @@ public ResponseEntity<Optional<UserDTO>> getUser(Authentication authentication) 
 //                .body(avatarService.getAvatar(id));
 //    }
 
-            // код сохранения картинки в БД
+    // код сохранения картинки в БД
 //            UserAvatar savedEntity = avatarRepository.save(entity);
 //            return savedEntity.getId();
 //        System.out.println("запрос на смену аватарки пользователя вызван");
@@ -293,7 +268,7 @@ public ResponseEntity<Optional<UserDTO>> getUser(Authentication authentication) 
 //        avatarService.saveImage(file,authentication);
 //        AvatarDTO avatar = imageMapper.toDTO( avatarService.saveImage(file,authentication));
 //        return new ResponseEntity<>(HttpStatus.CREATED);
-    }
+}
 
 
 
