@@ -98,6 +98,16 @@ public AdsDTO addAd(CreateAdsDTO createAdsDTO, MultipartFile image, Authenticati
         }
         return adsDTOS;
     }
+    public List<AdsDTO> getAdsAuthUser ( Authentication authentication){
+        List<Ads> adsList = adsRepository.findAllByAuthorId(
+                userRepository.
+                        findByEmail(authentication.getName()).orElseThrow());
+        List<AdsDTO> adsDTOS = new ArrayList<>();
+        for (Ads ads : adsList) {
+            adsDTOS.add(adsMapper.toDto(ads));
+        }
+        return adsDTOS;
+    }
     @Transactional
     public void deleteAdsById(Integer id) {
 //        adsRepository.deleteAdsById(id);
