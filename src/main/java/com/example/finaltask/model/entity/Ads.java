@@ -4,16 +4,13 @@ import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
-import org.hibernate.Hibernate;
 
 import javax.persistence.*;
-import java.math.BigDecimal;
 import java.util.Objects;
 
 @Entity
 @Getter
 @Setter
-@ToString
 @RequiredArgsConstructor
 @Table(name = "ads")
 
@@ -34,9 +31,10 @@ public class Ads {
     @JoinColumn(name = "user_id", nullable = false)
     @ToString.Exclude
     private User authorId;
-    @OneToOne(optional = true)
-    @JoinColumn(name = "adsImage_id",referencedColumnName = "id")
-    private AdsImage adsImage;
+    @ToString.Exclude
+    @OneToOne(mappedBy = "ads")
+    @JoinColumn(name = "adsImage_id")
+    private AdsImage image;
 
     @Override
     public boolean equals(Object o) {

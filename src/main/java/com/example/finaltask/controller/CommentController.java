@@ -1,7 +1,6 @@
 package com.example.finaltask.controller;
 
 import com.example.finaltask.model.dto.*;
-import com.example.finaltask.model.entity.Comment;
 import com.example.finaltask.service.CommentService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -14,8 +13,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 @Slf4j
 @CrossOrigin(value = "http://localhost:3000")
@@ -51,7 +48,7 @@ public class CommentController {
      * заголовки и тело ответа. ResponseWrapperComment<CommentDTO> - это класс, представляющий счетчик и список комментариев.
      */
     @GetMapping("{id}/comments")
-    public ResponseEntity<ResponseWrapperComment> getComments(@PathVariable Long id) {
+    public ResponseEntity<ResponseWrapperComment> getComments(@PathVariable Integer id) {
         return ResponseEntity.ok(commentService.getAllCommentsByAdsId(id));
     }
 
@@ -86,9 +83,8 @@ public class CommentController {
      * комментария. В данном случае, возвращается пустое тело комментария (new ResponseEntity<>(HttpStatus.CREATED)).
      */
     @PostMapping("{id}/comments")
-    public ResponseEntity<CommentDTO> addComment(@PathVariable Integer id, @Parameter(description = "Необходимо корректно" +
-            " заполнить комментарий", example = "Тест") @RequestBody CreateCommentDTO comment, Authentication authentication) {
-        return ResponseEntity.ok(commentService.addComment(comment, id, authentication));
+    public ResponseEntity<CommentDTO> addComment(@PathVariable Integer id, @Parameter(description = "комментарий", example = "комментарий") @RequestBody CommentDTO comment, Authentication authentication) {
+        return ResponseEntity.ok(commentService.addComment( id,comment, authentication));
     }
 
 
@@ -133,8 +129,8 @@ public class CommentController {
      * комментария. В данном случае, возвращается пустое тело (new ResponseEntity<>(HttpStatus.NO_CONTENT)).
      */
     @DeleteMapping("{adId}/comments/{commentId}")
-    public ResponseEntity<Void> deleteComment(@PathVariable Integer adId, @PathVariable Long commentId) {
-        commentService.getCommentById(commentId);
+    public ResponseEntity<Void> deleteComment(@PathVariable Integer adId, @PathVariable Integer commentId) {
+        commentService.deleteCommentById(commentId);
 
         return new ResponseEntity<>(HttpStatus.OK);
     }

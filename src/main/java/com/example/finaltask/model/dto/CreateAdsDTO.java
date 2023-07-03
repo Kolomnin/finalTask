@@ -7,9 +7,7 @@ public class CreateAdsDTO {
     private String description;
     private Integer price;
     private String title;
-    private Integer author;
-    private String image;
-    private Long pk;
+   
 
 //    private String image;
 }
