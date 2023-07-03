@@ -15,6 +15,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.util.UUID;
 
 import static org.springframework.util.ObjectUtils.isEmpty;
 
@@ -44,8 +45,23 @@ public class AdsImageService {
 //        adsImageRepository.save(adsImageToSave);
 //        return adsImageToSave.getImage();
 //    }
+
+//    @Transactional
+//    public String saveImage(Integer id, MultipartFile file) throws IOException {
+//        AdsImage entity = new AdsImage();
+//        try {
+//            // код, который кладет картинку в entity
+//            byte[] bytes = file.getBytes();
+//            entity.setPreview(bytes);
+//        } catch (IOException e) {
+//            throw new RuntimeException(e);
+//        }
+//        entity.setId(UUID.randomUUID().toString());
+//        // код сохранения картинки в БД
+//        AdsImage savedEntity = adsImageRepository.saveAndFlush(entity);
+//        return savedEntity.getId();
+//    }
 public byte[] saveImage(Integer id, MultipartFile file) throws IOException {
-    log.info("Was invoked method to upload photo to ads with id {}", id);
     if (file.isEmpty()) {
         throw new IllegalArgumentException("File is empty");
     }
@@ -59,28 +75,47 @@ public byte[] saveImage(Integer id, MultipartFile file) throws IOException {
     imageToSave.setFilePath(file.getOriginalFilename());
     imageToSave.setUser(userRepository.findById(ads.getAuthorId().getId()).get());
     System.out.println(ads);
-    adsImageRepository.save(imageToSave);
+    AdsImage imageToSave2 = adsImageRepository.saveAndFlush(imageToSave);
+
     return imageToSave.getPreview();
 }
-
-    public byte[] updateImage (Integer id, MultipartFile file) throws IOException {
+    public byte[] updateImage(Integer id, MultipartFile file) throws IOException {
         log.info("Was invoked method to upload photo to ads with id {}", id);
         if (file.isEmpty()) {
             throw new IllegalArgumentException("File is empty");
         }
-        Ads ads = adsRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("Ads not found"));
-        AdsImage imageToSave = new AdsImage();
-//    imageToSave.setId(id);
-        imageToSave.setAds(ads);
+        AdsImage imageToSave = adsImageRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("Image not found"));
+
         imageToSave.setPreview(file.getBytes());
         imageToSave.setMediaType(file.getContentType());
         imageToSave.setFileSize(file.getSize());
         imageToSave.setFilePath(file.getOriginalFilename());
-        imageToSave.setUser(userRepository.findById(ads.getAuthorId().getId()).get());
-        System.out.println(ads);
-        adsImageRepository.save(imageToSave);
-        return imageToSave.getPreview();
+
+        AdsImage savedImage = adsImageRepository.save(imageToSave);
+
+        return savedImage.getPreview();
     }
+
+//    public byte[] updateImage (Integer id, MultipartFile file) throws IOException {
+//        log.info("Was invoked method to upload photo to ads with id {}", id);
+//        if (file.isEmpty()) {
+//            throw new IllegalArgumentException("File is empty");
+//        }
+//        Ads ads = adsRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("Ads not found"));
+//        adsRepository.deleteById(id);
+//        AdsImage imageToSave = new AdsImage();
+////    imageToSave.setId(id);
+//        imageToSave.setAds(ads);
+//        imageToSave.setPreview(file.getBytes());
+//        imageToSave.setMediaType(file.getContentType());
+//        imageToSave.setFileSize(file.getSize());
+//        imageToSave.setFilePath(file.getOriginalFilename());
+//        imageToSave.setUser(userRepository.findById(ads.getAuthorId().getId()).get());
+//        System.out.println(ads);
+//        adsImageRepository.save(imageToSave);
+//        return imageToSave.getPreview();
+//    }
 @Transactional
     public byte[] getImage(Integer id) { //for AdsMapper
         log.info("Was invoked method to get image from ads with id {}", id);

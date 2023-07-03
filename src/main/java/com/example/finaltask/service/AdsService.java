@@ -138,7 +138,7 @@ public AdsDTO addAd(CreateAdsDTO createAdsDTO, MultipartFile image, Authenticati
     }
     public byte[] updateImage(Integer id, MultipartFile image) throws IOException {
         log.info("Update image: " + id);
-        adsImageService.saveImage(id, image);
+        adsImageService.updateImage(id, image);
         log.info("Photo have been saved");
         return image.getBytes();
     }
