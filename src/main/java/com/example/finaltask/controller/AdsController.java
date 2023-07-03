@@ -89,6 +89,7 @@ public class AdsController {
                                         @RequestPart("image") MultipartFile image,
                                         @RequestPart("properties") CreateAdsDTO properties) throws IOException {
         log.info("Add ad: " + properties);
+        System.out.println("Получение запроса на создание объявления");
         return ResponseEntity.ok(adsService.addAd(properties, image, authentication));
     }
 

@@ -1,6 +1,7 @@
 package com.example.finaltask.mapping;
 
 import com.example.finaltask.model.dto.AdsDTO;
+import com.example.finaltask.model.dto.CreateAdsDTO;
 import com.example.finaltask.model.dto.FullAdsDTO;
 import com.example.finaltask.model.entity.Ads;
 import com.example.finaltask.model.entity.User;
@@ -19,9 +20,9 @@ public interface AdsMapper {
 //    @Mapping(target = "pk",source = "id")
 //    @Mapping(target ="author",source = "authorId",qualifiedByName = "userToLong")
 //    AdsDTO toDto(Ads entity);
-@Mapping(source = "id", target = "pk")
+@Mapping(target = "pk", source = "id")
 @Mapping(target = "image", expression = "java(getImage(ads))")
-@Mapping(target = "author", expression = "java(ads.getAuthorId().getId())")
+@Mapping(target = "author", source = "id")
 AdsDTO toDto(Ads ads);
 
 
@@ -40,6 +41,11 @@ AdsDTO toDto(Ads ads);
     @Mapping(target = "phone", source = "authorId.phone")
     @Mapping(target = "pk", source = "id")
     FullAdsDTO adsToAdsDtoFull(Ads ads);
+
+
+    @Mapping(target = "description", source = "description")
+
+    Ads toEntity(CreateAdsDTO createAdsDTO);
 
 
     @Named("userToLong")

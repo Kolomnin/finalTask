@@ -72,9 +72,9 @@ public class AdsService {
 //        adsRepository.save(ads);
 //        return ads;
 //    }
-public AdsDTO addAd(CreateAdsDTO adsDto, MultipartFile image, Authentication authentication) throws IOException {
-    Ads newAds = adsDtoMapper.toEntity(adsDto);
-    newAds.setAuthorId(userRepository.findByEmail(authentication.getName()).get());
+public AdsDTO addAd(CreateAdsDTO createAdsDTO, MultipartFile image, Authentication authentication) throws IOException {
+    Ads newAds = adsMapper.toEntity(createAdsDTO);
+    newAds.setAuthorId(userRepository.findByEmail(authentication.getName()).orElseThrow());
     adsRepository.save(newAds);
     log.info("Save ads: " + newAds);
     if (image != null) {
