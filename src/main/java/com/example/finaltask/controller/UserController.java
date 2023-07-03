@@ -107,28 +107,28 @@ public class UserController {
     @PostMapping("/set_password")
     public ResponseEntity<NewPasswordDTO> setPassword(@RequestBody NewPasswordDTO newPassword,
                                                       Authentication authentication) {
-        log.info("Set password: " + newPassword);
-        Optional<User> user = userRepository.findByEmail(authentication.getName());
-//        user.setPassword(newPassword.getNewPassword());
-
-//        authService.changePassword(newPassword, authentication.getName());
-        if (!authentication.isAuthenticated()) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
-        }
-        if (user.isEmpty()) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
-        }
-        if (authService.changePassword(newPassword, authentication.getName())) {
-            User existingUser = userRepository.findByEmail(authentication.getName()).orElseThrow();
-            existingUser.setPassword(passwordEncoder.encode(newPassword.getNewPassword()));
-            userRepository.save(existingUser);
-
-//            authService.changePassword(newPassword, authentication.getName());
-            return ResponseEntity.ok(new NewPasswordDTO());
-        }
-
-
-        return ResponseEntity.status(HttpStatus.CREATED).build();
+//        log.info("Set password: " + newPassword);
+//        Optional<User> user = userRepository.findByEmail(authentication.getName());
+////        user.setPassword(newPassword.getNewPassword());
+//
+////        authService.changePassword(newPassword, authentication.getName());
+//        if (!authentication.isAuthenticated()) {
+//            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+//        }
+//        if (user.isEmpty()) {
+//            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+//        }
+//        if (authService.changePassword(newPassword, authentication.getName())) {
+//            User existingUser = userRepository.findByEmail(authentication.getName()).orElseThrow();
+//            existingUser.setPassword(passwordEncoder.encode(newPassword.getNewPassword()));
+//            userRepository.save(existingUser);
+//
+////            authService.changePassword(newPassword, authentication.getName());
+//            return ResponseEntity.ok(new NewPasswordDTO());
+//        }
+//
+//
+       return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 
     @Operation(

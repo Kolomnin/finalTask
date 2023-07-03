@@ -1,5 +1,6 @@
 package com.example.finaltask.controller;
 
+import com.example.finaltask.model.entity.User;
 import com.example.finaltask.repository.UserRepository;
 import com.example.finaltask.service.UserService;
 import lombok.extern.slf4j.Slf4j;
@@ -39,7 +40,7 @@ public class AuthController {
 
 
     @PostMapping("/login")
-    public ResponseEntity<?> login(@RequestBody LoginReq req) {
+    public ResponseEntity<User> login(@RequestBody LoginReq req) {
         if (authService.login(req.getUsername(), req.getPassword())) {
             return ResponseEntity.ok().build();
         } else {
@@ -51,7 +52,6 @@ public class AuthController {
     public ResponseEntity<?> register(@RequestBody RegisterReq req) {
         Role role = req.getRole() == null ? USER : req.getRole();
         if (authService.register(req, role)) {
-            userService.addUser(req, role);
             return ResponseEntity.ok().build();
         } else {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
