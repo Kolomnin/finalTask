@@ -1,61 +1,73 @@
 package com.example.finaltask.security;
 
-import com.example.finaltask.model.entity.User;
+import com.example.finaltask.configuration.Role;
+import com.example.finaltask.model.dto.UserDTO;
 import lombok.Data;
+import org.springframework.context.annotation.ScopedProxyMode;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.web.context.annotation.RequestScope;
 
 import java.util.Collection;
 import java.util.List;
+import java.util.Optional;
 
 @Data
-public class SecurityUser implements UserDetails {
+@RequestScope(proxyMode = ScopedProxyMode.TARGET_CLASS)
+public class MyUserDetailsService implements UserDetails {
 
-    private final String username;
-    private final String password;
+    private String password;
+    private String email;
+    private Role role;
 
-    private final List<SimpleGrantedAuthority> authorities;
-
-    public SecurityUser(String username, String password, List<SimpleGrantedAuthority> authorities) {
-        this.username = username;
+    public void setPassword(String password) {
         this.password = password;
-        this.authorities = authorities;
     }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    public void setRole(Role role) {
+        this.role = role;
+    }
+
+
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return null;
+        return Optional.ofNullable(userDTO).map(UserDTO::get);
     }
 
     @Override
     public String getPassword() {
-        return null;
+        return Optional.ofNullable(userDTO).map(U);
     }
 
     @Override
     public String getUsername() {
-        return username;
+        return g;
     }
 
     @Override
     public boolean isAccountNonExpired() {
-        return false;
+        return true;
     }
 
     @Override
     public boolean isAccountNonLocked() {
-        return false;
+        return true;
     }
 
     @Override
     public boolean isCredentialsNonExpired() {
-        return false;
+        return true;
     }
 
     @Override
     public boolean isEnabled() {
-        return false;
+        return true;
     }
 
 //    public static UserDetails fromUser (User user){
