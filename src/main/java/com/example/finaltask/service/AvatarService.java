@@ -12,6 +12,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.util.Optional;
 
 import static org.springframework.util.ObjectUtils.isEmpty;
 @Slf4j
@@ -48,24 +49,22 @@ public class AvatarService {
         if (!userRepository.existsById(id)) {
             throw new IllegalArgumentException("User not found");
         }
-        User user = userRepository.findById(id).get();
+        User user = userRepository.findById(id).orElseThrow();
         UserAvatar userAvatar = new UserAvatar();
-        userAvatar.setId(id);
         userAvatar.setUser(user);
         userAvatar.setBytes(file.getBytes());
-
         avatarRepository.save(userAvatar);
         return userAvatar.getBytes();
     }
 
-    @Transactional
-    public byte[] getAvatar(int id) {
+//    @Transactional
+    public byte[] getAvatar(Integer id) {
         log.info("Was invoked method to get avatar from user with id {}", id);
-        UserAvatar userAvatar = avatarRepository.findById(id).orElseThrow();
+        Optional<UserAvatar> userAvatar = avatarRepository.findById(id);
         if (isEmpty(userAvatar)) {
             throw new IllegalArgumentException("Avatar not found");
         }
-        return userAvatar.getBytes();
+        return userAvatar.orElseThrow().getBytes();
     }
 
 //    public String saveAds( MultipartFile image) {

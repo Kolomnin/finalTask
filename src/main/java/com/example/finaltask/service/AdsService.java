@@ -74,11 +74,11 @@ public class AdsService {
 //    }
 public AdsDTO addAd(CreateAdsDTO adsDto, MultipartFile image, Authentication authentication) throws IOException {
     Ads newAds = adsDtoMapper.toEntity(adsDto);
-    newAds.setAuthorId(userRepository.findByEmail(authentication.getName()).orElseThrow());
+    newAds.setAuthorId(userRepository.findByEmail(authentication.getName()).get());
     adsRepository.save(newAds);
     log.info("Save ads: " + newAds);
     if (image != null) {
-        adsImageService.saveImage(newAds.getAuthorId().getId(), image);
+        adsImageService.saveImage(newAds.getId(), image);
         log.info("Photo has been saved");
     } else {
         throw new IOException("Photo not found");
@@ -110,7 +110,7 @@ public AdsDTO addAd(CreateAdsDTO adsDto, MultipartFile image, Authentication aut
     public FullAdsDTO getFullAdsDTO(Integer id,Authentication authentication) {
         UserDTO userDTO = userMapper.toDto(userRepository.findByEmail(authentication.getName()).orElseThrow());
 //        AdsDTO adsDTO = adsMapper.toDto(adsRepository.findByAuthorId(userRepository.findByEmail(authentication.getName()).getId()));
-        AdsDTO adsDTO = adsMapper.toDto(adsRepository.findById(id).get());
+        AdsDTO adsDTO = adsMapper.toDto(adsRepository.findById(id).orElseThrow());
         System.out.println(adsDTO);
         logger.info(adsDTO.toString());
         FullAdsDTO fullAdsDTO = fullAdsMapper.mergeAdsAndUserAndAds(userDTO,adsDTO);

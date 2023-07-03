@@ -29,7 +29,7 @@ public class User {
     private String password;
     @OneToOne(mappedBy = "user")
     @ToString.Exclude
-    private AdsImage avatar;
+    private UserAvatar  avatar;
 
 
     @Override

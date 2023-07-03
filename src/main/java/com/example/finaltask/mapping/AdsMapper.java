@@ -11,11 +11,11 @@ import org.mapstruct.Named;
 
 @Mapper(componentModel = "spring")
 public interface AdsMapper {
-    @InheritInverseConfiguration
-    @Mapping(target = "image", ignore = true)
-    @Mapping(target = "authorId", ignore = true)
-    @Mapping(target = "description", ignore = true)
-    Ads toEntity(AdsDTO dto);
+//    @InheritInverseConfiguration
+//    @Mapping(target = "image", ignore = true)
+//    @Mapping(target = "authorId", ignore = true)
+//    @Mapping(target = "description", ignore = true)
+//    Ads toEntity(AdsDTO dto);
 //    @Mapping(target = "pk",source = "id")
 //    @Mapping(target ="author",source = "authorId",qualifiedByName = "userToLong")
 //    AdsDTO toDto(Ads entity);

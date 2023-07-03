@@ -51,7 +51,7 @@ public byte[] saveImage(Integer id, MultipartFile file) throws IOException {
     }
     Ads ads = adsRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("Ads not found"));
     AdsImage imageToSave = new AdsImage();
-    imageToSave.setId(id);
+//    imageToSave.setId(id);
     imageToSave.setAds(ads);
     imageToSave.setPreview(file.getBytes());
     imageToSave.setMediaType(file.getContentType());
@@ -63,7 +63,7 @@ public byte[] saveImage(Integer id, MultipartFile file) throws IOException {
     return imageToSave.getPreview();
 }
 @Transactional
-    public byte[] getImage(int id) { //for AdsMapper
+    public byte[] getImage(Integer id) { //for AdsMapper
         log.info("Was invoked method to get image from ads with id {}", id);
         AdsImage image = adsImageRepository.findAdsImageById(id);
         System.out.println("картинка появляется");

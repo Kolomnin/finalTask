@@ -46,9 +46,17 @@ public class AdsController {
                     @ApiResponse(responseCode = "401", description = "Unauthorized")
             }
     )
-
-
-    @GetMapping()
+    /**
+     * Метод для получения всех объявлений.
+     *
+     * Данный метод обрабатывает GET-запросы на эндпоинт "/ads". Получает все объявления
+     * из сервиса AdsService и возвращает их вместе с количеством объявлений в объекте
+     * ResponseWrapperAds в теле ответа.
+     *
+     * @return Объект ResponseEntity<ResponseWrapperAds<AdsDTO>>, содержащий список объявлений (results)
+     *         и количество объявлений (count). Возвращается статус 200 (OK) в случае успешного выполнения запроса.
+     */
+    @GetMapping()//получить все объявления http://localhost:8080/ads
     public ResponseEntity<ResponseWrapperAds<AdsDTO>> getAllAds() {
 
         ResponseWrapperAds<AdsDTO> ads = new ResponseWrapperAds<>();
@@ -76,14 +84,6 @@ public class AdsController {
      * и image, который содержит файл изображения, связанный с объявлением. Оба параметра
      * помечены аннотацией @RequestParam, что означает, что они должны быть извлечены из параметров запроса.
      */
-//    @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-//    public ResponseEntity<AdsDTO> addADS(@RequestPart ("properties") CreateAdsDTO properties,
-//                                         @RequestPart ("image") MultipartFile image, Authentication authentication) throws IOException {
-//        log.info("Создание объявления" + properties);
-//
-//        adsImageService.saveImage(adsService.addAds2(properties,authentication),image,authentication);
-//        return new ResponseEntity<>(HttpStatus.CREATED);
-//    }
     @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<AdsDTO> addAd(Authentication authentication,
                                         @RequestPart("image") MultipartFile image,
@@ -117,11 +117,7 @@ public class AdsController {
      * окументации API. Integer id - это тип данных переменной id, которая будет содержать значение
      * идентификатора объявления
      */
-//    @GetMapping("/{id}")
-//    public ResponseEntity<FullAdsDTO> getADS(@Parameter(description = "Id объявления") @PathVariable Long id, Authentication authentication) {
-//        FullAdsDTO fullAdsDTO =adsService.getFullAdsDTO(id,authentication);
-//        return ResponseEntity.ok(fullAdsDTO);
-//    }
+
     @GetMapping("/{id}")
     public ResponseEntity<FullAdsDTO> getADS(@Parameter(description = "Id объявления") @PathVariable("id") Integer id, Authentication authentication) {
         log.info(" Попытка получить fullAdsDTO: " + id);

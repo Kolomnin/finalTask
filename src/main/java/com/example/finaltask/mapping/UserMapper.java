@@ -9,13 +9,16 @@ import org.mapstruct.Mapping;
 @Mapper(componentModel = "spring")
 public interface UserMapper {
 
-    User toEntity(UserDTO dto);
-    @Mapping(target = "image", expression = "java(getAvatar(user))")
-    UserDTO toDto(User user);
+
+    @Mapping(target = "image", expression = "java(getAvatar(entity))")
+    UserDTO toDto(User entity);
 
     @Mapping(source = "username",target = "email")
     @Mapping(source = "password",target = "password")
     User toEntity(RegisterReq registerReq);
+
+
+    RegisterReq toDto2 (User user);
 
     default String getAvatar(User user) {
         if (user.getAvatar() == null) {
@@ -23,9 +26,6 @@ public interface UserMapper {
         }
         return "/users/" + user.getId() + "/getImage";
     }
-
-
-    RegisterReq toDto2 (User user);
 
 
 }
