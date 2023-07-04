@@ -15,7 +15,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.provisioning.UserDetailsManager;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -31,8 +30,6 @@ public class AdsService {
     private final AdsRepository adsRepository;
     private final UserRepository userRepository;
 
-    private final UserDetailsManager manager;
-
     private final AdsImageService adsImageService;
     private final AdsMapper adsMapper;
     private final AdsDtoMapper adsDtoMapper;
@@ -44,10 +41,10 @@ public class AdsService {
 
 
 
-    public AdsService(AdsRepository adsRepository, UserRepository userRepository, UserDetailsManager manager, AdsImageService adsImageService, AdsMapper adsMapper, AdsDtoMapper adsDtoMapper, FullAdsMapper fullAdsMapper, UserMapper userMapper) {
+    public AdsService(AdsRepository adsRepository, UserRepository userRepository, AdsImageService adsImageService, AdsMapper adsMapper, AdsDtoMapper adsDtoMapper, FullAdsMapper fullAdsMapper, UserMapper userMapper) {
         this.adsRepository = adsRepository;
         this.userRepository = userRepository;
-        this.manager = manager;
+
         this.adsImageService = adsImageService;
         this.adsMapper = adsMapper;
         this.adsDtoMapper = adsDtoMapper;
