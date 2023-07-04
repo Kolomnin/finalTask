@@ -1,5 +1,6 @@
 package com.example.finaltask.configuration;
 
+import com.example.finaltask.security.UserDetailsServiceImp;
 import org.springframework.context.annotation.Bean;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.config.Customizer;
@@ -8,6 +9,7 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.provisioning.InMemoryUserDetailsManager;
@@ -25,55 +27,28 @@ public class WebSecurityConfig {
             "/webjars/**",
             "/login",
             "/register",
-            "/ads"
+            "/ads",
+            "/ads/*/image",
+            "/users/*/image"
     };
 
     @Bean
-    public InMemoryUserDetailsManager userDetailsService() {
-        UserDetails user =
-                User.builder()
-                        .username("user@gmail.com")
-                        .password("password")
-                        .passwordEncoder((plainText) -> passwordEncoder().encode(plainText))
-                        .roles("USER")
-                        .build();
-        return new InMemoryUserDetailsManager(user);
-    }
-
-    @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
-        http.csrf()
+        return http.csrf()
                 .disable()
                 .authorizeHttpRequests(
                         (authorization) ->
                                 authorization
-                                        .mvcMatchers(AUTH_WHITELIST)
+                                        .mvcMatchers(HttpMethod.GET, AUTH_WHITELIST)
                                         .permitAll()
-                                        .mvcMatchers(HttpMethod.GET,"/ads","ads/getImage","users/Image").permitAll()
                                         .mvcMatchers("/ads/**", "/users/**")
                                         .authenticated()
                 )
                 .cors()
                 .and()
-                .httpBasic(withDefaults());
-        return http.build();
+                .httpBasic(withDefaults()).build();
     }
-//@Bean
-//public SecurityFilterChain filterChain1(HttpSecurity http) throws Exception {
-//
-//        return  http
-//                .csrf(AbstractHttpConfigurer::disable)
-//                .httpBasic(Customizer.withDefaults())
-//                .authorizeHttpRequests(
-//                        matcherRegistry ->
-//                                matcherRegistry
-//                                        .requestMatchers(HttpMethod.GET,"/ads").permitAll()
-//                                        .requestMatchers("/ads/**","users/**").authenticated()
-//                )
-//                .build();
-//
-//
-//}
+
 
     @Bean
     public PasswordEncoder passwordEncoder() {
