@@ -50,19 +50,6 @@ public byte[] saveImage(Integer id, MultipartFile file) throws IOException {
 
     return imageToSave.getPreview();
 }
-
-    public AdsDTO updateAds(CreateAdsDTO createAdsDTO, Integer id) {
-        log.info("Request to update ad by id");
-        if (createAdsDTO.getPrice() < 0) {
-            throw new IllegalArgumentException("Prise less null");
-        }
-        Ads ads = adsRepository.findById(id).orElseThrow(null);
-        ads.setDescription(createAdsDTO.getDescription());
-        ads.setTitle(createAdsDTO.getTitle());
-        ads.setPrice(createAdsDTO.getPrice());
-        adsRepository.save(ads);
-        return adsMapper.toDto(ads);
-    }
     public byte[] updateImage(Integer id, MultipartFile file) throws IOException {
         log.info("Was invoked method to upload photo to ads with id {}", id);
         if (file.isEmpty()) {
@@ -92,5 +79,9 @@ public byte[] saveImage(Integer id, MultipartFile file) throws IOException {
         return image.getPreview();
     }
 
+    public void deleteImageAds(Integer id) {
+        log.info("delete adsImage by Id", id);
+        adsImageRepository.deleteById(id);
+    }
 
 }

@@ -42,9 +42,11 @@ public class AdsService {
     private final UserMapper userMapper;
     private final Logger logger = LoggerFactory.getLogger(AdsService.class);
 
+    private final CommentService commentService;
 
 
-    public AdsService(AdsRepository adsRepository, UserRepository userRepository, UserDetailsManager manager, AdsImageService adsImageService, AdsMapper adsMapper, AdsDtoMapper adsDtoMapper, FullAdsMapper fullAdsMapper, UserMapper userMapper) {
+
+    public AdsService(AdsRepository adsRepository, UserRepository userRepository, UserDetailsManager manager, AdsImageService adsImageService, AdsMapper adsMapper, AdsDtoMapper adsDtoMapper, FullAdsMapper fullAdsMapper, UserMapper userMapper, CommentService commentService) {
         this.adsRepository = adsRepository;
         this.userRepository = userRepository;
         this.manager = manager;
@@ -53,6 +55,7 @@ public class AdsService {
         this.adsDtoMapper = adsDtoMapper;
         this.fullAdsMapper = fullAdsMapper;
         this.userMapper = userMapper;
+        this.commentService = commentService;
     }
 public AdsDTO addAd(CreateAdsDTO createAdsDTO, MultipartFile image, Authentication authentication) throws IOException {
     Ads newAds = adsMapper.toEntity(createAdsDTO);
@@ -90,14 +93,23 @@ public AdsDTO addAd(CreateAdsDTO createAdsDTO, MultipartFile image, Authenticati
         }
         return adsDTOS;
     }
-    @Transactional
-    public void deleteAdsById(Integer id) {
-//        adsRepository.deleteAdsById(id);
-        adsRepository.deleteById(id);
+//    @Transactional
+//    public void deleteAdsById(Integer id) {
+////        adsRepository.deleteAdsById(id);
+//        adsRepository.deleteById(id);
+//    }
+
+    public void deleteAds(Integer adId) {
+        log.info("Request to delete ad by id");
+        Ads ad = adsRepository.findById(adId).orElseThrow(null);
+        commentService.deleteAllCommentsAds(adId);
+        adsImageService.deleteImageAds(ad.getImage().getId());
+        adsRepository.deleteById(adId);
+
     }
-    public Ads editAds(Ads ads ) {
-        return adsRepository.save(ads);
-    }
+//    public Ads editAds(Ads ads ) {
+//        return adsRepository.save(ads);
+//    }
 public AdsDTO updateAds(CreateAdsDTO createAdsDTO, Integer id) {
     log.info("Request to update ad by id");
     if (createAdsDTO.getPrice() < 0) {
