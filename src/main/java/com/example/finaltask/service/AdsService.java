@@ -16,7 +16,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
@@ -43,7 +42,7 @@ public class AdsService {
 
 
 
-    public AdsService(AdsRepository adsRepository, UserRepository userRepository, AdsImageService adsImageService, AdsMapper adsMapper, AdsDtoMapper adsDtoMapper, FullAdsMapper fullAdsMapper, UserMapper userMapper) {
+    public AdsService(AdsRepository adsRepository, UserRepository userRepository, AdsImageService adsImageService, AdsMapper adsMapper, AdsDtoMapper adsDtoMapper, FullAdsMapper fullAdsMapper, UserMapper userMapper, CommentService commentService) {
 
         this.adsRepository = adsRepository;
         this.userRepository = userRepository;
@@ -53,6 +52,7 @@ public class AdsService {
         this.adsDtoMapper = adsDtoMapper;
         this.fullAdsMapper = fullAdsMapper;
         this.userMapper = userMapper;
+
         this.commentService = commentService;
     }
 public AdsDTO addAd(CreateAdsDTO createAdsDTO, MultipartFile image, Authentication authentication) throws IOException {

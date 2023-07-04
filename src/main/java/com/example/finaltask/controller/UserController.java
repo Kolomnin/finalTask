@@ -93,7 +93,7 @@ public class UserController {
      * Метод возвращает ResponseEntity с кодом состояния HTTP HttpStatus.OK, что означает успешное выполнение операции.
      * В данном случае, возвращается пустое тело ответа (new ResponseEntity<>(HttpStatus.OK)),
      * но можно также вернуть любой другой объект или модель данных, который будет сериализован и отправлен в теле ответа.
-
+    */
     @PostMapping("/set_password")
     public ResponseEntity<NewPasswordDTO> setPassword(@RequestBody NewPasswordDTO newPassword,
                                                       Authentication authentication) {
@@ -203,6 +203,7 @@ public class UserController {
         log.info("Get avatar from user with id " + id);
         return ResponseEntity.ok(avatarService.getAvatar(id));
     }
+}
 
 
 
