@@ -10,6 +10,7 @@ import com.example.finaltask.repository.UserRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -64,9 +65,10 @@ public class CommentService {
     public void deleteCommentById(Integer id) {
         commentRepository.deleteById(id);
     }
+    @Transactional
     public void deleteAllCommentsAds(Integer adsId) {
         log.info("deleteAll comment ads");
-        commentRepository.deleteAllById(adsId);
+        commentRepository.deleteByAdsId(adsId);
     }
     public CommentDTO editComment(CommentDTO commentDTO) {
         Comment comment = commentMapper.toEntity(commentDTO);
