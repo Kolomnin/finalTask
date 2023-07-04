@@ -1,6 +1,7 @@
 package com.example.finaltask.service;
 
 import com.example.finaltask.mapping.ImageMapper;
+import com.example.finaltask.model.entity.AdsImage;
 import com.example.finaltask.model.entity.User;
 import com.example.finaltask.model.entity.UserAvatar;
 import com.example.finaltask.repository.AvatarRepository;
@@ -40,22 +41,44 @@ public class AvatarService {
         return avatarRepository.save(avatar);
     }
 
-    public byte[] saveAvatar(String email, MultipartFile file) throws IOException {
-        Integer id = userRepository.findByEmail(email).get().getId();
-        log.info("Was invoked method to upload photo to user with id {}", id);
-        if (file.isEmpty()) {
-            throw new IllegalArgumentException("File is empty");
-        }
-        if (!userRepository.existsById(id)) {
-            throw new IllegalArgumentException("User not found");
-        }
-        User user = userRepository.findById(id).orElseThrow();
-        UserAvatar userAvatar = new UserAvatar();
-        userAvatar.setUser(user);
-        userAvatar.setBytes(file.getBytes());
-        avatarRepository.save(userAvatar);
-        return userAvatar.getBytes();
+//    public byte[] saveAvatar(String email, MultipartFile file) throws IOException {
+//        Integer id = userRepository.findByEmail(email).get().getId();
+//        log.info("Was invoked method to upload photo to user with id {}", id);
+//        if (file.isEmpty()) {
+//            throw new IllegalArgumentException("File is empty");
+//        }
+//        if (!userRepository.existsById(id)) {
+//            throw new IllegalArgumentException("User not found");
+//        }
+//        UserAvatar userAvatar = new UserAvatar();
+//        userAvatar.setBytes(file.getBytes());
+//        avatarRepository.save(userAvatar);
+//        return userAvatar.getBytes();
+//    }
+public byte[] saveAvatar(String email, MultipartFile file) throws IOException {
+    UserAvatar imageToSave;
+
+    if (file.isEmpty()) {
+        throw new IllegalArgumentException("File is empty");
     }
+    Integer id = userRepository.findByEmail(email).get().getId();
+    Optional<UserAvatar> existingAvatar = avatarRepository.findById(1);
+
+    if (existingAvatar.isEmpty()) {
+        imageToSave = new UserAvatar();
+        imageToSave.setBytes(file.getBytes());
+        imageToSave.setUser(userRepository.findByEmail(email).orElseThrow());
+    } else {
+        imageToSave = existingAvatar.get();
+        System.out.println(imageToSave.getUser() + " Это владелец аватарки");
+        imageToSave.setBytes(file.getBytes());
+    }
+
+    UserAvatar savedImage = avatarRepository.save(imageToSave);
+
+    return savedImage.getBytes();
+}
+
 
 //    @Transactional
     public byte[] getAvatar(Integer id) {
@@ -64,7 +87,7 @@ public class AvatarService {
         if (isEmpty(userAvatar)) {
             throw new IllegalArgumentException("Avatar not found");
         }
-        return userAvatar.orElseThrow().getBytes();
+        return userAvatar.get().getBytes();
     }
 
 //    public String saveAds( MultipartFile image) {
