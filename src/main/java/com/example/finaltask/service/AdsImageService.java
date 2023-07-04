@@ -1,5 +1,8 @@
 package com.example.finaltask.service;
 
+import com.example.finaltask.mapping.AdsMapper;
+import com.example.finaltask.model.dto.AdsDTO;
+import com.example.finaltask.model.dto.CreateAdsDTO;
 import com.example.finaltask.model.entity.Ads;
 import com.example.finaltask.model.entity.AdsImage;
 import com.example.finaltask.model.entity.User;
@@ -26,7 +29,7 @@ public class AdsImageService {
     private final AdsImageRepository adsImageRepository;
     private final AdsRepository adsRepository;
     private final UserRepository userRepository;
-
+    private final AdsMapper adsMapper;
     private final AvatarRepository avatarRepository;
 
 public byte[] saveImage(Integer id, MultipartFile file) throws IOException {
@@ -47,6 +50,19 @@ public byte[] saveImage(Integer id, MultipartFile file) throws IOException {
 
     return imageToSave.getPreview();
 }
+
+    public AdsDTO updateAds(CreateAdsDTO createAdsDTO, Integer id) {
+        log.info("Request to update ad by id");
+        if (createAdsDTO.getPrice() < 0) {
+            throw new IllegalArgumentException("Prise less null");
+        }
+        Ads ads = adsRepository.findById(id).orElseThrow(null);
+        ads.setDescription(createAdsDTO.getDescription());
+        ads.setTitle(createAdsDTO.getTitle());
+        ads.setPrice(createAdsDTO.getPrice());
+        adsRepository.save(ads);
+        return adsMapper.toDto(ads);
+    }
     public byte[] updateImage(Integer id, MultipartFile file) throws IOException {
         log.info("Was invoked method to upload photo to ads with id {}", id);
         if (file.isEmpty()) {

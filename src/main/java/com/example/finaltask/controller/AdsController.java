@@ -133,8 +133,8 @@ public class AdsController {
      * В данном случае, возвращается пустое тело ответа (ResponseEntity.ok().build()
      */
     @PatchMapping("/{id}")
-    public ResponseEntity<AdsDTO> updateADS(@RequestBody AdsDTO adsDTO, @PathVariable Integer id) {
-        return ResponseEntity.ok().build();
+    public ResponseEntity<AdsDTO> updateADS(@RequestBody CreateAdsDTO adsDTO, @PathVariable Integer id) {
+        return ResponseEntity.ok(adsService.updateAds(adsDTO,id));
     }
 
     @Operation(

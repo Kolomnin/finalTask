@@ -98,6 +98,18 @@ public AdsDTO addAd(CreateAdsDTO createAdsDTO, MultipartFile image, Authenticati
     public Ads editAds(Ads ads ) {
         return adsRepository.save(ads);
     }
+public AdsDTO updateAds(CreateAdsDTO createAdsDTO, Integer id) {
+    log.info("Request to update ad by id");
+    if (createAdsDTO.getPrice() < 0) {
+        throw new IllegalArgumentException("Prise less null");
+    }
+    Ads ads = adsRepository.findById(id).orElseThrow(null);
+    ads.setDescription(createAdsDTO.getDescription());
+    ads.setTitle(createAdsDTO.getTitle());
+    ads.setPrice(createAdsDTO.getPrice());
+    adsRepository.save(ads);
+    return adsMapper.toDto(ads);
+}
 
     public FullAdsDTO getFullAdsDTO(Integer id,Authentication authentication) {
         UserDTO userDTO = userMapper.toDto(userRepository.findByEmail(authentication.getName()).orElseThrow());
@@ -119,6 +131,9 @@ public AdsDTO addAd(CreateAdsDTO createAdsDTO, MultipartFile image, Authenticati
         return adsMapper.adsToAdsDtoFull(ads);
     }
     public byte[] updateImage(Integer id, MultipartFile image) throws IOException {
+        if (image.isEmpty()) {
+            throw new IllegalArgumentException("Image now found");
+        }
         log.info("Update image: " + id);
         adsImageService.updateImage(id, image);
         log.info("Photo have been saved");
