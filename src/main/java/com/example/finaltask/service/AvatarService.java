@@ -90,17 +90,5 @@ public byte[] saveAvatar(String email, MultipartFile file) throws IOException {
         return userAvatar.get().getBytes();
     }
 
-//    public String saveAds( MultipartFile image) {
-//        AdsImage entity = new AdsImage();
-//        try {
-//            // код, который кладет картинку в entity
-//            byte[] bytes = image.getBytes();
-//            entity.setAdsImage(bytes);
-//        } catch (IOException e) {
-//            throw new RuntimeException(e);
-//        }
-//        entity.setId(UUID.randomUUID().toString());
-//        // код сохранения картинки в БД
-//        AdsEntity savedEntity = repository.saveAndFlush(entity);
-//        return savedEntity.getId();
+
 }

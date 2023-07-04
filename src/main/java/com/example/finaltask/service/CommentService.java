@@ -35,18 +35,7 @@ public class CommentService {
         this.adsRepository = adsRepository;
     }
 
-//    public CommentDTO addComment(CreateCommentDTO createCommentDTO, Integer id, @NonNull Authentication authentication) {
-//        System.out.println(createCommentDTO.getText());
-//        Integer userId = userRepository.findByEmail(authentication.getName()).get().getId();
-//        System.out.println("id комментарий"+userId);
-//        Comment comment = commentMapper.toEntity(createCommentDTO);
-//        Ads ads = adsService.getAdsById(id).orElseThrow();
-//        comment.setAds(ads);
-//        comment.setCreatedAt(LocalDateTime.now());
-//        comment.setAuthorId(userRepository.findByEmail(authentication.getName()).orElseThrow());
-//        commentRepository.save(comment);
-//        return commentMapper.toDto(comment);
-//    }
+
     public CommentDTO addComment(Integer id, CommentDTO commentDto, Authentication authentication) {
         if (!adsRepository.existsById(id)) {
             throw new IllegalArgumentException("Ad not found");
@@ -71,9 +60,6 @@ public class CommentService {
         return responseWrapperComment;
     }
 
-//    public void getCommentById(Long id){
-//
-//    }
     public void deleteCommentById(Integer id) {
         commentRepository.deleteById(id);
     }

@@ -51,11 +51,6 @@ public class UserController {
 
     private final PasswordEncoder passwordEncoder;
 
-
-
-
-
-
     private UserMapper userMapping;
 
     /**
@@ -100,10 +95,7 @@ public class UserController {
      * В данном случае, возвращается пустое тело ответа (new ResponseEntity<>(HttpStatus.OK)),
      * но можно также вернуть любой другой объект или модель данных, который будет сериализован и отправлен в теле ответа.
     */
-//    @PostMapping("/set_password")
-//    public ResponseEntity<?> updatePassword(@RequestBody NewPasswordDTO newPassword, Authentication authentication) {
-//        return new ResponseEntity<>(HttpStatus.OK);
-//    }
+
     @PostMapping("/set_password")
     public ResponseEntity<NewPasswordDTO> setPassword(@RequestBody NewPasswordDTO newPassword,
                                                       Authentication authentication) {
@@ -147,39 +139,12 @@ public class UserController {
     /**
      * Метод должен обрабатывать HTTP GET-запросы на указанном пути ("/me")
      */
-//    @GetMapping("/me")
-//    public ResponseEntity<UserDTO> getUser(Authentication authentication) {
-//        userDTOInterface.getUser();
-//        return new ResponseEntity<>(HttpStatus.OK);
-//    }
-//    @GetMapping("{id}")
-//    public ResponseEntity<User> getUser(@PathVariable Long id) {
-//
-//        return ResponseEntity.ok(userService.getUserById(id));
-//    }
-    // produces в аннотации GetMapping нужно указать для того, чтобы браузер понимал, что передается картинка
-//    @GetMapping(value = "/images/{id}/", produces = {MediaType.IMAGE_PNG_VALUE})
-//    public byte[] getAdsImage() {
-//        UserAvatar enityt= avatarRepository.findById(1L).orElseThrow(null);
-//         return enityt.getBytes();
-//    }
+
     @DeleteMapping("{id}")
     public void deleteUser(@PathVariable () Integer id){
          userService.deleteUserById(id);
     }
-//    @Operation(summary = "Изменение параметров владельца",
-//            requestBody = @io.swagger.v3.oas.annotations.parameters.RequestBody(description = "Новый владелец",
-//                    content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE)
-//            ))
-//    @PutMapping
-//    public ResponseEntity<User> editUser(@RequestBody UserDTO user,Authentication authentication) {
-//        User foundUser = userService.editUser(user,authentication);
-//        System.out.println("запрос на смену имени, фамилии");
-//        if (foundUser == null) {
-//            return ResponseEntity.notFound().build();
-//        }
-//        return ResponseEntity.ok(foundUser);
-//    }
+
 
 @GetMapping("/me")
 public ResponseEntity<Optional<UserDTO>> getUser(Authentication authentication) {
@@ -244,25 +209,9 @@ public ResponseEntity<Optional<UserDTO>> getUser(Authentication authentication) 
      * операции обновления изображения пользователя. В данном случае, возвращается пустое тело
      * ответа (ResponseEntity.status(200).build()).
      */
-//    @PatchMapping(value = "/me/image", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-//    public ResponseEntity<AvatarDTO> updateUserImage(@RequestParam("image") MultipartFile file, Authentication authentication) throws IOException {
-//
-//        UserAvatar entity = new UserAvatar();
-//        try {
-//            // код, который кладет картинку в entity
-//            byte[] bytes = file.getBytes();
-//            entity.setBytes(bytes);
-//        } catch (IOException e) {
-//            throw new RuntimeException(e);
-//        }
-//        entity.setId(Long.valueOf(UUID.randomUUID().toString()));
-//        // код сохранения картинки в БД
-//         UserAvatar savedEntity = avatarRepository.saveAndFlush(entity);
-//        return savedEntity.getId();
 
     @PatchMapping(value = "/me/image", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<Void> updateUserImage(@RequestParam("image") MultipartFile image,Authentication authentication) throws IOException {
-//        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
         System.out.println("запрос на смену аватарки");
         avatarService.saveAvatar(authentication.getName(), image);
@@ -275,25 +224,6 @@ public ResponseEntity<Optional<UserDTO>> getUser(Authentication authentication) 
         log.info("Get avatar from user with id " + id);
         return ResponseEntity.ok(avatarService.getAvatar(id));
     }
-//    @CrossOrigin(origins = "http://yourdomain.com")
-//    @GetMapping(value = "/{id}/image")
-//    public ResponseEntity<byte[]> getImage(@PathVariable("id") int id) {
-//        log.info("Get avatar from user with id " + id);
-//        return ResponseEntity.ok()
-//                .header("Access-Control-Allow-Origin", "*")
-//                .header("Access-Control-Allow-Methods", "GET")
-//                .header("Access-Control-Allow-Headers", "Content-Type")
-//                .body(avatarService.getAvatar(id));
-//    }
-
-            // код сохранения картинки в БД
-//            UserAvatar savedEntity = avatarRepository.save(entity);
-//            return savedEntity.getId();
-//        System.out.println("запрос на смену аватарки пользователя вызван");
-//        System.out.println(authentication.getName());
-//        avatarService.saveImage(file,authentication);
-//        AvatarDTO avatar = imageMapper.toDTO( avatarService.saveImage(file,authentication));
-//        return new ResponseEntity<>(HttpStatus.CREATED);
     }
 
 

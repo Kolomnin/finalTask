@@ -54,24 +54,6 @@ public class AdsService {
         this.fullAdsMapper = fullAdsMapper;
         this.userMapper = userMapper;
     }
-
-//    public AdsDTO addAds1(AdsDTO properties) {
-//        Ads ads = adsMapper.toEntity(properties);
-//        AdsDTO adsDTO = adsMapper.toDto(ads);
-//        ads.setAuthorId(userRepository.findById(1L));
-//        adsRepository.save(ads);
-//        return adsDTO;
-//    }
-//    public Ads addAds2(CreateAdsDTO properties, Authentication authentication) {
-//        Ads ads = adsDtoMapper.toEntity(properties);
-//        System.out.println("Объявление создано");
-//        System.out.println(properties.getDescription());
-//        AdsDTO adsDTO = adsMapper.toDto(ads);
-//        System.out.println(adsDTO);
-//        ads.setAuthorId(userRepository.findByEmail(authentication.getName()).orElseThrow(null));
-//        adsRepository.save(ads);
-//        return ads;
-//    }
 public AdsDTO addAd(CreateAdsDTO createAdsDTO, MultipartFile image, Authentication authentication) throws IOException {
     Ads newAds = adsMapper.toEntity(createAdsDTO);
     newAds.setAuthorId(userRepository.findByEmail(authentication.getName()).orElseThrow());

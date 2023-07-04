@@ -34,13 +34,6 @@ public class AdsController {
 
     private final AdsImageService adsImageService;
 
-
-
-
-
-
-
-
     /**
      * Добавить объявление
      * Метод addADS принимает два параметра: adsDTO, который содержит данные объявления
@@ -240,10 +233,7 @@ public class AdsController {
      * Метод возвращает ResponseEntity с кодом состояния HTTP 200 (OK), что означает успешное выполнение операции.
      * В данном случае, возвращается пустое тело ответа (ResponseEntity.ok().build())
      */
-//    @PatchMapping(value = "/{id}/image", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-//    public ResponseEntity<byte[]> updateADSImage(@PathVariable Integer id, @RequestParam("image") MultipartFile image) {
-//        return ResponseEntity.ok().build();
-//    }
+
     @PatchMapping(value = "/{id}/image", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<byte[]> updateImage(@PathVariable Integer id,
                                               @RequestParam("image") MultipartFile image) throws IOException {
