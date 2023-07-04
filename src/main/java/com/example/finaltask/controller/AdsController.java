@@ -34,13 +34,6 @@ public class AdsController {
 
     private final AdsImageService adsImageService;
 
-
-
-
-
-
-
-
     /**
      * Добавить объявление
      * Метод addADS принимает два параметра: adsDTO, который содержит данные объявления
@@ -109,7 +102,8 @@ public class AdsController {
      */
     @DeleteMapping("/{id}")
     public ResponseEntity<?> removeADS(@Parameter(description = "Id объявления") @PathVariable Integer id) {
-        adsService.deleteAdsById(id);
+        System.out.println("вызов метода удаления объявления");
+        adsService.deleteAds(id);
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
 
@@ -140,8 +134,8 @@ public class AdsController {
      * В данном случае, возвращается пустое тело ответа (ResponseEntity.ok().build()
      */
     @PatchMapping("/{id}")
-    public ResponseEntity<AdsDTO> updateADS(@RequestBody AdsDTO adsDTO, @PathVariable Integer id) {
-        return ResponseEntity.ok().build();
+    public ResponseEntity<AdsDTO> updateADS(@RequestBody CreateAdsDTO adsDTO, @PathVariable Integer id) {
+        return ResponseEntity.ok(adsService.updateAds(adsDTO,id));
     }
 
     @Operation(
@@ -240,10 +234,7 @@ public class AdsController {
      * Метод возвращает ResponseEntity с кодом состояния HTTP 200 (OK), что означает успешное выполнение операции.
      * В данном случае, возвращается пустое тело ответа (ResponseEntity.ok().build())
      */
-//    @PatchMapping(value = "/{id}/image", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-//    public ResponseEntity<byte[]> updateADSImage(@PathVariable Integer id, @RequestParam("image") MultipartFile image) {
-//        return ResponseEntity.ok().build();
-//    }
+
     @PatchMapping(value = "/{id}/image", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<byte[]> updateImage(@PathVariable Integer id,
                                               @RequestParam("image") MultipartFile image) throws IOException {

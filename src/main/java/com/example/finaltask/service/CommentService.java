@@ -7,6 +7,7 @@ import com.example.finaltask.model.entity.Comment;
 import com.example.finaltask.repository.AdsRepository;
 import com.example.finaltask.repository.CommentRepository;
 import com.example.finaltask.repository.UserRepository;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 
@@ -14,39 +15,28 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Service
+@Slf4j
 public class CommentService {
 
     private final CommentRepository commentRepository;
 
     private final CommentMapper commentMapper;
 
-    private final AdsService adsService;
 
     private final UserRepository userRepository;
 
     private final AdsRepository adsRepository;
 
     public CommentService(CommentRepository commentRepository, CommentMapper commentMapper,
-                          AdsService adsService, UserRepository userRepository, AdsRepository adsRepository) {
+                           UserRepository userRepository, AdsRepository adsRepository) {
         this.commentRepository = commentRepository;
         this.commentMapper = commentMapper;
-        this.adsService = adsService;
+
         this.userRepository = userRepository;
         this.adsRepository = adsRepository;
     }
 
-//    public CommentDTO addComment(CreateCommentDTO createCommentDTO, Integer id, @NonNull Authentication authentication) {
-//        System.out.println(createCommentDTO.getText());
-//        Integer userId = userRepository.findByEmail(authentication.getName()).get().getId();
-//        System.out.println("id комментарий"+userId);
-//        Comment comment = commentMapper.toEntity(createCommentDTO);
-//        Ads ads = adsService.getAdsById(id).orElseThrow();
-//        comment.setAds(ads);
-//        comment.setCreatedAt(LocalDateTime.now());
-//        comment.setAuthorId(userRepository.findByEmail(authentication.getName()).orElseThrow());
-//        commentRepository.save(comment);
-//        return commentMapper.toDto(comment);
-//    }
+
     public CommentDTO addComment(Integer id, CommentDTO commentDto, Authentication authentication) {
         if (!adsRepository.existsById(id)) {
             throw new IllegalArgumentException("Ad not found");
@@ -71,13 +61,13 @@ public class CommentService {
         return responseWrapperComment;
     }
 
-//    public void getCommentById(Long id){
-//
-//    }
     public void deleteCommentById(Integer id) {
         commentRepository.deleteById(id);
     }
-
+    public void deleteAllCommentsAds(Integer adsId) {
+        log.info("deleteAll comment ads");
+        commentRepository.deleteAllById(adsId);
+    }
     public CommentDTO editComment(CommentDTO commentDTO) {
         Comment comment = commentMapper.toEntity(commentDTO);
         commentRepository.save(comment);

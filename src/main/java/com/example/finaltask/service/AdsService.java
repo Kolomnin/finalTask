@@ -39,9 +39,12 @@ public class AdsService {
     private final UserMapper userMapper;
     private final Logger logger = LoggerFactory.getLogger(AdsService.class);
 
+    private final CommentService commentService;
+
 
 
     public AdsService(AdsRepository adsRepository, UserRepository userRepository, AdsImageService adsImageService, AdsMapper adsMapper, AdsDtoMapper adsDtoMapper, FullAdsMapper fullAdsMapper, UserMapper userMapper) {
+
         this.adsRepository = adsRepository;
         this.userRepository = userRepository;
 
@@ -50,25 +53,8 @@ public class AdsService {
         this.adsDtoMapper = adsDtoMapper;
         this.fullAdsMapper = fullAdsMapper;
         this.userMapper = userMapper;
+        this.commentService = commentService;
     }
-
-//    public AdsDTO addAds1(AdsDTO properties) {
-//        Ads ads = adsMapper.toEntity(properties);
-//        AdsDTO adsDTO = adsMapper.toDto(ads);
-//        ads.setAuthorId(userRepository.findById(1L));
-//        adsRepository.save(ads);
-//        return adsDTO;
-//    }
-//    public Ads addAds2(CreateAdsDTO properties, Authentication authentication) {
-//        Ads ads = adsDtoMapper.toEntity(properties);
-//        System.out.println("Объявление создано");
-//        System.out.println(properties.getDescription());
-//        AdsDTO adsDTO = adsMapper.toDto(ads);
-//        System.out.println(adsDTO);
-//        ads.setAuthorId(userRepository.findByEmail(authentication.getName()).orElseThrow(null));
-//        adsRepository.save(ads);
-//        return ads;
-//    }
 public AdsDTO addAd(CreateAdsDTO createAdsDTO, MultipartFile image, Authentication authentication) throws IOException {
     Ads newAds = adsMapper.toEntity(createAdsDTO);
     newAds.setAuthorId(userRepository.findByEmail(authentication.getName()).orElseThrow());
@@ -105,14 +91,35 @@ public AdsDTO addAd(CreateAdsDTO createAdsDTO, MultipartFile image, Authenticati
         }
         return adsDTOS;
     }
-    @Transactional
-    public void deleteAdsById(Integer id) {
-//        adsRepository.deleteAdsById(id);
-        adsRepository.deleteById(id);
+//    @Transactional
+//    public void deleteAdsById(Integer id) {
+////        adsRepository.deleteAdsById(id);
+//        adsRepository.deleteById(id);
+//    }
+
+    public void deleteAds(Integer adId) {
+        log.info("Request to delete ad by id");
+        Ads ad = adsRepository.findById(adId).orElseThrow(null);
+        commentService.deleteAllCommentsAds(adId);
+        adsImageService.deleteImageAds(ad.getImage().getId());
+        adsRepository.deleteById(adId);
+
     }
-    public Ads editAds(Ads ads ) {
-        return adsRepository.save(ads);
+//    public Ads editAds(Ads ads ) {
+//        return adsRepository.save(ads);
+//    }
+public AdsDTO updateAds(CreateAdsDTO createAdsDTO, Integer id) {
+    log.info("Request to update ad by id");
+    if (createAdsDTO.getPrice() < 0) {
+        throw new IllegalArgumentException("Prise less null");
     }
+    Ads ads = adsRepository.findById(id).orElseThrow(null);
+    ads.setDescription(createAdsDTO.getDescription());
+    ads.setTitle(createAdsDTO.getTitle());
+    ads.setPrice(createAdsDTO.getPrice());
+    adsRepository.save(ads);
+    return adsMapper.toDto(ads);
+}
 
     public FullAdsDTO getFullAdsDTO(Integer id,Authentication authentication) {
         UserDTO userDTO = userMapper.toDto(userRepository.findByEmail(authentication.getName()).orElseThrow());
@@ -134,6 +141,9 @@ public AdsDTO addAd(CreateAdsDTO createAdsDTO, MultipartFile image, Authenticati
         return adsMapper.adsToAdsDtoFull(ads);
     }
     public byte[] updateImage(Integer id, MultipartFile image) throws IOException {
+        if (image.isEmpty()) {
+            throw new IllegalArgumentException("Image now found");
+        }
         log.info("Update image: " + id);
         adsImageService.updateImage(id, image);
         log.info("Photo have been saved");

@@ -46,10 +46,6 @@ public class UserService {
         return Optional.ofNullable(userDTO);
     }
 
-//    public Optional<UserDTO> getUser(String name) {
-//        log.info("Get user: " + name);
-//        return userRepository.findByEmail(name);
-//    }
     public void deleteUserById(Integer id) {
          userRepository.deleteById(id);
     }
