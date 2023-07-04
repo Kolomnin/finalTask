@@ -1,6 +1,7 @@
 package com.example.finaltask.mapping;
 
 import com.example.finaltask.model.dto.RegisterReq;
+import com.example.finaltask.model.dto.SecurityUserDto;
 import com.example.finaltask.model.dto.UserDTO;
 import com.example.finaltask.model.entity.User;
 import org.mapstruct.Mapper;
@@ -27,5 +28,5 @@ public interface UserMapper {
         return "/users/" + user.getId() + "/getImage";
     }
 
-
+    SecurityUserDto toSecurityDto(User user);
 }

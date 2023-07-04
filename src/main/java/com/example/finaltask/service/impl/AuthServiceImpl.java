@@ -3,6 +3,7 @@ package com.example.finaltask.service.impl;
 import com.example.finaltask.model.dto.NewPasswordDTO;
 import com.example.finaltask.model.entity.User;
 import com.example.finaltask.repository.UserRepository;
+import com.example.finaltask.security.UserDetailsServiceImp;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
