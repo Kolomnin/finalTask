@@ -13,12 +13,12 @@ import com.example.finaltask.repository.AvatarRepository;
 import com.example.finaltask.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
-import java.util.UUID;
 
 import static org.springframework.util.ObjectUtils.isEmpty;
 
@@ -36,19 +36,17 @@ public byte[] saveImage(Integer id, MultipartFile file) throws IOException {
     if (file.isEmpty()) {
         throw new IllegalArgumentException("File is empty");
     }
-    Ads ads = adsRepository.findById(id).orElseThrow((null));
+    Ads ads = adsRepository.findById(id).orElseThrow(() -> new UsernameNotFoundException("Ads not found"));;
     AdsImage imageToSave = new AdsImage();
 //    imageToSave.setId(id);
     imageToSave.setAds(ads);
-    imageToSave.setPreview(file.getBytes());
-    imageToSave.setMediaType(file.getContentType());
-    imageToSave.setFileSize(file.getSize());
-    imageToSave.setFilePath(file.getOriginalFilename());
+    imageToSave.setImage(file.getBytes());
+
     imageToSave.setUser(userRepository.findById(ads.getAuthorId().getId()).get());
     System.out.println(ads);
     AdsImage imageToSave2 = adsImageRepository.saveAndFlush(imageToSave);
 
-    return imageToSave.getPreview();
+    return imageToSave.getImage();
 }
     public byte[] updateImage(Integer id, MultipartFile file) throws IOException {
         log.info("Was invoked method to upload photo to ads with id {}", id);
@@ -58,29 +56,27 @@ public byte[] saveImage(Integer id, MultipartFile file) throws IOException {
         AdsImage imageToSave = adsImageRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("Image not found"));
 
-        imageToSave.setPreview(file.getBytes());
-        imageToSave.setMediaType(file.getContentType());
-        imageToSave.setFileSize(file.getSize());
-        imageToSave.setFilePath(file.getOriginalFilename());
+        imageToSave.setImage(file.getBytes());
+
 
         AdsImage savedImage = adsImageRepository.save(imageToSave);
 
-        return savedImage.getPreview();
+        return savedImage.getImage();
     }
 
 @Transactional
-    public byte[] getImage(Integer id) { //for AdsMapper
+    public byte[] getImage(Integer id) {
         log.info("Was invoked method to get image from ads with id {}", id);
         AdsImage image = adsImageRepository.findAdsImageById(id);
-        System.out.println("картинка появляется");
+       log.info("картинка появляется");
         if (isEmpty(image)) {
             throw new IllegalArgumentException("Image not found");
         }
-        return image.getPreview();
+        return image.getImage();
     }
 
     public void deleteImageAds(Integer id) {
-        log.info("delete adsImage by Id", id);
+        log.info("Удаление картинки под номером"+id);
         adsImageRepository.deleteById(id);
     }
 
