@@ -95,6 +95,16 @@ public AdsDTO addAd(CreateAdsDTO createAdsDTO, MultipartFile image, Authenticati
         }
         return adsDTOS;
     }
+    public List<AdsDTO> getAdsAuthUser ( Authentication authentication){
+        List<Ads> adsList = adsRepository.findAllByAuthorId(
+                userRepository.
+                        findByEmail(authentication.getName()).orElseThrow());
+        List<AdsDTO> adsDTOS = new ArrayList<>();
+        for (Ads ads : adsList) {
+            adsDTOS.add(adsMapper.toDto(ads));
+        }
+        return adsDTOS;
+    }
     @Transactional
     public void deleteAdsById(Integer id) {
 //        adsRepository.deleteAdsById(id);
@@ -125,7 +135,7 @@ public AdsDTO addAd(CreateAdsDTO createAdsDTO, MultipartFile image, Authenticati
     }
     public byte[] updateImage(Integer id, MultipartFile image) throws IOException {
         log.info("Update image: " + id);
-        adsImageService.saveImage(id, image);
+        adsImageService.updateImage(id, image);
         log.info("Photo have been saved");
         return image.getBytes();
     }

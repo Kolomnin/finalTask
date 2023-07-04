@@ -236,9 +236,10 @@ public class UserController {
 //        return savedEntity.getId();
 
     @PatchMapping(value = "/me/image", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public ResponseEntity<Void> updateUserImage(@RequestParam("image") MultipartFile image) throws IOException {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        log.info("User {} update avatar", authentication.getName());
+    public ResponseEntity<Void> updateUserImage(@RequestParam("image") MultipartFile image,Authentication authentication) throws IOException {
+//        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+
+        System.out.println("запрос на смену аватарки");
         avatarService.saveAvatar(authentication.getName(), image);
         return ResponseEntity.status(200).build();
     }

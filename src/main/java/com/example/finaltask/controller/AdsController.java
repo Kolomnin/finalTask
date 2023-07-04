@@ -35,48 +35,11 @@ public class AdsController {
     private final AdsImageService adsImageService;
 
 
-    @Operation(
-            operationId = "getAllAds",
-            summary = "Получить все объявления",
-            tags = {"Объявления"},
-            responses = {
-                    @ApiResponse(responseCode = "200", description = "OK", content = {
-                            @Content(mediaType = "*/*", schema = @Schema(implementation = AdsDTO.class))
-                    }),
-                    @ApiResponse(responseCode = "401", description = "Unauthorized")
-            }
-    )
-    /**
-     * Метод для получения всех объявлений.
-     *
-     * Данный метод обрабатывает GET-запросы на эндпоинт "/ads". Получает все объявления
-     * из сервиса AdsService и возвращает их вместе с количеством объявлений в объекте
-     * ResponseWrapperAds в теле ответа.
-     *
-     * @return Объект ResponseEntity<ResponseWrapperAds<AdsDTO>>, содержащий список объявлений (results)
-     *         и количество объявлений (count). Возвращается статус 200 (OK) в случае успешного выполнения запроса.
-     */
-    @GetMapping()//получить все объявления http://localhost:8080/ads
-    public ResponseEntity<ResponseWrapperAds<AdsDTO>> getAllAds() {
-
-        ResponseWrapperAds<AdsDTO> ads = new ResponseWrapperAds<>();
-        ads.setCount(adsService.getAllAds().size());
-        ads.setResults(adsService.getAllAds());
-        return ResponseEntity.ok(ads);
-    }
 
 
-    @Operation(
-            operationId = "addAds",
-            summary = "Добавить объявление",
-            tags = {"Объявления"},
-            responses = {
-                    @ApiResponse(responseCode = "201", description = "Created", content = {
-                            @Content(mediaType = MediaType.MULTIPART_FORM_DATA_VALUE, schema = @Schema(implementation = AdsDTO.class))
-                    }),
-                    @ApiResponse(responseCode = "401", description = "Unauthorized")
-            }
-    )
+
+
+
 
     /**
      * Добавить объявление
@@ -199,21 +162,39 @@ public class AdsController {
      * Получить объявления авторизованного пользователя
      * Обрабатывает GET-запрос на пути "/ads/me" и возвращает информацию об объявлении пользователя.
      */
-//    @GetMapping("/me")
-//    public ResponseEntity<List<AdsDTO>> getADSMe() {
-//
-//        List list = adsService.getAllAds();
-//        return new ResponseEntity<List<AdsDTO>>(list,HttpStatus.OK);
-//    }
-//    @GetMapping("/me")
-//    public ResponseEntity<FullAdsDTO> getADSMe(Authentication authentication) {
-//        FullAdsDTO fullAdsDTO = adsService.getFullAdsDTO(authentication);
-//
-//        return new ResponseEntity(fullAdsDTO,HttpStatus.OK);
-//    }
     @GetMapping("/me")
-    public ResponseEntity<ResponseWrapperAds<AdsDTO>> getAllAds2() {
+    public ResponseEntity<ResponseWrapperAds<AdsDTO>> getAllAds2(Authentication authentication) {
         log.info("получение объявления");
+        ResponseWrapperAds<AdsDTO> ads = new ResponseWrapperAds<>();
+        ads.setCount(adsService.getAllAds().size());
+        ads.setResults(adsService.getAdsAuthUser(authentication));
+        return ResponseEntity.ok(ads);
+    }
+
+    @Operation(
+            operationId = "getAllAds",
+            summary = "Получить все объявления",
+            tags = {"Объявления"},
+            responses = {
+                    @ApiResponse(responseCode = "200", description = "OK", content = {
+                            @Content(mediaType = "*/*", schema = @Schema(implementation = AdsDTO.class))
+                    }),
+                    @ApiResponse(responseCode = "401", description = "Unauthorized")
+            }
+    )
+    /**
+     * Метод для получения всех объявлений.
+     *
+     * Данный метод обрабатывает GET-запросы на эндпоинт "/ads". Получает все объявления
+     * из сервиса AdsService и возвращает их вместе с количеством объявлений в объекте
+     * ResponseWrapperAds в теле ответа.
+     *
+     * @return Объект ResponseEntity<ResponseWrapperAds<AdsDTO>>, содержащий список объявлений (results)
+     *         и количество объявлений (count). Возвращается статус 200 (OK) в случае успешного выполнения запроса.
+     */
+    @GetMapping()//получить все объявления http://localhost:8080/ads
+    public ResponseEntity<ResponseWrapperAds<AdsDTO>> getAllAds() {
+
         ResponseWrapperAds<AdsDTO> ads = new ResponseWrapperAds<>();
         ads.setCount(adsService.getAllAds().size());
         ads.setResults(adsService.getAllAds());

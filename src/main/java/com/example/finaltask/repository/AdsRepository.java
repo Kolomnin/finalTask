@@ -20,7 +20,8 @@ public interface AdsRepository extends JpaRepository<Ads, Integer> {
 
     Ads findByAuthorIdEmailAndId(String email, Integer id);
 
-    Collection<Ads> findAllByAuthorId(User authorId);
+
+    List<Ads> findAllByAuthorId(User authorId);
 
 
     Collection<Ads> findByTitleLike(String title);
