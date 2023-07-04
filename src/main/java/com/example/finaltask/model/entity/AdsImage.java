@@ -16,8 +16,11 @@ public class AdsImage {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
+    private String filePath;
+    private long fileSize;
+    private String mediaType;
     @Lob
-    private byte[] image;
+    private byte[] preview;
     @OneToOne(optional = true)
     @JoinColumn(name = "ads_id", referencedColumnName = "id")
     @ToString.Exclude
