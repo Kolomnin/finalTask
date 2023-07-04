@@ -65,7 +65,7 @@ public byte[] saveImage(Integer id, MultipartFile file) throws IOException {
     if (file.isEmpty()) {
         throw new IllegalArgumentException("File is empty");
     }
-    Ads ads = adsRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("Ads not found"));
+    Ads ads = adsRepository.findById(id).orElseThrow((null));
     AdsImage imageToSave = new AdsImage();
 //    imageToSave.setId(id);
     imageToSave.setAds(ads);
