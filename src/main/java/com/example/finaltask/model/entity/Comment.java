@@ -21,7 +21,7 @@ public class Comment {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
-    private Long  createdAt;//поправить на localdatetime
+    private LocalDateTime  createdAt;//поправить на localdatetime
     private String text;
 
     @ManyToOne(fetch = FetchType.LAZY)
@@ -32,7 +32,7 @@ public class Comment {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", nullable = false)
     @ToString.Exclude
-    private User authorId;
+    private User author;
 
     @Override
     public boolean equals(Object o) {
