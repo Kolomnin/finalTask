@@ -11,9 +11,10 @@ import org.mapstruct.Mapping;
 
 @Mapper(componentModel = "spring")
 public interface CommentMapper {
-    Comment toEntity(CommentDTO dto);
 
-    CommentDTO toDto(Comment entity);
+    Comment toEntity(CreateCommentDTO createCommentDTO);
+
+//    CommentDTO toDto(Comment entity);
 
     CommentDTO toEntityCCD(CreateCommentDTO createCommentDTO);
 
@@ -21,7 +22,19 @@ public interface CommentMapper {
 
     CreateCommentDTO toDto1 (Comment entity);
 
-//    @Mapping(source = "authorId.id", target = "author")
+    @Mapping(source = "author.id", target = "author")
+    @Mapping(target = "authorImage", expression = "java(image(comment))")
+    @Mapping(source = "author.firstName", target = "authorFirstName")
+    @Mapping(source = "id", target = "pk")
+    CommentDTO toCommentDTO(Comment comment);
+
+    default String image(Comment comment) {
+        int id = comment.getAuthor().getId();
+        return "/users/" + id + "/image";
+    }
+//    @Mapping(source = "authorId.id", target = "aut
+//
+//    hor")
 //    @Mapping(source = "authorId", target = "authorImage", qualifiedByName = "getAvatar")
 //    @Mapping(source = "authorId", target = "authorFirstName")
 //    @Mapping(source = "ads.id", target = "pk")

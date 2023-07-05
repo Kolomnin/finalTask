@@ -4,7 +4,10 @@ import com.example.finaltask.model.entity.Comment;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Component;
 
+import javax.persistence.criteria.CriteriaBuilder;
 import java.util.List;
+import java.util.Optional;
+
 @Component
 public interface CommentRepository extends JpaRepository<Comment, Integer> {
 
@@ -15,6 +18,6 @@ public interface CommentRepository extends JpaRepository<Comment, Integer> {
     void deleteByAdsId(Integer adsId);
 
     void deleteById (Integer id);
-
-    void deleteByIdAndAds_Id (Integer id);
+    Optional<Comment> findByIdAndAds_Id (Integer adsId, Integer commentId);
+    void deleteByIdAndAds_Id (Integer adsId, Integer commentId);
 }

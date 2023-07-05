@@ -84,7 +84,7 @@ public class CommentController {
      * комментария. В данном случае, возвращается пустое тело комментария (new ResponseEntity<>(HttpStatus.CREATED)).
      */
     @PostMapping("{id}/comments")
-    public ResponseEntity<CommentDTO> addComment(@PathVariable Integer id, @Parameter(description = "комментарий", example = "комментарий") @RequestBody CommentDTO comment, Authentication authentication) {
+    public ResponseEntity<CommentDTO> addComment(@PathVariable Integer id, @Parameter(description = "комментарий", example = "комментарий") @RequestBody CreateCommentDTO comment, Authentication authentication) {
         return ResponseEntity.ok(commentService.addComment( id,comment, authentication));
     }
 
@@ -131,7 +131,7 @@ public class CommentController {
      */
     @DeleteMapping("{adId}/comments/{commentId}")
     public ResponseEntity<Void> deleteComment(@PathVariable Integer adId, @PathVariable Integer commentId) {
-        commentService.deleteCommentById(commentId);
+        commentService.deleteCommentById(adId,commentId);
 
         return new ResponseEntity<>(HttpStatus.OK);
     }
@@ -188,6 +188,6 @@ public class CommentController {
     public ResponseEntity<CommentDTO> updateComment(@RequestBody CommentDTO commentDTO,
                                                     @PathVariable Integer adId,
                                                     @PathVariable Integer commentId) {
-        return ResponseEntity.ok(commentService.editComment(commentDTO));
+        return ResponseEntity.ok(commentService.editComment(adId,commentId,commentDTO));
     }
 }

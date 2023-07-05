@@ -32,7 +32,7 @@ public class Comment {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", nullable = false)
     @ToString.Exclude
-    private User authorId;
+    private User author;
 
     @Override
     public boolean equals(Object o) {

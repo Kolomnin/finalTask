@@ -3,6 +3,7 @@ package com.example.finaltask.service;
 import com.example.finaltask.mapping.CommentMapper;
 import com.example.finaltask.mapping.UserMapper;
 import com.example.finaltask.model.dto.CommentDTO;
+import com.example.finaltask.model.dto.CreateCommentDTO;
 import com.example.finaltask.model.dto.ResponseWrapperComment;
 import com.example.finaltask.model.entity.Comment;
 import com.example.finaltask.repository.AdsRepository;
@@ -14,6 +15,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.persistence.criteria.CriteriaBuilder;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -44,24 +46,26 @@ public class CommentService {
     }
 
 
-    public CommentDTO addComment(Integer id, CommentDTO commentDto, Authentication authentication) {
+    public CommentDTO addComment(Integer id, CreateCommentDTO commentDto, Authentication authentication) {
         if (!adsRepository.existsById(id)) {
             throw new IllegalArgumentException("Ad not found");
         }
         Comment newComment = commentMapper.toEntity(commentDto);
         newComment.setAds(adsRepository.findById(id).orElseThrow(()
                 -> new IllegalArgumentException("Ad not found")));
-        newComment.setAuthorId(userRepository.findByEmail(authentication.getName()).orElseThrow());
+        newComment.setAuthor(userRepository.findByEmail(authentication.getName()).orElseThrow());
         newComment.setCreatedAt(LocalDateTime.now());
+        commentRepository.save(newComment);
         CommentDTO commentDTO = new CommentDTO();
-        commentDTO.setAuthor(newComment.getAuthorId().getId());
+        commentDTO.setAuthor(newComment.getAuthor().getId());
         commentDTO.setAuthorImage(userMapper.getAvatar(userRepository.findByEmail(authentication.getName()).orElseThrow()));
         commentDTO.setAuthorFirstName(userRepository.findByEmail(authentication.getName()).orElseThrow().getFirstName());
-        commentDTO.setPk(adsRepository.findById(id).orElseThrow().getId());
+        commentDTO.setPk(newComment.getId());
+        System.out.println("ади коммента "+ newComment.getId());
         commentDTO.setText(newComment.getText());
         commentDTO.setCreatedAt(newComment.getCreatedAt());
         System.out.println("Сущность коммента "+commentDto);
-        commentRepository.save(newComment);
+
         return commentDTO;
     }
 
@@ -72,23 +76,25 @@ public class CommentService {
         List<CommentDTO> commentDTOS = new ArrayList<>();
         for (Comment comment : comments) {
             CommentDTO commentDTO = new CommentDTO();
-            commentDTO.setAuthor(comment.getAuthorId().getId());
+            commentDTO.setAuthor(comment.getAuthor().getId());
             commentDTO.setText(comment.getText());
             commentDTO.setAuthorImage(userMapper.getAvatar(userRepository.findByEmail(authentication.getName()).orElseThrow()));
             commentDTO.setAuthorFirstName(userRepository.findByEmail(authentication.getName()).orElseThrow().getFirstName());
-            commentDTO.setPk(adsRepository.findById(id).orElseThrow().getId());
+            commentDTO.setPk(comment.getId());
+            System.out.println(commentDTO.getPk()+"айди");
             commentDTO.setCreatedAt(comment.getCreatedAt());
             commentDTOS.add(commentDTO);
-            System.out.println("Сущность коммента "+commentDTO);
+            System.out.println("Сущность коммента "+commentDTO.getPk());
         }
         responseWrapperComment.setResults(commentDTOS);
         return responseWrapperComment;
     }
     @Transactional
-    public void deleteCommentById(Integer id) {
-        Comment comment = commentRepository.findById(id).orElseThrow(null);//написать замену null
-        log.info("delete comment ads "+ comment);
-        commentRepository.delete(comment);
+    public void deleteCommentById(Integer adsId,Integer commentId) {
+//        commentRepository.deleteByIdAndAds_Id(adsId).orElseThrow(null);//написать замену null
+        log.info("delete comment ads ");
+        commentRepository.deleteByIdAndAds_Id(commentId,adsId);
+
     }
 
     @Transactional
@@ -97,11 +103,15 @@ public class CommentService {
         commentRepository.deleteByAdsId(adsId);
     }
 
-    public CommentDTO editComment(CommentDTO commentDTO) {
-        Comment comment = commentMapper.toEntity(commentDTO);
-        commentRepository.save(comment);
-        CommentDTO commentDTO1 = commentMapper.toDto(commentRepository.findById(comment.getId()).orElseThrow());
-        return commentDTO1;
+    public CommentDTO editComment(Integer adsId, Integer commentId, CommentDTO commentDTO) {
+        log.info("updateComment method");
+        Comment updatedComment = commentRepository.findByIdAndAds_Id(commentId,adsId ).orElseThrow();
+        updatedComment.setText(commentDTO.getText());
+        commentRepository.save(updatedComment);
+
+        return commentMapper.toCommentDTO(updatedComment);
+
+
     }
 
 
