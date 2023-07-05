@@ -1,12 +1,8 @@
 package com.example.finaltask.service;
 
 import com.example.finaltask.mapping.AdsMapper;
-import com.example.finaltask.model.dto.AdsDTO;
-import com.example.finaltask.model.dto.CreateAdsDTO;
 import com.example.finaltask.model.entity.Ads;
 import com.example.finaltask.model.entity.AdsImage;
-import com.example.finaltask.model.entity.User;
-import com.example.finaltask.model.entity.UserAvatar;
 import com.example.finaltask.repository.AdsImageRepository;
 import com.example.finaltask.repository.AdsRepository;
 import com.example.finaltask.repository.AvatarRepository;
@@ -32,22 +28,43 @@ public class AdsImageService {
     private final AdsMapper adsMapper;
     private final AvatarRepository avatarRepository;
 
-public byte[] saveImage(Integer id, MultipartFile file) throws IOException {
-    if (file.isEmpty()) {
-        throw new IllegalArgumentException("File is empty");
-    }
-    Ads ads = adsRepository.findById(id).orElseThrow(() -> new UsernameNotFoundException("Ads not found"));;
-    AdsImage imageToSave = new AdsImage();
+    /**
+     * Сохраняет файл изображения для данной рекламы.
+     *
+     * @param id идентификатор объявления
+     * @param file файл изображения для сохранения
+     * @вернуть сохраненное изображение в виде массива байтов
+     * @throws IOException, если при чтении файла возникает ошибка ввода-вывода
+     * @throws IllegalArgumentException, если файл пуст
+     * @throws UsernameNotFoundException, если реклама не найдена
+     */
+    public byte[] saveImage(Integer id, MultipartFile file) throws IOException {
+        if (file.isEmpty()) {
+            throw new IllegalArgumentException("File is empty");
+        }
+        Ads ads = adsRepository.findById(id).orElseThrow(() -> new UsernameNotFoundException("Ads not found"));
+        ;
+        AdsImage imageToSave = new AdsImage();
 //    imageToSave.setId(id);
-    imageToSave.setAds(ads);
-    imageToSave.setImage(file.getBytes());
+        imageToSave.setAds(ads);
+        imageToSave.setImage(file.getBytes());
 
-    imageToSave.setUser(userRepository.findById(ads.getAuthorId().getId()).get());
-    System.out.println(ads);
-    AdsImage imageToSave2 = adsImageRepository.saveAndFlush(imageToSave);
+        imageToSave.setUser(userRepository.findById(ads.getAuthorId().getId()).get());
+        System.out.println(ads);
+        AdsImage imageToSave2 = adsImageRepository.saveAndFlush(imageToSave);
 
-    return imageToSave.getImage();
-}
+        return imageToSave.getImage();
+    }
+
+    /**
+     * Обновляет изображение для указанного объявления с заданным идентификатором.
+     *
+     * @param id Идентификатор объявления, для которого необходимо обновить изображение.
+     * @param файл Новый загружаемый файл изображения.
+     * @return Обновленное изображение в виде массива байтов.
+     * @throws IOException Если при чтении файла возникает ошибка ввода-вывода.
+     * @throws IllegalArgumentException Если файл пуст или изображение с заданным идентификатором не найдено.
+     */
     public byte[] updateImage(Integer id, MultipartFile file) throws IOException {
         log.info("Was invoked method to upload photo to ads with id {}", id);
         if (file.isEmpty()) {
@@ -64,19 +81,31 @@ public byte[] saveImage(Integer id, MultipartFile file) throws IOException {
         return savedImage.getImage();
     }
 
-@Transactional
+    /**
+     * Извлекает данные изображения для данного объявления по его идентификатору.
+     *
+     * @param id Идентификатор объявления.
+     * @return Данные изображения в виде массива байтов.
+     * @throws IllegalArgumentException Если изображение не найдено.
+     */
+    @Transactional
     public byte[] getImage(Integer id) {
         log.info("Was invoked method to get image from ads with id {}", id);
         AdsImage image = adsImageRepository.findAdsImageById(id);
-       log.info("картинка появляется");
+        log.info("картинка появляется");
         if (isEmpty(image)) {
             throw new IllegalArgumentException("Image not found");
         }
         return image.getImage();
     }
 
+    /**
+     * Удаляет объявление с указанным идентификатором.
+     *
+     * @param id идентификатор удаляемого графического объявления
+     */
     public void deleteImageAds(Integer id) {
-        log.info("Удаление картинки под номером"+id);
+        log.info("Удаление картинки под номером" + id);
         adsImageRepository.deleteById(id);
     }
 

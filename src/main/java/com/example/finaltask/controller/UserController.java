@@ -115,16 +115,24 @@ public class UserController {
                     @ApiResponse(responseCode = "404", description = "Not Found")
             }
     )
-    /**
-     * Метод должен обрабатывать HTTP GET-запросы на указанном пути ("/me")
-     */
 
+    /**
+     * Удаляет пользователя с указанным ID.
+     *
+     * @param id ID удаляемого пользователя
+     */
     @DeleteMapping("{id}")
     public void deleteUser(@PathVariable() Integer id) {
         userService.deleteUserById(id);
     }
 
-
+    /**
+     * Получает информацию о текущем аутентифицированном пользователе.
+     *
+     * @param authentication Объект аутентификации, содержащий сведения о текущем аутентифицированном пользователе.
+     * @return ResponseEntity Объект ответа, содержащий сведения о пользователе, заключенный в необязательный элемент. Возвращает
+     * HttpStatus.OK, если пользователь найден, или HttpStatus.NOT_FOUND, если пользователь не найден.
+     */
     @GetMapping("/me")
     public ResponseEntity<Optional<UserDTO>> getUser(Authentication authentication) {
         return ResponseEntity.ok(userService.getUserByLogin(authentication.getName()));
@@ -145,10 +153,18 @@ public class UserController {
                     @ApiResponse(responseCode = "404", description = "Not Found")
             }
     )
-    /**
-     * Данный метод должен обрабатывать HTTP PATCH-запросы на указанном пути ("/me"). HTTP метод PATCH используется
-     * для обновления информации о текущем пользователе.
-     */
+/**
+ * Этот метод используется для обновления имени и фамилии аутентифицированного пользователя.
+ * Он получает объект RegisterReq, содержащий новое имя и фамилию,
+ * а также объект Authentication, представляющий аутентифицированного пользователя.
+ * Он возвращает объект ResponseEntity, содержащий объект UserDTO, представляющий обновленного пользователя,
+ * вместе с кодом состояния HTTP.
+ *
+ * @param user Объект RegisterReq, содержащий новое имя и фамилию.
+ * @param authentication Объект Authentication, представляющий аутентифицированного пользователя.
+ * @return Объект ResponseEntity, содержащий объект UserDTO, представляющий обновленного пользователя,
+ * вместе с кодом состояния HTTP.
+ */
     @PatchMapping("/me")
     public ResponseEntity<UserDTO> updateUser(@RequestBody RegisterReq user, Authentication authentication) {
         System.out.println("запрос на смену имени, фамилии");
@@ -197,7 +213,12 @@ public class UserController {
         return ResponseEntity.status(200).build();
     }
 
-
+    /**
+     * Получает изображение аватара для пользователя с заданным идентификатором.
+     *
+     * @param id Идентификатор пользователя.
+     * @return Объект ResponseEntity, содержащий массив байтов изображения аватара.
+     */
     @GetMapping(value = "/{id}/getImage")
     public ResponseEntity<byte[]> getImage(@PathVariable("id") int id) {
         log.info("Get avatar from user with id " + id);

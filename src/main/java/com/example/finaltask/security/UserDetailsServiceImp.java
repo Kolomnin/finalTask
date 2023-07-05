@@ -21,6 +21,13 @@ public class UserDetailsServiceImp implements UserDetailsService {
         this.securityUser = securityUser;
     }
 
+    /**
+     * Загружает пользователя по его имени пользователя.
+     *
+     * @param username имя пользователя для загрузки
+     * @return объект UserDetails, представляющий загруженного пользователя
+     * @throws UsernameNotFoundException, если пользователь не найден
+     */
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         User user = userRepository.findByEmail(username).orElseThrow(() -> new UsernameNotFoundException("Пользователь не найден"));;

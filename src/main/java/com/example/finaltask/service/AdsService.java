@@ -56,6 +56,15 @@ public class AdsService {
         this.commentService = commentService;
     }
 
+    /**
+     * Добавляет новую рекламу.
+     *
+     * @param createAdsDTO DTO, содержащий сведения о создаваемой рекламе.
+     * @param image Файл изображения для рекламы
+     * @param authentication Объект аутентификации, представляющий текущего пользователя.
+     * @return DTO, представляющий только что созданную рекламу
+     * @throws IOException Если есть ошибка при сохранении файла изображения
+     */
     public AdsDTO addAd(CreateAdsDTO createAdsDTO, MultipartFile image, Authentication authentication) throws IOException {
         Ads newAds = adsMapper.toEntity(createAdsDTO);
         newAds.setAuthorId(userRepository.findByEmail(authentication.getName()).orElseThrow());
@@ -70,10 +79,21 @@ public class AdsService {
         return adsMapper.toDto(newAds);
     }
 
+    /**
+     * Извлекает объект Ads по его идентификатору.
+     *
+     * @param id ID объекта Ads для получения
+     * @return необязательный объект, содержащий объект Ads, или пустой необязательный объект, если объект Ads не найден
+     */
     public Optional<Ads> getAdsById(Integer id) {
         return adsRepository.findById(id);
     }
 
+    /**
+     * Получает все объявления из базы данных.
+     *
+     * @return список объектов AdsDTO, представляющих все объявления.
+     */
     public List<AdsDTO> getAllAds() {
         List<Ads> adsList = adsRepository.findAll();
         List<AdsDTO> adsDTOS = new ArrayList<>();
@@ -83,6 +103,13 @@ public class AdsService {
         return adsDTOS;
     }
 
+    /**
+     * Извлекает список объектов AdsDTO для аутентифицированного пользователя.
+     *
+     * @param authentication объект аутентификации, содержащий информацию о текущем пользователе.
+     * @return список объектов AdsDTO для аутентифицированного пользователя
+     * @throws IllegalArgumentException, если объект аутентификации имеет значение null или аутентифицированный пользователь не найден в userRepository
+     */
     public List<AdsDTO> getAdsAuthUser(Authentication authentication) {
         List<Ads> adsList = adsRepository.findAllByAuthorId(
                 userRepository.
@@ -99,6 +126,12 @@ public class AdsService {
 ////        adsRepository.deleteAdsById(id);
 //        adsRepository.deleteById(id);
 //    }
+    /**
+     * Удаляет объявление по его идентификатору вместе с соответствующими комментариями и изображением.
+     *
+     * @param adId идентификатор удаляемой рекламы
+     * @throws IllegalArgumentException, если объявление с данным идентификатором не найдено
+     */
     @Transactional
     public void deleteAds(Integer adId) {
         log.info("Request to delete ad by id");
@@ -112,6 +145,14 @@ public class AdsService {
     //    public Ads editAds(Ads ads ) {
 //        return adsRepository.save(ads);
 //    }
+    /**
+     * Обновляет объявление с указанным идентификатором, используя информацию, предоставленную в CreateAdsDTO.
+     *
+     * @param createAdsDTO Объект CreateAdsDTO, содержащий обновленную информацию об объявлении.
+     * @param id Идентификатор объявления, которое необходимо обновить.
+     * @return Обновленный объект AdsDTO.
+     * @throws IllegalArgumentException Если цена в CreateAdsDTO меньше нуля.
+     */
     public AdsDTO updateAds(CreateAdsDTO createAdsDTO, Integer id) {
         log.info("Request to update ad by id");
         if (createAdsDTO.getPrice() < 0) {

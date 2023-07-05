@@ -243,6 +243,12 @@ public class AdsController {
         return ResponseEntity.status(HttpStatus.OK).body(adsService.updateImage(id, image));
     }
 
+    /**
+     * Извлекает изображение, идентифицированное данным идентификатором.
+     *
+     * @param id идентификатор объявления
+     * @return ResponseEntity, содержащий изображение в виде массива байтов
+     */
     @GetMapping(value = "/{id}/getImage" )
     public ResponseEntity<byte[]> getImage(@PathVariable("id") int id) {
         log.info("Get image from ads with id " + id);

@@ -38,7 +38,12 @@ public class AuthController {
         this.userRepository = userRepository;
     }
 
-
+    /**
+     * Регистрирует пользователя с предоставленными учетными данными.
+     *
+     * @param req Запрос на вход, содержащий имя пользователя и пароль.
+     * @return Объект ResponseEntity с зарегистрированным пользователем в случае успеха или со статусом Forbidden в случае сбоя входа.
+     */
     @PostMapping("/login")
     public ResponseEntity<User> login(@RequestBody LoginReq req) {
         if (authService.login(req.getUsername(), req.getPassword())) {
@@ -48,6 +53,14 @@ public class AuthController {
         }
     }
 
+    /**
+     * Регистрирует нового пользователя с предоставленной информацией.
+     *
+     * @param req Объект запроса, содержащий регистрационные данные пользователя.
+     * @return A {@link ResponseEntity} с кодом состояния HTTP, указывающим на успешную регистрацию.
+     * Если регистрация прошла успешно, возвращает статус HTTP 200 OK. Если регистрация не удалась, возвращает
+     * Состояние HTTP 400 Bad Request.
+     */
     @PostMapping("/register")
     public ResponseEntity<?> register(@RequestBody RegisterReq req) {
         Role role = req.getRole() == null ? USER : req.getRole();

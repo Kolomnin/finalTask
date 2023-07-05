@@ -22,6 +22,11 @@ public class SecurityUser implements UserDetails {
         this.securityUserDto = securityUserDto;
     }
 
+    /**
+     * Извлекает полномочия, предоставленные пользователю.
+     *
+     * @return набор полномочий, предоставленных пользователю
+     */
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return Optional.ofNullable(securityUserDto)
@@ -31,7 +36,11 @@ public class SecurityUser implements UserDetails {
                 .map(Collections::singleton)
                 .orElse(Collections.emptySet());
     }
-
+    /**
+     * Извлекает пароль из SecurityUserDto.
+     *
+     * @return Пароль, если он доступен, иначе null.
+     */
     @Override
     public String getPassword() {
         return Optional.ofNullable(securityUserDto)
@@ -39,6 +48,11 @@ public class SecurityUser implements UserDetails {
                 .orElse(null);
     }
 
+    /**
+     * Возвращает имя пользователя, связанное с этим пользователем.
+     *
+     * @вернуть имя пользователя в виде строки или null, если оно недоступно
+     */
     @Override
     public String getUsername() {
         return Optional.ofNullable(securityUserDto)
@@ -46,21 +60,41 @@ public class SecurityUser implements UserDetails {
                 .orElse(null);
     }
 
+    /**
+     * Возвращает имя пользователя, связанное с этим пользователем.
+     *
+     * @вернуть имя пользователя в виде строки или null, если оно недоступно
+     */
     @Override
     public boolean isAccountNonExpired() {
         return true;
     }
 
+    /**
+     * Возвращает логическое значение, указывающее, заблокирована учетная запись пользователя или нет.
+     *
+     * @return {@code true}, если учетная запись пользователя не заблокирована, {@code false} в противном случае.
+     */
     @Override
     public boolean isAccountNonLocked() {
         return true;
     }
 
+    /**
+     * Этот метод проверяет, не просрочены ли учетные данные пользователя.
+     *
+     * @return true, если срок действия учетных данных не истек, иначе false
+     */
     @Override
     public boolean isCredentialsNonExpired() {
         return true;
     }
 
+    /**
+     * Возвращает, включен компонент или нет.
+     *
+     * @return true, если компонент включен, иначе false
+     */
     @Override
     public boolean isEnabled() {
         return true;
