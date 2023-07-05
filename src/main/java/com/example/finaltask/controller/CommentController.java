@@ -48,8 +48,9 @@ public class CommentController {
      * заголовки и тело ответа. ResponseWrapperComment<CommentDTO> - это класс, представляющий счетчик и список комментариев.
      */
     @GetMapping("{id}/comments")
-    public ResponseEntity<ResponseWrapperComment> getComments(@PathVariable Integer id) {
-        return ResponseEntity.ok(commentService.getAllCommentsByAdsId(id));
+    public ResponseEntity<ResponseWrapperComment> getComments(@PathVariable Integer id,
+                                                               Authentication authentication) {
+        return ResponseEntity.ok(commentService.getAllCommentsByAdsId(id,authentication));
     }
 
     @Operation(
