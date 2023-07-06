@@ -102,7 +102,7 @@ public class AdsController {
      * что означает успешное выполнение операции удаления без возвращаемого тела ответа.
      */
     @PreAuthorize("hasRole('ADMIN') or " +
-            "adsService.getAdsById(#id).get().getAuthorId().getEmail()==authentication.principal.username")
+            "@adsService.getAdsById(#id).get().getAuthorId().getEmail()==authentication.principal.username")
     @DeleteMapping("/{id}")
     public ResponseEntity<?> removeADS(@Parameter(description = "Id объявления") @PathVariable Integer id) {
         System.out.println("вызов метода удаления объявления");
