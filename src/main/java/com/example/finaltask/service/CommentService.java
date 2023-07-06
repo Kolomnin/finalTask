@@ -6,6 +6,7 @@ import com.example.finaltask.model.dto.CommentDTO;
 import com.example.finaltask.model.dto.CreateCommentDTO;
 import com.example.finaltask.model.dto.ResponseWrapperComment;
 import com.example.finaltask.model.entity.Comment;
+import com.example.finaltask.model.entity.User;
 import com.example.finaltask.repository.AdsRepository;
 import com.example.finaltask.repository.CommentRepository;
 import com.example.finaltask.repository.UserRepository;
@@ -110,9 +111,10 @@ public class CommentService {
         commentRepository.save(updatedComment);
 
         return commentMapper.toCommentDTO(updatedComment);
-
-
     }
 
+    public User isOwnerCommentById(Integer id){
+        return commentRepository.findById(id).get().getAuthor();
+    }
 
 }
