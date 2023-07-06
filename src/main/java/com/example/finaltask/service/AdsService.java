@@ -165,7 +165,15 @@ public class AdsService {
         adsRepository.save(ads);
         return adsMapper.toDto(ads);
     }
-
+    /**
+     * Получает объект FullAdsDTO, содержащий сведения об объявлении вместе с деталями.
+     * пользователя, разместившего объявление.
+     *
+     * @param id идентификатор объявления для получения
+     * @param authentication объект аутентификации, представляющий пользователя, вошедшего в систему в данный момент.
+     * @return объект FullAdsDTO, содержащий объявление и сведения о пользователе.
+     * @throws NoSuchElementException, если объявление или пользователь не могут быть найдены
+     */
     public FullAdsDTO getFullAdsDTO(Integer id, Authentication authentication) {
         UserDTO userDTO = userMapper.toDto(userRepository.findByEmail(authentication.getName()).orElseThrow());
 //        AdsDTO adsDTO = adsMapper.toDto(adsRepository.findByAuthorId(userRepository.findByEmail(authentication.getName()).getId()));
@@ -180,6 +188,13 @@ public class AdsService {
         return fullAdsDTO;
     }
 
+    /**
+     * Получает полную информацию об объекте Ads на основе его идентификатора.
+     *
+     * @param id Идентификатор объекта Ads, который требуется получить.
+     * @return FullAdsDTO, содержащий полную информацию об объекте Ads.
+     * @throws IllegalArgumentException, если сущность Ads с заданным идентификатором не найдена.
+     */
     public FullAdsDTO getFullAds(Integer id) {
         Ads ads = adsRepository.findById(id).orElseThrow(
                 () -> new IllegalArgumentException("Ads not found"));
@@ -187,6 +202,15 @@ public class AdsService {
         return adsMapper.adsToAdsDtoFull(ads);
     }
 
+    /**
+     * Обновляет изображение с заданным идентификатором.
+     *
+     * @param id Идентификатор изображения, которое необходимо обновить.
+     * @param image Файл изображения, который необходимо обновить.
+     * @return Обновленное изображение в виде массива байтов.
+     * @throws IOException Если есть ошибка при чтении файла изображения.
+     * @throws IllegalArgumentException Если файл изображения пуст.
+     */
     public byte[] updateImage(Integer id, MultipartFile image) throws IOException {
         if (image.isEmpty()) {
             throw new IllegalArgumentException("Image now found");

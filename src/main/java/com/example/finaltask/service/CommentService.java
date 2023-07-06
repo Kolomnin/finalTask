@@ -10,12 +10,10 @@ import com.example.finaltask.repository.AdsRepository;
 import com.example.finaltask.repository.CommentRepository;
 import com.example.finaltask.repository.UserRepository;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.data.crossstore.ChangeSetPersister;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import javax.persistence.criteria.CriteriaBuilder;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -45,7 +43,15 @@ public class CommentService {
         this.userMapper = userMapper;
     }
 
-
+    /**
+     * Добавляет новый комментарий к объявлению с указанным ID.
+     *
+     * @param id Идентификатор объявления.
+     * @param commentDto Добавляемые данные комментария.
+     * @param authentication Объект аутентификации, содержащий информацию об аутентифицированном пользователе.
+     * @return Представление добавленного комментария DTO (объект передачи данных).
+     * @throws IllegalArgumentException Если объявление с указанным идентификатором не найдено.
+     */
     public CommentDTO addComment(Integer id, CreateCommentDTO commentDto, Authentication authentication) {
         if (!adsRepository.existsById(id)) {
             throw new IllegalArgumentException("Ad not found");
@@ -61,15 +67,22 @@ public class CommentService {
         commentDTO.setAuthorImage(userMapper.getAvatar(userRepository.findByEmail(authentication.getName()).orElseThrow()));
         commentDTO.setAuthorFirstName(userRepository.findByEmail(authentication.getName()).orElseThrow().getFirstName());
         commentDTO.setPk(newComment.getId());
-        System.out.println("ади коммента "+ newComment.getId());
+        System.out.println("ади коммента " + newComment.getId());
         commentDTO.setText(newComment.getText());
         commentDTO.setCreatedAt(newComment.getCreatedAt());
-        System.out.println("Сущность коммента "+commentDto);
+        System.out.println("Сущность коммента " + commentDto);
 
         return commentDTO;
     }
 
-    public ResponseWrapperComment getAllCommentsByAdsId(Integer id,Authentication authentication) {
+    /**
+     * Извлекает все комментарии по идентификатору объявления.
+     *
+     * @param id идентификатор объявления
+     * @param authentication детали аутентификации пользователя
+     * @return ResponseWrapperComment, содержащий количество комментариев и список объектов CommentDTO
+     */
+    public ResponseWrapperComment getAllCommentsByAdsId(Integer id, Authentication authentication) {
         List<Comment> comments = commentRepository.findAllByAds_Id((id));
         ResponseWrapperComment responseWrapperComment = new ResponseWrapperComment();
         responseWrapperComment.setCount(comments.size());
@@ -81,37 +94,55 @@ public class CommentService {
             commentDTO.setAuthorImage(userMapper.getAvatar(userRepository.findByEmail(authentication.getName()).orElseThrow()));
             commentDTO.setAuthorFirstName(userRepository.findByEmail(authentication.getName()).orElseThrow().getFirstName());
             commentDTO.setPk(comment.getId());
-            System.out.println(commentDTO.getPk()+"айди");
+            System.out.println(commentDTO.getPk() + "айди");
             commentDTO.setCreatedAt(comment.getCreatedAt());
             commentDTOS.add(commentDTO);
-            System.out.println("Сущность коммента "+commentDTO.getPk());
+            System.out.println("Сущность коммента " + commentDTO.getPk());
         }
         responseWrapperComment.setResults(commentDTOS);
         return responseWrapperComment;
     }
+
+    /**
+     * Удаляет комментарий по его идентификатору внутри определенного объявления.
+     *
+     * @param adsId идентификатор объявления
+     * @param commentId идентификатор удаляемого комментария
+     */
     @Transactional
-    public void deleteCommentById(Integer adsId,Integer commentId) {
+    public void deleteCommentById(Integer adsId, Integer commentId) {
 //        commentRepository.deleteByIdAndAds_Id(adsId).orElseThrow(null);//написать замену null
         log.info("delete comment ads ");
-        commentRepository.deleteByIdAndAds_Id(commentId,adsId);
+        commentRepository.deleteByIdAndAds_Id(commentId, adsId);
 
     }
 
+    /**
+     * Удаляет все комментарии, относящиеся к конкретному объявлению.
+     *
+     * @param adsId идентификатор объявления, комментарии которого необходимо удалить
+     */
     @Transactional
     public void deleteAllCommentsAds(Integer adsId) {
         log.info("deleteAll comment ads");
         commentRepository.deleteByAdsId(adsId);
     }
 
+    /**
+     * Обновляет комментарий для определенного объявления.
+     *
+     * @param adsId Идентификатор объявления
+     * @param commentId Идентификатор комментария
+     * @param commentDTO Обновленные данные комментариев
+     * @return Обновленные данные комментария в виде объекта CommentDTO
+     */
     public CommentDTO editComment(Integer adsId, Integer commentId, CommentDTO commentDTO) {
         log.info("updateComment method");
-        Comment updatedComment = commentRepository.findByIdAndAds_Id(commentId,adsId ).orElseThrow();
+        Comment updatedComment = commentRepository.findByIdAndAds_Id(commentId, adsId).orElseThrow();
         updatedComment.setText(commentDTO.getText());
         commentRepository.save(updatedComment);
 
         return commentMapper.toCommentDTO(updatedComment);
-
-
     }
 
 
