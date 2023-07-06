@@ -11,6 +11,8 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.annotation.Secured;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
@@ -129,6 +131,8 @@ public class CommentController {
      * Метод возвращает ResponseEntity с кодом состояния HTTP 204 (NO_CONTENT), что означает успешное удаление
      * комментария. В данном случае, возвращается пустое тело (new ResponseEntity<>(HttpStatus.NO_CONTENT)).
      */
+    @PreAuthorize("hasRole('ADMIN') or " +
+            "@commentService.isOwnerCommentById(#commentId).getEmail()==authentication.principal.username")
     @DeleteMapping("{adId}/comments/{commentId}")
     public ResponseEntity<Void> deleteComment(@PathVariable Integer adId, @PathVariable Integer commentId) {
         commentService.deleteCommentById(adId,commentId);
@@ -184,6 +188,8 @@ public class CommentController {
      * В данном случае, используется ResponseEntity.ok() для создания успешного ответа без тела. Метод build()
      * вызывается на созданном ResponseEntity, чтобы построить финальный ответ.
      */
+    @PreAuthorize("hasRole('ADMIN') or " +
+            "@commentService.isOwnerCommentById(#commentId).getEmail()==authentication.principal.username")
     @PatchMapping("{adId}/comments/{commentId}")
     public ResponseEntity<CommentDTO> updateComment(@RequestBody CommentDTO commentDTO,
                                                     @PathVariable Integer adId,

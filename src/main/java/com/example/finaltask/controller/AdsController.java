@@ -16,6 +16,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -100,6 +101,8 @@ public class AdsController {
      * Метод возвращает ResponseEntity с кодом состояния HTTP HttpStatus.NO_CONTENT,
      * что означает успешное выполнение операции удаления без возвращаемого тела ответа.
      */
+    @PreAuthorize("hasRole('ADMIN') or " +
+            "adsService.getAdsById(#id).get().getAuthorId().getEmail()==authentication.principal.username")
     @DeleteMapping("/{id}")
     public ResponseEntity<?> removeADS(@Parameter(description = "Id объявления") @PathVariable Integer id) {
         System.out.println("вызов метода удаления объявления");
@@ -133,6 +136,8 @@ public class AdsController {
      *
      * В данном случае, возвращается пустое тело ответа (ResponseEntity.ok().build()
      */
+    @PreAuthorize("hasRole('ADMIN') or " +
+            "@adsService.getAdsById(#id).get().getAuthorId().getEmail()==authentication.principal.username")
     @PatchMapping("/{id}")
     public ResponseEntity<AdsDTO> updateADS(@RequestBody CreateAdsDTO adsDTO, @PathVariable Integer id) {
         return ResponseEntity.ok(adsService.updateAds(adsDTO,id));
