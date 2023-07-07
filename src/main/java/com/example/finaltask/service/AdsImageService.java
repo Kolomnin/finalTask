@@ -15,6 +15,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.util.Optional;
 
 import static org.springframework.util.ObjectUtils.isEmpty;
 
@@ -43,9 +44,7 @@ public class AdsImageService {
             throw new IllegalArgumentException("File is empty");
         }
         Ads ads = adsRepository.findById(id).orElseThrow(() -> new UsernameNotFoundException("Ads not found"));
-        ;
         AdsImage imageToSave = new AdsImage();
-//    imageToSave.setId(id);
         imageToSave.setAds(ads);
         imageToSave.setImage(file.getBytes());
 
@@ -91,12 +90,12 @@ public class AdsImageService {
     @Transactional
     public byte[] getImage(Integer id) {
         log.info("Was invoked method to get image from ads with id {}", id);
-        AdsImage image = adsImageRepository.findAdsImageById(id);
+        Optional<Ads> ads = adsRepository.findById(id);
         log.info("картинка появляется");
-        if (isEmpty(image)) {
+        if (isEmpty(ads)) {
             throw new IllegalArgumentException("Image not found");
         }
-        return image.getImage();
+        return avatarRepository.findByUser(ads.get().getAuthorId().getAvatar().getUser()).get().getBytes();
     }
 
     /**
