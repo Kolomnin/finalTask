@@ -14,6 +14,6 @@ public interface AvatarRepository extends JpaRepository<UserAvatar,Integer> {
 
     Optional<UserAvatar> findById(Integer id);
 
-
+    Optional<UserAvatar> findByUser(User user);
 
 }

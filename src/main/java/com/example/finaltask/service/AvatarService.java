@@ -71,13 +71,10 @@ public class AvatarService {
      */
     public byte[] saveAvatar(String email, MultipartFile file) throws IOException {
         UserAvatar imageToSave;
-
         if (file.isEmpty()) {
             throw new IllegalArgumentException("File is empty");
         }
-        Integer id = userRepository.findByEmail(email).get().getId();
-        Optional<UserAvatar> existingAvatar = avatarRepository.findById(1);
-
+        Optional<UserAvatar> existingAvatar=avatarRepository.findByUser(userRepository.findByEmail(email).get());
         if (existingAvatar.isEmpty()) {
             imageToSave = new UserAvatar();
             imageToSave.setBytes(file.getBytes());
