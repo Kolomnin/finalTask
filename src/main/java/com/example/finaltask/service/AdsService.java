@@ -11,6 +11,7 @@ import com.example.finaltask.model.dto.UserDTO;
 import com.example.finaltask.model.entity.Ads;
 import com.example.finaltask.repository.AdsRepository;
 import com.example.finaltask.repository.UserRepository;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -22,39 +23,25 @@ import javax.transaction.Transactional;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.Optional;
 
 @Slf4j
 @Service
+@RequiredArgsConstructor
 public class AdsService {
+
     private final AdsRepository adsRepository;
     private final UserRepository userRepository;
-
     private final AdsImageService adsImageService;
     private final AdsMapper adsMapper;
     private final AdsDtoMapper adsDtoMapper;
-
     private final FullAdsMapper fullAdsMapper;
-
     private final UserMapper userMapper;
     private final Logger logger = LoggerFactory.getLogger(AdsService.class);
-
     private final CommentService commentService;
 
 
-    public AdsService(AdsRepository adsRepository, UserRepository userRepository, AdsImageService adsImageService, AdsMapper adsMapper, AdsDtoMapper adsDtoMapper, FullAdsMapper fullAdsMapper, UserMapper userMapper, CommentService commentService) {
-
-        this.adsRepository = adsRepository;
-        this.userRepository = userRepository;
-
-        this.adsImageService = adsImageService;
-        this.adsMapper = adsMapper;
-        this.adsDtoMapper = adsDtoMapper;
-        this.fullAdsMapper = fullAdsMapper;
-        this.userMapper = userMapper;
-
-        this.commentService = commentService;
-    }
 
     /**
      * Добавляет новую рекламу.
@@ -96,11 +83,11 @@ public class AdsService {
      */
     public List<AdsDTO> getAllAds() {
         List<Ads> adsList = adsRepository.findAll();
-        List<AdsDTO> adsDTOS = new ArrayList<>();
+        List<AdsDTO> adsDTO = new ArrayList<>();
         for (Ads ads : adsList) {
-            adsDTOS.add(adsMapper.toDto(ads));
+            adsDTO.add(adsMapper.toDto(ads));
         }
-        return adsDTOS;
+        return adsDTO;
     }
 
     /**
@@ -114,18 +101,13 @@ public class AdsService {
         List<Ads> adsList = adsRepository.findAllByAuthorId(
                 userRepository.
                         findByEmail(authentication.getName()).orElseThrow());
-        List<AdsDTO> adsDTOS = new ArrayList<>();
+        List<AdsDTO> adsDTO = new ArrayList<>();
         for (Ads ads : adsList) {
-            adsDTOS.add(adsMapper.toDto(ads));
+            adsDTO.add(adsMapper.toDto(ads));
         }
-        return adsDTOS;
+        return adsDTO;
     }
 
-    //    @Transactional
-//    public void deleteAdsById(Integer id) {
-////        adsRepository.deleteAdsById(id);
-//        adsRepository.deleteById(id);
-//    }
     /**
      * Удаляет объявление по его идентификатору вместе с соответствующими комментариями и изображением.
      *
@@ -142,9 +124,7 @@ public class AdsService {
         adsRepository.delete(ad);
     }
 
-    //    public Ads editAds(Ads ads ) {
-//        return adsRepository.save(ads);
-//    }
+
     /**
      * Обновляет объявление с указанным идентификатором, используя информацию, предоставленную в CreateAdsDTO.
      *
@@ -176,7 +156,6 @@ public class AdsService {
      */
     public FullAdsDTO getFullAdsDTO(Integer id, Authentication authentication) {
         UserDTO userDTO = userMapper.toDto(userRepository.findByEmail(authentication.getName()).orElseThrow());
-//        AdsDTO adsDTO = adsMapper.toDto(adsRepository.findByAuthorId(userRepository.findByEmail(authentication.getName()).getId()));
         AdsDTO adsDTO = adsMapper.toDto(adsRepository.findById(id).orElseThrow());
         System.out.println(adsDTO);
         logger.info(adsDTO.toString());
@@ -220,5 +199,4 @@ public class AdsService {
         log.info("Photo have been saved");
         return image.getBytes();
     }
-
 }

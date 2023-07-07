@@ -11,7 +11,6 @@ public class FullAdsDTO {
     private String email;
     private String image;
     private String phone;
-
     private Integer price;
     private String title;
 }

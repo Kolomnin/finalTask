@@ -43,9 +43,7 @@ public class AdsImageService {
             throw new IllegalArgumentException("File is empty");
         }
         Ads ads = adsRepository.findById(id).orElseThrow(() -> new UsernameNotFoundException("Ads not found"));
-        ;
         AdsImage imageToSave = new AdsImage();
-//    imageToSave.setId(id);
         imageToSave.setAds(ads);
         imageToSave.setImage(file.getBytes());
 
@@ -60,7 +58,7 @@ public class AdsImageService {
      * Обновляет изображение для указанного объявления с заданным идентификатором.
      *
      * @param id Идентификатор объявления, для которого необходимо обновить изображение.
-     * @param файл Новый загружаемый файл изображения.
+     * @param file Новый загружаемый файл изображения.
      * @return Обновленное изображение в виде массива байтов.
      * @throws IOException Если при чтении файла возникает ошибка ввода-вывода.
      * @throws IllegalArgumentException Если файл пуст или изображение с заданным идентификатором не найдено.

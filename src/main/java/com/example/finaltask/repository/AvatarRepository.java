@@ -10,10 +10,8 @@ import java.util.Optional;
 @Repository
 public interface AvatarRepository extends JpaRepository<UserAvatar,Integer> {
 
-//    UserAvatar getById();
-
     Optional<UserAvatar> findById(Integer id);
 
-
+    Optional<UserAvatar> findByUser(User user);
 
 }

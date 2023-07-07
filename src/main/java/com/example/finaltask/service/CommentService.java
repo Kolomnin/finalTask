@@ -10,6 +10,7 @@ import com.example.finaltask.model.entity.User;
 import com.example.finaltask.repository.AdsRepository;
 import com.example.finaltask.repository.CommentRepository;
 import com.example.finaltask.repository.UserRepository;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
@@ -21,28 +22,15 @@ import java.util.List;
 
 @Service
 @Slf4j
+@RequiredArgsConstructor
 public class CommentService {
 
     private final CommentRepository commentRepository;
-
     private final CommentMapper commentMapper;
-
-
     private final UserRepository userRepository;
-
     private final AdsRepository adsRepository;
-
     private final UserMapper userMapper;
 
-    public CommentService(CommentRepository commentRepository, CommentMapper commentMapper,
-                          UserRepository userRepository, AdsRepository adsRepository, UserMapper userMapper) {
-        this.commentRepository = commentRepository;
-        this.commentMapper = commentMapper;
-
-        this.userRepository = userRepository;
-        this.adsRepository = adsRepository;
-        this.userMapper = userMapper;
-    }
 
     /**
      * Добавляет новый комментарий к объявлению с указанным ID.
