@@ -6,6 +6,7 @@ import com.example.finaltask.model.dto.RegisterReq;
 import com.example.finaltask.model.dto.UserDTO;
 import com.example.finaltask.model.entity.User;
 import com.example.finaltask.repository.UserRepository;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -15,18 +16,14 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.Optional;
 
 @Slf4j
-@Transactional
 @Service
+@Transactional
+@RequiredArgsConstructor
 public class UserService {
+
     private final UserMapper userMapper;
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
-
-    public UserService(UserMapper userMapper, UserRepository userRepository, PasswordEncoder passwordEncoder) {
-        this.userMapper = userMapper;
-        this.userRepository = userRepository;
-        this.passwordEncoder = passwordEncoder;
-    }
 
     /**
      * Добавляет нового пользователя с предоставленным запросом на регистрацию и ролью.
@@ -57,7 +54,8 @@ public class UserService {
      * Извлекает объект UserDTO при входе в систему.
      *
      * @param login логин пользователя для получения
-     * @return необязательный элемент, содержащий объект UserDTO, или пустой необязательный элемент, если пользователь не существует
+     * @return необязательный элемент, содержащий объект UserDTO, или пустой необязательный элемент,
+     * если пользователь не существует
      */
     public Optional<UserDTO> getUserByLogin(String login) {
         UserDTO userDTO = userMapper.toDto(userRepository.findByEmail(login).orElseThrow());
@@ -74,7 +72,8 @@ public class UserService {
     }
 
     /**
-     * Обновляет сведения о пользователе на основе предоставленного запроса на регистрацию и аутентификационной информации.
+     * Обновляет сведения о пользователе на основе предоставленного запроса на регистрацию и
+     * аутентификационной информации.
      *
      * @param registerReq Запрос на регистрацию, содержащий обновленные данные пользователя.
      * @param authentication Объект аутентификации, содержащий учетные данные пользователя.

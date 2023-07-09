@@ -15,7 +15,6 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
-import java.util.Optional;
 
 import static org.springframework.util.ObjectUtils.isEmpty;
 
@@ -59,7 +58,7 @@ public class AdsImageService {
      * Обновляет изображение для указанного объявления с заданным идентификатором.
      *
      * @param id Идентификатор объявления, для которого необходимо обновить изображение.
-     * @param файл Новый загружаемый файл изображения.
+     * @param file Новый загружаемый файл изображения.
      * @return Обновленное изображение в виде массива байтов.
      * @throws IOException Если при чтении файла возникает ошибка ввода-вывода.
      * @throws IllegalArgumentException Если файл пуст или изображение с заданным идентификатором не найдено.
@@ -90,12 +89,12 @@ public class AdsImageService {
     @Transactional
     public byte[] getImage(Integer id) {
         log.info("Was invoked method to get image from ads with id {}", id);
-        Optional<Ads> ads = adsRepository.findById(id);
+        AdsImage image = adsImageRepository.findAdsImageById(id);
         log.info("картинка появляется");
-        if (isEmpty(ads)) {
+        if (isEmpty(image)) {
             throw new IllegalArgumentException("Image not found");
         }
-        return avatarRepository.findByUser(ads.get().getAuthorId().getAvatar().getUser()).get().getBytes();
+        return image.getImage();
     }
 
     /**

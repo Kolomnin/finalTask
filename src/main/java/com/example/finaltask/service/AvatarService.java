@@ -4,6 +4,7 @@ import com.example.finaltask.mapping.ImageMapper;
 import com.example.finaltask.model.entity.UserAvatar;
 import com.example.finaltask.repository.AvatarRepository;
 import com.example.finaltask.repository.UserRepository;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
@@ -16,20 +17,12 @@ import static org.springframework.util.ObjectUtils.isEmpty;
 
 @Slf4j
 @Service
+@RequiredArgsConstructor
 public class AvatarService {
 
     private final AvatarRepository avatarRepository;
-
     private final ImageMapper imageMapper;
-
     private final UserRepository userRepository;
-
-
-    public AvatarService(AvatarRepository avatarRepository, ImageMapper imageMapper, UserRepository userRepository) {
-        this.avatarRepository = avatarRepository;
-        this.imageMapper = imageMapper;
-        this.userRepository = userRepository;
-    }
 
     /**
      * Сохраняет изображение аватара пользователя.
@@ -46,20 +39,6 @@ public class AvatarService {
         return avatarRepository.save(avatar);
     }
 
-    //    public byte[] saveAvatar(String email, MultipartFile file) throws IOException {
-//        Integer id = userRepository.findByEmail(email).get().getId();
-//        log.info("Was invoked method to upload photo to user with id {}", id);
-//        if (file.isEmpty()) {
-//            throw new IllegalArgumentException("File is empty");
-//        }
-//        if (!userRepository.existsById(id)) {
-//            throw new IllegalArgumentException("User not found");
-//        }
-//        UserAvatar userAvatar = new UserAvatar();
-//        userAvatar.setBytes(file.getBytes());
-//        avatarRepository.save(userAvatar);
-//        return userAvatar.getBytes();
-//    }
     /**
      * Сохраняет изображение аватара для пользователя.
      *
@@ -90,8 +69,6 @@ public class AvatarService {
         return savedImage.getBytes();
     }
 
-
-    //    @Transactional
     /**
      * Извлекает данные изображения аватара для пользователя с заданным идентификатором.
      *
@@ -107,6 +84,4 @@ public class AvatarService {
         }
         return userAvatar.get().getBytes();
     }
-
-
 }

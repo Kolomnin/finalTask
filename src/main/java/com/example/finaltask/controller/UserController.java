@@ -1,7 +1,9 @@
 package com.example.finaltask.controller;
 
 import com.example.finaltask.mapping.UserMapper;
-import com.example.finaltask.model.dto.*;
+import com.example.finaltask.model.dto.NewPasswordDTO;
+import com.example.finaltask.model.dto.RegisterReq;
+import com.example.finaltask.model.dto.UserDTO;
 import com.example.finaltask.model.entity.User;
 import com.example.finaltask.repository.AvatarRepository;
 import com.example.finaltask.repository.UserRepository;
@@ -15,16 +17,15 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.util.Optional;
@@ -37,20 +38,13 @@ import java.util.Optional;
 
 public class UserController {
     private static final Logger logger = LoggerFactory.getLogger(UserController.class);
-
-
     private final UserService userService;
-
     private final AvatarService avatarService;
     private final AvatarRepository avatarRepository;
-
     private final AuthServiceImpl authService;
-
     private final UserRepository userRepository;
     private final AdsImageService adsImageService;
-
     private final PasswordEncoder passwordEncoder;
-
 
     private UserMapper userMapping;
 
@@ -58,7 +52,6 @@ public class UserController {
      * PasswordEncoder предназначен для хеширования паролей. Он используется для шифрования паролей пользователей,
      * чтобы сохранить их в безопасной форме в базе данных или другом хранилище.
      */
-
 
     /**
      * Этот код служит для документирования API, чтобы разработчики и потребители могли лучше понять,
