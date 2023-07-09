@@ -82,7 +82,7 @@ public class CommentService {
             CommentDTO commentDTO = new CommentDTO();
             commentDTO.setAuthor(comment.getAuthor().getId());
             commentDTO.setText(comment.getText());
-            commentDTO.setAuthorImage(userMapper.getAvatar(userRepository.findByEmail(authentication.getName()).orElseThrow()));
+            commentDTO.setAuthorImage(userMapper.getAvatar(comment.getAuthor()));
 //            commentDTO.setAuthorFirstName(userRepository.findByEmail(authentication.getName()).get().getFirstName());
             commentDTO.setAuthorFirstName(comment.getAuthor().getFirstName());
             commentDTO.setPk(comment.getId());
