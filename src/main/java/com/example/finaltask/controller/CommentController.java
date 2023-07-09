@@ -1,6 +1,8 @@
 package com.example.finaltask.controller;
 
-import com.example.finaltask.model.dto.*;
+import com.example.finaltask.model.dto.CommentDTO;
+import com.example.finaltask.model.dto.CreateCommentDTO;
+import com.example.finaltask.model.dto.ResponseWrapperComment;
 import com.example.finaltask.service.CommentService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -11,7 +13,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.annotation.Secured;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
@@ -139,15 +140,6 @@ public class CommentController {
 
         return new ResponseEntity<>(HttpStatus.OK);
     }
-//    @PutMapping
-//    public ResponseEntity<Comment> editComment(@RequestBody Comment comment) {
-//        Comment comment1 = commentService.editComment(comment);
-//        if (comment1 == null) {
-//            return ResponseEntity.notFound().build();
-//        }
-//        return ResponseEntity.ok(comment1);
-//    }
-
 
     @Operation(
             operationId = "patchComment",

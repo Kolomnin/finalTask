@@ -8,9 +8,7 @@ import java.io.IOException;
 
 @Mapper(componentModel = "spring")
 public interface ImageMapper {
-//    AvatarDTO toDTO (UserAvatar userAvatar)throws IOException;
 
     UserAvatar toEntity (MultipartFile file) throws IOException;
-
 
 }
