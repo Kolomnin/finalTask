@@ -2,9 +2,6 @@ package com.example.finaltask.mapping;
 
 import com.example.finaltask.model.dto.CommentDTO;
 import com.example.finaltask.model.dto.CreateCommentDTO;
-import com.example.finaltask.model.dto.FullAdsDTO;
-import com.example.finaltask.model.dto.UserDTO;
-import com.example.finaltask.model.entity.Ads;
 import com.example.finaltask.model.entity.Comment;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
@@ -30,7 +27,7 @@ public interface CommentMapper {
 
     default String image(Comment comment) {
         int id = comment.getAuthor().getId();
-        return "/users/" + id + "/image";
+        return "/users/" + id + "/getImage";
     }
 //    @Mapping(source = "authorId.id", target = "aut
 //

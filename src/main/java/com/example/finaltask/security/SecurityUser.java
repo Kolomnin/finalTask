@@ -35,6 +35,7 @@ public class SecurityUser implements UserDetails {
                 .map(SimpleGrantedAuthority::new)
                 .map(Collections::singleton)
                 .orElse(Collections.emptySet());
+
     }
     /**
      * Извлекает пароль из SecurityUserDto.
