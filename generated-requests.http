@@ -80,7 +80,7 @@ Content-Type: application/json
 Authorization: Basic user@gmail.com password
 
 {
-  "image": "123",
+  "adsImage": "123",
   "price": 123,
   "description": "123",
   "pk": 1233,
