@@ -35,8 +35,8 @@ public class CommentService {
     /**
      * Добавляет новый комментарий к объявлению с указанным ID.
      *
-     * @param id Идентификатор объявления.
-     * @param commentDto Добавляемые данные комментария.
+     * @param id             Идентификатор объявления.
+     * @param commentDto     Добавляемые данные комментария.
      * @param authentication Объект аутентификации, содержащий информацию об аутентифицированном пользователе.
      * @return Представление добавленного комментария DTO (объект передачи данных).
      * @throws IllegalArgumentException Если объявление с указанным идентификатором не найдено.
@@ -67,7 +67,7 @@ public class CommentService {
     /**
      * Извлекает все комментарии по идентификатору объявления.
      *
-     * @param id идентификатор объявления
+     * @param id             идентификатор объявления
      * @param authentication детали аутентификации пользователя
      * @return ResponseWrapperComment, содержащий количество комментариев и список объектов CommentDTO
      */
@@ -76,13 +76,17 @@ public class CommentService {
         ResponseWrapperComment responseWrapperComment = new ResponseWrapperComment();
         responseWrapperComment.setCount(comments.size());
         List<CommentDTO> commentDTOS = new ArrayList<>();
+
         for (Comment comment : comments) {
+
             CommentDTO commentDTO = new CommentDTO();
             commentDTO.setAuthor(comment.getAuthor().getId());
             commentDTO.setText(comment.getText());
             commentDTO.setAuthorImage(userMapper.getAvatar(userRepository.findByEmail(authentication.getName()).orElseThrow()));
-            commentDTO.setAuthorFirstName(userRepository.findByEmail(authentication.getName()).orElseThrow().getFirstName());
+//            commentDTO.setAuthorFirstName(userRepository.findByEmail(authentication.getName()).get().getFirstName());
+            commentDTO.setAuthorFirstName(comment.getAuthor().getFirstName());
             commentDTO.setPk(comment.getId());
+
             System.out.println(commentDTO.getPk() + "айди");
             commentDTO.setCreatedAt(comment.getCreatedAt());
             commentDTOS.add(commentDTO);
@@ -95,7 +99,7 @@ public class CommentService {
     /**
      * Удаляет комментарий по его идентификатору внутри определенного объявления.
      *
-     * @param adsId идентификатор объявления
+     * @param adsId     идентификатор объявления
      * @param commentId идентификатор удаляемого комментария
      */
     @Transactional
@@ -120,8 +124,8 @@ public class CommentService {
     /**
      * Обновляет комментарий для определенного объявления.
      *
-     * @param adsId Идентификатор объявления
-     * @param commentId Идентификатор комментария
+     * @param adsId      Идентификатор объявления
+     * @param commentId  Идентификатор комментария
      * @param commentDTO Обновленные данные комментариев
      * @return Обновленные данные комментария в виде объекта CommentDTO
      */
@@ -134,7 +138,7 @@ public class CommentService {
         return commentMapper.toCommentDTO(updatedComment);
     }
 
-    public User isOwnerCommentById(Integer id){
+    public User isOwnerCommentById(Integer id) {
         return commentRepository.findById(id).get().getAuthor();
     }
 
